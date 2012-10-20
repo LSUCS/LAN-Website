@@ -1,0 +1,46 @@
+/* LOGIN VIEW */
+
+#login-description {
+    width: 700px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;
+    color: #444;
+    font-size: 13px;
+}
+    #login-description a {
+        color: #999;
+    }
+        #login-description a:hover {
+            color: #f1642b;
+        }
+
+#textbox-container {
+    width: 390px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    #textbox-container div {
+        margin-bottom: 20px;
+    }
+    #textbox-container div span {
+        display: block;
+        float: left;
+        width: 100px;
+        line-height: 40px;
+    }
+    #textbox-container input {
+        height: 30px;
+        width: 250px;
+        font-size: 18px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+#login-button {
+    width: 200px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+}

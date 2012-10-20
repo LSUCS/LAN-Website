@@ -1,0 +1,121 @@
+#timetable-controls {
+    width: 400px;
+    height: 70px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#timetable-controls div {
+    float: left;
+}
+#left, #right {
+    height: 50px;
+    width: 50px;
+}
+#left {
+    background-image: url('../../images/left-active.png');
+    cursor: pointer;
+}
+    #left:hover {
+        background-image: url('../../images/left.png');
+    }
+#right {
+    background-image: url('../../images/right-active.png');
+    cursor: pointer;
+}
+    #right:hover {
+        background-image: url('../../images/right.png');
+    }
+#day {
+    width: 300px;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-family: reznor;
+    font-size: 30px;
+}
+
+#timetable-container {
+    overflow: hidden;
+    width: 830px;
+    position: relative;
+    margin-left: 30px;
+}
+    #timetable-days {
+        width: 3580px;
+        list-style: none;
+        overflow: hidden;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+        #timetable-days .timetable-day {
+            position: relative;
+            float: left;
+            width: 830px;
+        }
+        
+.time-row {
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+    height: 40px;
+}
+    .time-row .time {
+        position: absolute;
+        top: 0px;
+        left: -50px;
+    }
+.bottom-row {
+    border-bottom: 1px solid #ddd;
+}
+.invisible {
+    height: 0px;
+    border: 0;
+}
+.break {
+    height: 100px;
+    background-color: #FCFCFC;
+    background-image: url('../../images/sleep.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid #ddd;
+    border-bottom: 0;
+}
+
+.timetable-entry {
+    position: absolute;
+    left: 0;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 3px;
+}
+    .orange {
+        border: 1px solid #E8963F;
+        background: rgb(255, 212, 166);
+        background: rgba(255, 212, 166, 0.8);
+    }
+    .green {
+        border: 1px solid #649c21;
+        background: rgb(141, 214, 51);
+        background: rgba(189, 230, 140, 0.8);
+    }
+    .blue {
+        border: 1px solid #107dc2;
+        background: rgb(72, 171, 232);
+        background: rgba(72, 171, 232, 0.8);
+    }
+    .purple {
+        border: 1px solid #461791;
+        background: rgb(138, 90, 214);
+        background: rgba(138, 90, 214, 0.8);
+    }
+    
+.mCSB_container.mCS_no_scrollbar {
+    margin-right: 30px;
+}

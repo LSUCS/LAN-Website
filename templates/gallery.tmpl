@@ -1,0 +1,16 @@
+<div id="gallery-container">
+    <div id="galleria">
+    </div>
+</div>
+
+<div id="folders">
+    <?
+        foreach ($DataBag["folders"] as $folder) {
+            echo '<div class="folder">
+                    <img class="folder-cover" src="' . $folder["cover"] . '" />
+                    <div class="folder-label">' . $folder["name"] . '</div>
+                  </div>';
+        }
+    ?>
+</div>
+<div style="clear: both;"></div>

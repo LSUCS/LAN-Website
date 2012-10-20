@@ -1,0 +1,67 @@
+<h1>member tickets</h1>
+<p>
+    Member prices are available to all student and associate members of LSUCS. If you are a member and you are unable to purchase this option then you need to make sure you are in the 'LSUCS Members' group on the forums <a href="http://lsucs.org.uk/threads/what-do-you-post-here.5278/">here</a>.
+</p>
+<p>
+    The first LAN of the year (LAN35) is free for all LSUCS members. The booking process requires you to pay a £5 deposit which you can then get back at the LAN. Deposit refunds are your own responsibility to collect and will not be available after the LAN has ended
+</p>
+<p>
+    Refunds on tickets are available until 4 days before the LAN - please email committee@lsucs.org.uk if you need one.
+</p>
+<div class="outer-price-container">
+    <div class="price-container">
+        <div class="price" id="member-price" value="<?php echo money_format('%i', $DataBag["member_price"]); ?>">Price: <span>£<?php echo money_format('%i', $DataBag["member_price"]); ?></span></div>
+        <?php 
+            if ($DataBag["member_sold_out"]) echo '<div class="soldout">Sold out</div>';
+            else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';
+            else if (!$DataBag["member_available"]) echo '<div class="unavailable">Available From<br/>' . $DataBag["member_date"] . "</div>";
+            else if ($DataBag["is_member"]) {
+                echo '<input type="text" class="spinner-input" id="member-amount" value="0" />';
+            }
+            else echo '<div class="unavailable">Only available to<br />LSUCS members</div>';
+        ?>
+    </div>
+</div>
+<div style="clear: both;"></div>
+
+<h1>non-member tickets</h1>
+<p>
+    Non-Member tickets are open to anyone - you do not need to have any affiliation to LSUCS to attend our LAN parties. Members may still purchase non-member tickets for other people.
+</p>
+<p>
+    If you purchase more than one ticket (or if you are a member and have purchased non-member ticket(s) for others) you can allocate spares to the accounts of other people. This can be done through your <a href="index.php?page=account">Account Details</a>.
+    If this isn't done beforehand, it will need to be done on the door at the LAN.
+</p>
+<p>
+    <b>Please Note:</b> There is a £1 fee added onto the normal non-member ticket price to cover PayPal fees. If you don't wish to pay this, please buy your ticket in person from a committee member.
+</p>
+<div class="outer-price-container">
+    <div class="price-container">
+        <div class="price" id="nonmember-price" value="<?php echo money_format('%i', $DataBag["nonmember_price"]); ?>">Price: <span>£<?php echo money_format('%i', $DataBag["nonmember_price"]); ?></span></div>
+        <?php 
+            if ($DataBag["nonmember_sold_out"]) echo '<div class="soldout">Sold out</div>';
+            else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';
+            else if (!$DataBag["nonmember_available"]) echo '<div class="unavailable">Available From<br/>' . $DataBag["nonmember_date"] . "</div>";
+            else {
+                echo '<input type="text" class="spinner-input" id="nonmember-amount" value="0" />';
+            }
+        ?>
+    </div>
+</div>
+<div style="clear: both;"></div>
+<div id="checkout-container">
+    <?php if ($DataBag["nonmember_available"] || ($DataBag["member_available"] && $DataBag["is_member"])) echo '<hr /><button class="checkout-button">Checkout</button>'; ?>
+</div>
+
+<div id="checkout">
+    <form name="_xclick" action="<?php echo $DataBag["paypal_url"]; ?>" method="post" id="paypal-form">
+        <input type="hidden" name="cmd" value="_cart">
+        <input type="hidden" name="rm" value="2">
+        <input type="hidden" name="upload" value="1">
+        <input type="hidden" name="business" value="<?php echo $DataBag["paypal_email"]; ?>">
+        <input type="hidden" name="currency_code" value="GBP">
+        <input type="hidden" name="return" value="<?php echo $DataBag["paypal_return_url"]; ?>">
+        <input type="hidden" name="notify_url" value="<?php echo $DataBag["paypal_ipn_url"]; ?>">
+        <input type="hidden" name="custom" id="custom-field" value="">
+    </form>
+</div>

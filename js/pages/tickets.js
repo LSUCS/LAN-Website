@@ -1,0 +1,74 @@
+$(document).ready(function() {
+
+    //Spinners
+    $("#nonmember-amount, #member-amount").spinner({ min: 0, max: 5 });
+    $(".ui-spinner").live('click', function() {
+        updatePaypalBox();
+    });
+    $("#nonmember-amount, #member-amount").live('change', function() {
+        updatePaypalBox();
+    });
+    updatePaypalBox();
+    
+    //Checkout button
+    $(".checkout-button").click(function() {
+        
+        //Agree to terms and conditions
+        var string = '<p>By purchasing this ticket you are agreeing to abide by our LAN rules found <a href="http://lans.lsucs.org.uk/index.php?page=info&action=rules">here</a>. ';
+        string += 'If you do not agree to follow these rules then do not purchase this ticket. Breaking these rules gives us the right to remove you from the event.<p><br />';
+        string += '<p>If you are under 18 and attending a LAN you are required by Union policy to have <b>written consent from a parent or guardian</b>. If you do not have this you will not be allowed entry to the LAN and will not be offered a refund.</p>';
+        string += '<p><button id="continue-checkout">Continue</button><button id="cancel-checkout">Cancel</button></p>';
+        $("#overlay-content").html(string);
+        $("#continue-checkout, #cancel-checkout").button();
+        Overlay.openOverlay(false, "");
+        
+    });
+    $("#cancel-checkout").live('click', function() {
+        Overlay.closeOverlay();
+    });
+    $("#continue-checkout").live('click', function() {
+        checkout();
+    });
+    
+});
+
+function checkout() {
+    Overlay.loadingOverlay();
+    $.post(
+        "index.php?page=tickets&action=checkout",
+        { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val() },
+        function (data) {
+            if (data != null && data.error) {
+                Overlay.openOverlay(true, data.error);
+                return;
+            }
+            if (data.pending_id) {
+                $("#custom-field").val(data.pending_id);
+                document.forms["paypal-form"].submit();
+            }
+        },
+        'json');
+}
+
+function updatePaypalBox() {
+
+    $(".paypalitem").remove();
+    var i = 1;
+    if ($("#member-amount").val() > 0) {
+        var line = '<input class="paypalitem" type="hidden" name="item_name_' + i + '" value="LAN' + $("#lan span").html() + ' Member Ticket">';
+        line += '<input class="paypalitem" type="hidden" name="amount_' + i + '" value="' + $("#member-price").attr('value') + '">';
+        line += '<input class="paypalitem" type="hidden" name="quantity_' + i + '" value="' + $("#member-amount").val() + '">';
+        line += '<input class="paypalitem" type="hidden" name="item_number_' + i + '" value="member">';
+        $("#paypal-form").prepend(line);
+        i++;
+    }
+    if ($("#nonmember-amount").val() > 0) {
+        var line = '<input class="paypalitem" type="hidden" name="item_name_' + i + '" value="LAN' + $("#lan span").html() + ' Non-Member Ticket">';
+        line += '<input class="paypalitem" type="hidden" name="amount_' + i + '" value="' + $("#nonmember-price").attr('value') + '">';
+        line += '<input class="paypalitem" type="hidden" name="quantity_' + i + '" value="' + $("#nonmember-amount").val() + '">';
+        line += '<input class="paypalitem" type="hidden" name="item_number_' + i + '" value="nonmember">';
+        $("#paypal-form").prepend(line);
+        i++;
+    }
+
+}

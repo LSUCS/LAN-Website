@@ -1,0 +1,42 @@
+<div id="top">
+
+    <div id="welcome">
+        Welcome to the LSU Computer Society LAN website! Here you can find information and buy tickets for upcoming LAN parties. During LANs this is also used as an interactive system for tournament sign-ups and as a live source of information.<br /><br />
+        If you have any questions about our events, please take a look at the <a href="index.php?page=info">Info</a> page. If you can't find your answer there, please email committee@lsucs.org.uk .<br /><br />
+        Please note that accounts for this website are <a href="http://lsucs.org.uk">LSUCS Forum</a> accounts.
+    </div>
+    
+    <div id="gallery">
+        
+    </div>
+
+</div>
+
+<hr />
+
+<div id="bottom">
+    <div id="lan-updates">
+        <h1>latest lan news</h1>
+        <div id="blog">
+            <?
+                foreach ($DataBag["blog"] as $key => $entry) {
+                    echo '<div class="blog-entry ' . ($key == count($DataBag["blog"]) -1?"last-entry":"") . '"><div class="entry-title">' . $entry["title"] . '</div>
+                          <div class="entry-details">by ' . $entry["username"] . ' on ' . $entry["date"] . '</div>
+                          <div class="entry-content">' . $entry["body"] . '</div>
+                          </div>';
+                }
+            ?>
+        </div>
+    </div>
+    
+    <div id="social-media">
+        <div id="twitter">
+            <a class="twitter-timeline" href="https://twitter.com/lsucs" data-widget-id="252389920390385664" width="300px">Tweets by @lsucs</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+        </div>
+        <div id="facebook">
+            <iframe id="f20599baf8" name="f2a4e57a5c" scrolling="no" style="border: none; overflow: hidden; height: 230px; width: 240px; " class="fb_ltr" src="http://www.facebook.com/plugins/fan.php?api_key=186325374773413&amp;connections=8&amp;css=http%3A%2F%2Flsucs.org.uk%2Fjs%2F8wayrun%2Ffb-light-.css%3F1&amp;height=216&amp;id=10150104614035335&amp;locale=en_US&amp;logobar=false&amp;sdk=joey&amp;stream=false&amp;width=240"></iframe>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+</div>

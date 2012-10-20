@@ -1,0 +1,213 @@
+.detail {
+    min-height: 50px;
+    margin-bottom: 10px;
+    width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    .detail .detail-label {
+        display: block;
+        float: left;
+        width: 200px;
+        height: 35px;
+        line-height: 35px;
+    }
+    .detail .sub-detail {
+        display: block;
+        float: right;
+        width: 330px;
+        font-size: 11px;
+        min-height: 30px;
+        margin-top: 3px;
+        color: #555;
+    }
+.save-details {
+    font-size: 14px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+    
+#account-details {
+}
+
+#game-details h1, #tickets h1, #lan-van h1 {
+    font-size: 37px;
+}
+    #favourite-games {
+        width: 500px;
+        min-height: 30px;
+        max-height: 160px;
+        overflow: auto;
+        border: 1px solid #F1642B;
+        border-radius: 3px;
+        text-align: center;
+        font-size: 12px;
+        color: #bbb;
+        line-height: 30px;
+    }
+        #favourite-games .game {
+            height: 30px;
+            line-height: 30px;
+            padding-left: 20px;
+            font-size: 14px;
+            color: #333;
+        }
+            .game:hover {
+                background-color: #ddd;
+            }
+        #favourite-games .odd {
+            background-color: #F7F7F7;
+        }
+        #favourite-games .even {
+            background-color: #fff;
+        }
+        #favourite-games .delete-game {
+            background-image: url('../../images/delete.png');
+            background-repeat: no-repeat;
+            height: 20px;
+            width: 20px;
+            display: block;
+            float: right;
+            position: relative;
+            top: 5px;
+            right: 10px;
+            cursor: pointer;
+        }
+            #favourite-games .delete-game:hover {
+                background-image: url('../../images/delete-active.png');
+            }
+    #add-game {
+        margin-top: 10px;
+        margin-bottom: 20px;
+        margin-left: 200px;
+        width: 385px;
+    }
+    #add-game-button {
+        font-size: 13px;
+        margin-top: 10px;
+    }
+    
+#van-details {
+}
+    #van-buttons {
+        text-align: center;
+        margin-top: 20px;
+    }
+        #van-buttons button {
+            font-size: 14px;
+        }
+    #collection + label, #dropoff + label {
+        margin-top: 9px;
+    }
+    #availability {
+        width: 250px;
+        height: 70px;
+        resize: none;
+    }
+        #availability-subdetail {
+            width: 250px;
+        }
+    #disabled-van {
+        color: red;
+    }
+
+#ticket-table {
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #999;
+    border-radius: 10px;
+}
+    #ticket-table #table-head {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 10px 10px 0px 0px;
+        border-bottom: 1px solid #bbb;
+        background-image: url('../../images/table-head.png');
+        background-repeat: repeat-x;
+    }
+    #ticket-table #table-head span {
+        display: block;
+        float: left;
+        border-right: 1px solid #bbb;
+        text-align: center;
+    }
+    
+    #ticket-table .ticket-id {
+        width: 80px;
+    }
+    #ticket-table .lan {
+        width: 60px;
+    }
+    #ticket-table .ticket-type {
+        width: 110px;
+    }
+    #ticket-table .purchaser {
+        width: 130px;
+    }
+    #ticket-table .assigned {
+        width: 130px;
+    }
+    #ticket-table .activated {
+        width: 80px;
+    }
+    #ticket-table #table-head .activated {
+        border-right: 0;
+    }
+    
+    #ticket-table .ticket-row {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+        #ticket-table .ticket-row span {
+            display: block;
+            float: left;
+            margin-right: 1px;
+        }
+        #ticket-table .odd {
+            background-color: #FFF8F5;
+        }
+        #ticket-table .end-ticket {
+            border-radius: 0px 0px 10px 10px;
+        }
+    #ticket-table .no-tickets {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+    }
+    #ticket-table .assign-link {
+        cursor: pointer;
+        color: #666;
+    }
+        #ticket-table .assign-link:hover {
+            color: #F1642B;
+        }
+
+#claim-ticket {
+    width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+}
+    #claim-ticket #claim-code {
+        width: 100px;
+    }
+    #claim-ticket-button {
+        font-size: 14px;
+        top: 1px;
+        margin-left: 10px;
+    }
+    #confirm-claim {
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+#assign-ticket {
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+
+

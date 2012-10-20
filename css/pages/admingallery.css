@@ -1,0 +1,14 @@
+#force-container {
+    display: block;
+    height: 30px;
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#process-button {
+    font-size: 14px;
+    width: 250px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

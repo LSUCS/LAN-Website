@@ -1,0 +1,99 @@
+#add-entry {
+    margin-left: 50px;
+}
+    #entry-title-container {
+        margin-bottom: 10px;
+    }
+    #entry-title {
+        width: 400px;
+    }
+    #submit-entry {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    
+#edit-entry {
+    
+}
+    #edit-entry-title-container {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+    #edit-entry-title {
+        width: 400px;
+    }
+    #edit-submit-entry, #delete-entry {
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    #edit-error {
+        color: red;
+        text-align: center;
+    }
+    
+#entry-table {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #999;
+    border-radius: 10px;
+}
+    #entry-table #table-head {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 10px 10px 0px 0px;
+        border-bottom: 1px solid #bbb;
+        background-image: url('../../images/table-head.png');
+        background-repeat: repeat-x;
+    }
+    #entry-table #table-head span {
+        display: block;
+        float: left;
+        border-right: 1px solid #bbb;
+        text-align: center;
+    }
+    
+    #entry-table .id {
+        width: 80px;
+    }
+    #entry-table .date {
+        width: 180px;
+    }
+    #entry-table .author {
+        width: 180px;
+    }
+    #entry-table .title{
+        width: 350px;
+    }
+    #entry-table #table-head .title {
+        border-right: 0;
+    }
+    
+    #entry-table .entry-row {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+        #entry-table .entry-row span {
+            display: block;
+            float: left;
+            margin-right: 1px;
+        }
+        #entry-table .odd {
+            background-color: #FFF8F5;
+        }
+        #entry-table .entry-row:hover {
+            background-color: #FFF3ED;
+            cursor: pointer;
+        }
+        #entry-table .selected-row {
+            background-color: #FFE2D6;
+        }
+        #entry-table .end-entry {
+            border-radius: 0px 0px 10px 10px;
+        }
+    #entry-table .no-entries {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+    }

@@ -1,0 +1,16 @@
+<input type="hidden" id="pending_id" value="<?php echo $DataBag["pending_id"]; ?>" />
+<div id="loading">
+    <img src="images/loading.gif" /><br />
+    Checking order progress...
+</div>
+
+<div id="complete">
+    Your order has been processed and tickets have been added to your account.
+    Please see your <a href="index.php?page=account">Account Details</a> for information on your tickets
+</div>
+
+<div id="failed">
+    Your payment was successful however the order was not processed correctly and has been deemed invalid.
+    This could be due to the purchase failing our fraud checks or the LAN selling out whilst you were buying your tickets.
+    If you do not hear from the committee within 24 hours, please contact committee@lsucs.org.uk
+</div>

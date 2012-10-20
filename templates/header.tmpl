@@ -1,0 +1,252 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+    <head>
+    
+        <noscript>
+            <meta http-equiv="refresh" content="0; url=no-js.html" />
+        </noscript>
+    
+        <title><?php echo $DataBag["title"]; ?></title>
+        <?php if ($DataBag["refresh"]) echo '<meta http-equiv="refresh" content="3;url=index.php">'; ?>
+        <link rel="shortcut icon" href="images/favicon.ico" />
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui/jquery-ui.custom.css" />
+        <link rel="stylesheet" type="text/css" href="css/ui.spinner.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.cleditor.css" />
+        <link rel="stylesheet" type="text/css" href="css/jquery.dataTables_themeroller.css" />
+        <link rel="stylesheet" type="text/css" href="css/TableTools_JUI.css" />
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui.custom.min.js"></script>
+        <script type="text/javascript" src="js/jquery.tools.min.js"></script>
+        <script type="text/javascript" src="js/jquery-ui-timepicker-addon.js"></script>
+        <script type="text/javascript" src="js/ui.spinner.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mCustomScrollbar.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mousewheel.min.js"></script>
+        <script type="text/javascript" src="js/jquery.cleditor.min.js"></script>
+        <script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
+        <script type="text/javascript" src="js/jquery.timers-1.2.js"></script>
+        <script type="text/javascript" src="js/galleria/galleria-1.2.8.min.js"></script>
+        <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="js/TableTools.min.js"></script>
+        <script type="text/javascript" src="js/ZeroClipboard.js"></script>
+        <script type="text/javascript" src="js/date.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        
+        <?php
+            foreach ($DataBag["styles"] as $style) {
+                if (file_exists("css/pages/" . $style)) echo '<link rel="stylesheet" type="text/css" href="css/pages/' . $style . '" />';
+            }
+            foreach ($DataBag["scripts"] as $script) {
+                if (file_exists("js/pages/" . $script)) echo '<script type="text/javascript" src="js/pages/' . $script . '"></script>';
+            }
+        ?>
+        
+    </head>
+    
+    <body>
+        <img id="background" src="images/main-bg.png" />
+        <div id="wrapper">
+        
+            <div id="header">
+                
+				<div id="title-container">
+					<a href="http://lsucs.org.uk">
+                        <div id="title">
+						LSU<span>CS</span>
+                        </div>
+                    </a>
+                    <div id="landetails">
+                        <div id="lan">LAN<span><?php echo $DataBag["lan"]; ?></span></div>
+                        <?php echo $DataBag["datestring"]; ?>
+                    </div>
+                    <? if ($DataBag["countdown"]) { ?>
+                        <div id="booking-container">
+                            <a href="index.php?page=tickets">
+                                <div id="book-now">
+                                    Book your LAN<?php echo $DataBag["lan"]; ?> ticket!
+                                </div>
+                            </a>
+                            <div id="countdown">
+                                <span class="countdown-section">
+                                    <span class="countdown-amount" id="countdown-days">0</span>
+                                    <span class="countdown-label">Days</span>
+                                </span>
+                                <span class="countdown-section">
+                                    <span class="countdown-amount" id="countdown-hours">0</span>
+                                    <span class="countdown-label">Hours</span>
+                                </span>
+                                <span class="countdown-section">
+                                    <span class="countdown-amount" id="countdown-minutes">0</span>
+                                    <span class="countdown-label">Minutes</span>
+                                </span>
+                                <span class="countdown-section">
+                                    <span class="countdown-amount" id="countdown-seconds">0</span>
+                                    <span class="countdown-label">Seconds</span>
+                                </span>
+                            </div>
+                        </div>
+                    <? } ?>
+				</div>
+                
+                <div id="navbar">
+                    <ul>
+                        <?php
+                            foreach ($DataBag["navbar"] as $elem) {
+                                if ($elem[2] == $DataBag["page"]) echo '<li><a class="active" href="' . $elem[0] . '">' . $elem[1] . '</a>';
+                                else echo '<li><a href="' . $elem[0] . '">' . $elem[1] . '</a>';
+                            }
+                        ?>
+                    </ul>
+                </div>
+				
+				<a href="index.php?page=account">
+                    <div id="userbox">
+                        <img src="images/user.png" /><?php if ($DataBag["loggedin"]) { echo $DataBag["username"]; } else echo "Sign In"; ?>
+                    </div>
+                </a>
+                <?php if ($DataBag["loggedin"]) { ?>
+                    <div id="userdropdown">
+                        <a href="index.php?page=profile&member=<?php echo $DataBag["username"]; ?>"><span class="dropdown-element">View Profile</span></a>
+                        <a href="index.php?page=account"><span class="dropdown-element">Account Details</span></a>
+                        <a href="index.php?page=account&action=logout"><span class="dropdown-element bottom-element"><img src="images/logout.png" />Logout</span></a>
+                    </div>
+                <?php } ?>
+                
+                <div id="info-bar">
+                    <div class="info-group">
+                        <h3>About</h3>
+                        
+                        <a href="index.php?page=gallery">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/gallery.png" />
+                                Gallery
+                            </div>
+                        </a>
+                    </div>
+                    <div class="info-group">
+                        <h3>Before the LAN</h3>
+                        
+                        <a href="index.php?page=info&action=equipment">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/equipment.png" />
+                                What to Bring
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=lanvan">
+                            <div class="info-element">
+                                <img id="van" class="info-image" src="images/info/van.png" />
+                                LAN Van
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=parking">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/parking.png" />
+                                Location and Parking
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=arrival">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/arrival.png" />
+                                Arrival Details
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="info-group">
+                        <h3>At the LAN</h3>
+                        
+                        <a href="index.php?page=info&action=rules">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/rules.png" />
+                                LAN Rules
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=map">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/map.png" />
+                                LAN Layout
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=food">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/food.png" />
+                                Food and Drink
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=sleeping">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/sleep.png" />
+                                Sleeping
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=tournamentrules">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/tournament.png" />
+                                Tournament Rules
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=quiz">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/quiz.png" />
+                                Pub Quiz
+                            </div>
+                        </a>
+                        
+                        <a href="index.php?page=info&action=dc">
+                            <div class="info-element">
+                                <img class="info-image" src="images/info/dc.png" />
+                                DC++
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                        
+                <div style="clear: both;"></div>
+                
+                <div id="subtitle">
+                    <img src="images/arrow.png" /><?php echo $DataBag["subtitle"]; ?>
+                </div>
+                
+                <div class="notifications" id="notifications-left">
+                    <div class="notification">
+                        <a href="http://lsucs.org.uk/threads/kustom-pc-lan35.6977/"><img src="images/notifications/kustompc.png" /></a>
+                    </div>
+                    <div class="notification">
+                        <a href="index.php?page=info&action=food"><img src="images/notifications/breakfast.png" /></a>
+                    </div>
+                </div>
+                <div class="notifications" id="notifications-right">
+                    <div class="notification">
+                        <a href="index.php?page=info&action=food"><img src="images/notifications/hotdog.png" /></a>
+                    </div>
+                    <div class="notification">
+                        <a href="index.php?page=info&action=food"><img src="images/notifications/pizza.png" /></a>
+                    </div>
+                    <div class="notification">
+                        <a href="index.php?page=tickets"><img src="images/notifications/deposit.png" /></a>
+                    </div>
+                </div>
+				
+            </div>
+			
+			<div id="overlay" class="content-overlay">
+                <div id="overlay-content">
+                </div>
+                <div id="close-overlay">
+                </div>
+            </div>
+            <div id="screen">
+            </div>
+            
+            <div id="content">

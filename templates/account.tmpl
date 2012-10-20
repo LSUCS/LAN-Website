@@ -1,0 +1,157 @@
+<div id="account-details">
+
+    <div class="detail">
+        <label for="real-name" class="detail-label">Real Name:</label>
+        <input id="real-name" type="text" />
+        <span class="sub-detail">
+            Real name (both first and surname)
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="emergency-contact-name" class="detail-label">Emergency Contact Name:</label>
+        <input id="emergency-contact-name" type="text" />
+        <span class="sub-detail">
+            Name of emergency contact who is NOT at the LAN. Ensure this is filled in correctly.
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="emergency-contact-number" class="detail-label">Emergency Contact Number:</label>
+        <input id="emergency-contact-number" type="text" />
+        <span class="sub-detail">
+            Telephone number of above person
+        </span>
+    </div>
+    
+    <button id="save-account-details" class="save-details">Save Details</button>
+    
+</div>
+<hr />
+
+
+<div id="game-details">
+    <h1>game details</h1>
+    
+    <div class="detail">
+        <label for="steam-name" class="detail-label">Steam Community Name:</label>
+        <input id="steam-name" type="text" />
+        <span class="sub-detail">
+            This is NOT your login name - it is the one on the end of your Steam Community Profile link. Leave blank if you don't have Steam.
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="currently-playing" class="detail-label">Currently Playing:</label>
+        <input id="currently-playing" type="text" />
+        <span class="sub-detail">
+            If you are not in a Steam game, this value will be used to display what game you are currently playing.
+        </span>
+    </div>    
+    
+    <div class="detail">
+        <label class="detail-label">Favourite Games:</label>
+        <div id="favourite-games">No Games Added</div>
+        <input id="add-game" type="text" />
+        <button id="add-game-button">Add Game</button>
+    </div>
+    
+    <button id="save-game-details" class="save-details">Save Details</button>
+
+</div>
+<hr />
+
+
+<div id="lan-van">
+    <h1>lan van</h1>
+    <p>For more information on the LAN van please look at <a href="http://dev.lan.lsucs.org.uk/index.php?page=info&action=lanvan">this page</a>.</p>
+    <? if (!$DataBag["member"]) { ?>
+        <p>Since you are not a member, there is a <b>£5 charge</b> for use of the LAN Van for both ways or £2.50 for one direction. This amount is due on collection.</p>
+    <? } ?>
+    
+    <div class="detail">
+        <label for="phone_number" class="detail-label">Phone Number:</label>
+        <input id="phone_number" type="text" />
+        <span class="sub-detail">
+            A number we can contact you on during and before your pickup time
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="address" class="detail-label">Address</label>
+        <input id="address" type="text" />
+        <span class="sub-detail">
+            First line of your address. If you are in halls, please make it obvious and specific which block you are in. <b>We will only collect from Loughborough</b>
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="postcode" class="detail-label">Postcode:</label>
+        <input id="postcode" type="text" />
+        <span class="sub-detail">
+            Your postcode (if in halls just provide the most appropriate one)
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label class="detail-label">Collection Required:</label>
+        <p class="exclude">
+            <input id="collection" type="checkbox" />
+            <label for="collection" />
+        </p>
+        <span class="sub-detail">
+            Check this if you need your equipment picked up and taken to the LAN
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label class="detail-label">Drop-off Required:</label>
+        <p class="exclude">
+            <input id="dropoff" type="checkbox" />
+            <label for="dropoff" />
+        </p>
+        <span class="sub-detail">
+            Check this if you need your equipment dropped back after the LAN
+        </span>
+    </div>
+    
+    <div class="detail">
+        <label for="availability" class="detail-label">Availability:</label>
+        <textarea id="availability"></textarea>
+        <span class="sub-detail" id="availability-subdetail">
+            Please state when you are available during the Friday  for us to collect your equipment - be as flexible as possible. Collections start from around lunchtime and run through until 7pm.
+        </span>
+    </div>
+    
+    <div id="van-buttons">
+        <button id="cancel-van">Cancel Request</button><button id="request-van">Request LAN Van</button><button id="edit-van">Edit Request</button><span id="disabled-van">LAN Van Sign-Ups Disabled</span>
+    </div>
+
+</div>
+<hr />
+
+
+<div id="tickets">
+
+    <h1>your tickets</h1>
+    
+    <div id="ticket-table">
+        <div id="table-head">
+            <span class="ticket-id">Ticket ID</span>
+            <span class="lan">LAN</span>
+            <span class="ticket-type">Ticket Type</span>
+            <span class="purchaser">Purchased By</span>
+            <span class="assigned">Assigned To</span>
+            <span class="activated">Activated</span>
+        </div>
+        <div id="table-body">
+        </div>
+    </div>
+    
+    <div id="claim-ticket">
+        <label for="claim-code">Claim code: </label>
+        <input id="claim-code" maxlength="12" type="text" />
+        <button id="claim-ticket-button">Claim Ticket</button>
+    </div>
+    
+</div>

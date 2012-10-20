@@ -1,0 +1,319 @@
+#map {
+    height: 1200px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    #map .door-bottom {
+        background-image: url('../../images/map/door-bottom.png');
+        height: 26px;
+        width: 50px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-left {
+        background-image: url('../../images/map/door-left.png');
+        height: 50px;
+        width: 26px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-top {
+        background-image: url('../../images/map/door-top.png');
+        height: 26px;
+        width: 50px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-right {
+        background-image: url('../../images/map/door-right.png');
+        height: 50px;
+        width: 26px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .label {
+        font-size: 12px;
+        position: absolute;
+    }
+    #map .seat {
+        height: 20px;
+        width: 20px;
+        background-color: #ccc;
+        border: 1px solid #333;
+        border-radius: 3px;
+    }
+        #map .seat.welcome-seat {
+            background-color: #b976fe;
+            border: 1px solid #8231d4;
+        }
+        #map .seat.committee-seat {
+            background-color: #ffca92;
+            border: 1px solid #ff8400;
+            height: 25px;
+        }
+    #map .column {
+        height: 25px;
+        width: 26px;
+        border-radius: 2px;
+        background-color: #666;
+        position: absolute;
+        bottom: -25px;
+        left: 11px;
+    }
+    #map .seat-block {
+        position: absolute;
+    }
+    #map .seat-row {
+        float: left;
+    }
+        #map .seat-row .seat {
+            margin: 1px;
+        }
+    #map .projector-vertical {
+        position: absolute;
+        background-image: url('../../images/map/projector-vertical.png');
+        width: 7px;
+        height: 54px;
+    }
+    #map .projector-horizontal {
+        position: absolute;
+        background-image: url('../../images/map/projector-horizontal.png');
+        width: 54px;
+        height: 7px;
+    }
+        
+#d-block {
+    position: relative;
+    height: 420px;
+}
+    #d-block-corridor {
+        position: absolute;
+        height: 150px;
+        width: 
+    }
+    #toilet-corridor {
+        height: 80px;
+        border: 5px solid #666;
+        border-top: 0;
+        border-bottom: 0;
+        width: 350px;
+        left: 200px;
+        bottom: 0px;
+        position: absolute;
+    }
+        #gents-toilet-door {
+            left: 200px;
+            top: 6px;
+        }
+    #toilets {
+        width: 225px;
+        height: 100px;
+        bottom: 75px;
+        left: 330px;
+        border-bottom: 5px solid #666;
+        position: absolute;
+    }
+        #gents-toilet {
+            background-image: url('../../images/map/gents.png');
+            position: absolute;
+            bottom: 5px;
+            left: 93px;
+            height: 40px;
+            width: 17px;
+        }
+    #stairs {
+        height: 325px;
+        width: 125px;
+        bottom: 80px;
+        left: 200px;
+        position: absolute;
+        border: 5px solid #666;
+        border-bottom: 0;
+    }
+        #ladies-toilet {
+            background-image: url('../../images/map/ladies.png');
+            position: absolute;
+            left: -30px;
+            bottom: 40px;
+            height: 40px;
+            width: 20px;
+        }
+        #ladies-toilet-door {
+            bottom: 33px;
+        }
+    #d-block-room {
+        width: 195px;
+        border: 5px solid #666;
+        border-right: 0;
+        position: absolute;
+        height: 200px;
+        bottom: 200px;
+    }
+        #d-block-room-door {
+            right: -35px;
+            bottom: 5px;
+        }
+        #dmu-label {
+            top: 90px;
+            left: 85px;
+        }
+        #d-block-projector {
+            bottom: 2px;
+            left: 70px;
+        }
+        #d-block-block1 {
+            left: 50px;
+            top: 30px;
+        }
+        #d-block-block2 {
+            right: 51px;
+            top: 30px;
+        }
+        #d-block-block3 {
+            left: 73px;
+            top: 30px;
+        }
+        #d-block-block4 {
+            left: 73px;
+            bottom: 31px;
+        }
+        #d-block-block3 .seat, #d-block-block4 .seat {
+            float: left;
+        }
+    
+#main-hall {
+    position: relative;
+}
+
+    #sleeping-area {
+        border: 5px solid #666;
+        border-right: 0;
+        border-top: 0;
+        position: absolute;
+        right: 0px;
+        height: 410px;
+        width: 200px;
+    }
+        #sleeping-area #sleeping-door {
+            left: -35px;
+        }
+        #sleeping-area #sleeping-label {
+            top: 180px;
+            left: 45px;
+        }
+
+    #welcome-desk {
+        position: absolute;
+        bottom: -125px;
+        left: -5px;
+        border: 5px solid #666;
+        border-top: 0;
+        height: 120px;
+        width: 240px;
+    }
+        #welcome-label {
+            left: 80px;
+        }
+        #welcome-desk .door-bottom {
+            bottom: 0px;
+            left: 5px;
+        }
+        #welcome-desk #entrance-label {
+            bottom: 10px;
+            left: 70px;
+        }
+        #barrier-left, #barrier-right {
+            height: 22px;
+            background-color: #666;
+            position: absolute;
+            top: 20px;
+            width: 80px;
+            border-radius: 0 3px 3px 0;
+        }
+            #barrier-right {
+                right: 0px;
+                border-radius: 3px 0 0 3px;
+            }
+            #barrier-right .seat {
+                position: absolute;
+                left: -24px;
+            }
+            #barrier-left .seat {
+                position: absolute;
+                right: -24px;
+            }
+            
+    #lecture-room {
+        position: absolute;
+        bottom: -125px;
+        width: 560px;
+        right: -5px;
+        height: 120px;
+        border-top: 5px solid #666;
+    }
+    
+    #main-hall-main {
+        border: 5px solid #666;
+        border-bottom: 0;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 800px;
+        height: 550px;
+    }
+        #main-hall-main #block1 {
+            top: 140px;
+            left: 120px;
+        }
+        #main-hall-main #block2 {
+            left: 220px;
+            top: 50px;
+        }
+        #main-hall-main #block3 {
+            left: 220px;
+            top: 168px;
+        }
+        #main-hall-main #block4 {
+            left: 220px;
+            top: 332px;
+        }
+        #main-hall-main #block5 {
+            left: 350px;
+            top: 102px;
+        }
+        #main-hall-main #block6 {
+            left: 470px;
+            top: 102px;
+        }
+        #toilet-door1 {
+            left: 260px;
+        }
+        #toilet-door2 {
+            left: 320px;
+        }
+        #loading-door {
+            top: 480px;
+        }
+        #projector-corner {
+            background-image: url("../../images/map/projector.png");
+            height: 138px;
+            width: 140px;
+            position: absolute;
+        }
+        #projector-label {
+            left: 80px;
+            top: 10px;
+        }
+        #storage-label {
+            left: 610px;
+            top: 475px;
+        }
+        #left-projector {
+            left: 2px;
+            top: 250px;
+        }
+        #bottom-projector {
+            bottom: 2px;
+            left: 400px;
+        }

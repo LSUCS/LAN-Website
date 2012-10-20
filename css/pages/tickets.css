@@ -1,0 +1,67 @@
+.outer-price-container {
+    float: left;
+    position: relative;
+    left: 50%;
+}
+.price-container {
+    float: left;
+    left: -50%;
+    position:relative;
+    padding-left: 20px;
+    margin-bottom: 20px;
+}
+    .price-container .price, .price-container .unavailable, .price-container .soldout {
+        float: left;
+    }
+    .price {
+        height: 38px;
+        line-height: 38px;
+        font-weight: bold;
+        margin-right: 20px;
+    }
+        .price span {
+            color: #f1642b;
+        }
+    .checkout-button {
+        font-size: 15px;
+        width: 100px;
+    }
+    .unavailable {
+        line-height: 19px;
+        height: 38px;
+        font-size: 13px;
+        color: red;
+        text-align: center;
+    }
+    .soldout {
+        line-height: 35px;
+        height: 38px;
+        font-size: 20px;
+        color: red;
+        text-align: center;
+    }
+    #nonmember-amount, #member-amount {
+        width: 45px;
+        margin-right: 20px;
+    }
+    
+.checkout-button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 150px;
+    top: 20px;
+    margin-bottom: 60px;
+}
+#checkout-container hr {
+    background-color: #e7e7e7;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+#continue-checkout, #cancel-checkout {
+    font-size: 14px;
+    margin-top: 20px;
+}
+#continue-checkout {
+    margin-right: 20px;
+}

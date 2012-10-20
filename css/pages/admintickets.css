@@ -1,0 +1,24 @@
+.ticket-table tbody td {
+    text-align: center;
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+}
+#claimed-tickets .row-hover, #unclaimed-tickets .row-hover {
+    background-color: #FFF3ED;
+    cursor: pointer;
+}
+#claimed-tickets .row-selected, #unclaimed-tickets .row-selected {
+    background-color: #ffe8df;
+    cursor: pointer;
+}
+
+.button-row {
+    padding-top: 10px;
+    height: 36px;
+    text-align: center;
+}
+    .button-row button {
+        font-size: 14px;
+        display: none;
+    }

@@ -1,0 +1,48 @@
+
+<div id="entry-table">
+    <div id="table-head">
+        <span class="day">Day</span>
+        <span class="start-time">Start Time</span>
+        <span class="end-time">End Time</span>
+        <span class="title">Title</span>
+        <span class="url">URL</span>
+        <span class="colour">Colour</span>
+    </div>
+    <div id="table-body">
+    </div>
+</div>
+    
+<div id="buttons">
+    <button id="delete-entry">Delete Entry</button>
+</div>
+
+<div id="entry-form">
+    <select id="entry-day">
+        <option>friday</option>
+        <option>saturday</option>
+        <option>sunday</option>
+    </select>
+    <select id="entry-start-time">
+        <?php
+            for ($i = 0; $i <= 2400; $i += 50) {
+                echo '<option>' . str_replace('00000', '00:00', str_pad(preg_replace('/^(.*?)(\d\d)$/', '$1:$2', str_replace(5, 3, $i)), 5, '0', STR_PAD_LEFT)) . '</option>';
+            }
+        ?>
+    </select>
+    <select id="entry-end-time">
+        <?php
+            for ($i = 0; $i <= 2400; $i += 50) {
+                echo '<option>' . str_replace('00000', '00:00', str_pad(preg_replace('/^(.*?)(\d\d)$/', '$1:$2', str_replace(5, 3, $i)), 5, '0', STR_PAD_LEFT)) . '</option>';
+            }
+        ?>
+    </select>
+    <input type="text" id="entry-title" />
+    <input type="text" id="entry-url" />
+    <select id="entry-colour">
+        <option>orange</option>
+        <option>green</option>
+        <option>blue</option>
+        <option>purple</option>
+    </select>
+    <button id="add-button">Add</button>
+</div>

@@ -1,0 +1,12 @@
+#complete, #loading, #failed {
+    width: 600px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+#complete, #failed {
+    display: none;
+}
+#loading {
+    line-height: 30px;
+}

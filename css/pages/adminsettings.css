@@ -1,0 +1,33 @@
+#settings-container {
+    margin-left: 40px;
+}
+
+.setting {
+    height: 30px;
+    margin-bottom: 20px;
+}
+    .setting-label {
+        display: block;
+        float: left;
+        width: 350px;
+        line-height: 30px;
+    }
+    .setting-int {
+        width: 50px;
+    }
+    .setting-text {
+        width: 200px;
+    }
+    .setting p label {
+        position: relative;
+        top: 9px;
+        margin-left: 2px;
+    }
+    
+#save-settings {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-top: 40px;
+}

@@ -1,0 +1,33 @@
+.info-row {
+    height: 250px;
+}
+    .info-row .info-element {
+        float: left;
+        padding: 20px;
+        margin: 15px;
+        cursor: pointer;
+        border-radius: 10px;
+        margin-left: 10px;
+    }
+        .info-row .info-element:hover {
+            background-color: #eee;
+        }
+        .info-row .info-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 9px;
+        }
+        .info-row .info-label {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+/* PARKING */
+#map {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+    width: 640px;
+    border: 1px solid #999;
+    box-shadow: 0 0 10px #999;
+}
