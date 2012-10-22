@@ -277,7 +277,8 @@ function loadTickets() {
                     } else {
                         row += '<span class="assigned"><a class="assign-link">Assign Ticket</a></span>';
                     }
-                    row += '<span class="activated">' + ticket["activated"].replace("1", "Yes").replace("0", "No") + '</span></div>';
+                    row += '<span class="activated">' + ticket["activated"].replace("1", "Yes").replace("0", "No") + '</span>';
+                    row += '<span class="seat">' + ticket["seat"] + '</span></div>';
                     $("#table-body").append(row);
                 }
             } else {

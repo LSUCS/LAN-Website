@@ -1,6 +1,7 @@
-claimedTable = null;
-unclaimedTable = null;
-assignID = null;
+var claimedTable = null;
+var unclaimedTable = null;
+var assignID = null;
+var claimID = null;
 
 $(document).ready(function() {
 
@@ -18,7 +19,8 @@ $(document).ready(function() {
             { "sTitle": "Ticket Type", "sWidth": "120px" },
             { "sTitle": "Purchased" },
             { "sTitle": "Assigned", "sClass": "assigned" },
-            { "sTitle": "Activated", "sClass": "activated" }
+            { "sTitle": "Activated", "sClass": "activated" },
+            { "sTitle": "Seat" }
         ] } );
         
     unclaimedTable = $("#unclaimed-tickets").dataTable( {
@@ -53,20 +55,13 @@ $(document).ready(function() {
         $(this).find('td').removeClass('row-hover').addClass('row-selected');
         
         //Buttons
-        if ($(this).find('.activated').html() == "Yes") {
-            $("#activate").hide();
-            $("#deactivate").show();
-        } else {
-            $("#activate").show();
-            $("#deactivate").hide();
-        }
-        if ($(this).find('.assigned').html() == "") {
-            $("#assign").show();
-            $("#reassign").hide();
-        } else {
-            $("#assign").hide();
-            $("#reassign").show();
-        }
+        $("#claimed-buttons button").hide();
+        $("#seat").show();
+        if ($(this).find('.activated').html() == "Yes") $("#deactivate").show();
+        else $("#activate").show();
+        if ($(this).find('.assigned').html() == "") $("#assign").show();
+        else $("#reassign").show();
+        
     });
     //Filter bind
     $("#claimed-tickets").bind('filter', function() {
@@ -82,6 +77,9 @@ $(document).ready(function() {
     });
     $("#deactivate").live('click', function() {
         deactivate();
+    });
+    $("#seat").live('click', function() {
+        seat();
     });
     
     //UNCLAIMED TABLE//
@@ -102,6 +100,29 @@ $(document).ready(function() {
     });
     
 });
+
+function seat() {
+
+    assignID = $("#claimed-tickets .row-selected").parent().find('.idcell').html();
+    $("#overlay-content").html('<label for="seat-input">Seat: </label><input id="seat-input" /><button id="seat-button">Set Seat</button>');
+    $("#seat-button").button();
+    Overlay.openOverlay(true, "");
+    
+    $("#seat-button").click(function() {
+        $.post("index.php?route=admin&page=admintickets&action=seat",
+            { seat: $("#seat-input").val(), ticket_id: assignID },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Seat set", 1500);
+                loadTables();
+            },
+            'json');
+    });
+
+}
 
 function activate() {
     Overlay.loadingOverlay();
@@ -139,11 +160,34 @@ function deactivate() {
 
 function claim() {
 
+    claimID = $("#unclaimed-tickets .row-selected").parent().find('.idcell').html();
+    $("#overlay-content").html('<label for="claim-name">Forum Name: </label><input id="claim-name" /><button id="claim-ticket">Claim</button>');
+    $("#claim-ticket").button();
+    $("#claim-name").autocomplete({
+        source: "index.php?page=account&action=autocomplete",
+        minLength: 2
+    });
+    Overlay.openOverlay(true, "");
+    
+    $("#claim-ticket").click(function() {
+        $.post("index.php?route=admin&page=admintickets&action=claim",
+            { name: $("#claim-name").val(), ticket_id: claimID },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Ticket claimed", 1500);
+                loadTables();
+            },
+            'json');
+    });
+
 }
 
 function assign() {
 
-    assignID = $(this).parent().siblings().first().html();
+    assignID = $("#claimed-tickets .row-selected").parent().find('.idcell').html();
     $("#overlay-content").html('<label for="assign-name">Forum Name: </label><input id="assign-name" /><button id="assign-ticket">Assign</button>');
     $("#assign-ticket").button();
     $("#assign-name").autocomplete({
@@ -154,16 +198,16 @@ function assign() {
     
     $("#assign-ticket").click(function() {
         $.post("index.php?route=admin&page=admintickets&action=assign",
-        { name: $("#assign-name").val(), ticket_id: assignID },
-        function (data) {
-            if (data != null && data.error) {
-                Overlay.openOverlay(true, data.error);
-                return;
-            }
-            Overlay.openOverlay(false, "Ticket assigned", 1500);
-            loadTables();
-        },
-        'json');
+            { name: $("#assign-name").val(), ticket_id: assignID },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Ticket assigned", 1500);
+                loadTables();
+            },
+            'json');
     });
     
 }

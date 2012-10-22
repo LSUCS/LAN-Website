@@ -224,6 +224,10 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
     z-index: -1;
 }
 
+body {
+    min-width: 1350px;
+}
+
 #wrapper {
     width: 960px;
     background-color: white;
@@ -501,14 +505,16 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
 
 #footer {
     height: 50px;
-    width: 830px;
+    width: 960px;
     margin-left: auto;
     margin-right: auto;
-    border-top: 1px solid #ccc;
+    background-color: white;
     text-align: center;
     font-size: 12px;
     line-height: 50px;
     clear: both;
+    border-left: solid 1px #333;
+    border-right: solid 1px #333;
 }
 
 
@@ -516,17 +522,17 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
 /* NOTIFICATIONS/ADVERTS */
 .notifications {
     position: absolute;
-    width: 180px;
-    top: 20px;
+    width: 184px;
+    top: 10px;
 }
     #notifications-left {
-        left: -200px;
+        left: -196px;
     }
     #notifications-right {
-        right: -200px;
+        right: -196px;
     }
     .notification {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         width: 180px;
         border-radius: 10px;
         border: 2px solid #333;

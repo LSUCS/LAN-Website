@@ -113,7 +113,7 @@
     }
 
 #ticket-table {
-    width: 600px;
+    width: 700px;
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0px 0px 10px #999;
@@ -152,7 +152,10 @@
     #ticket-table .activated {
         width: 80px;
     }
-    #ticket-table #table-head .activated {
+    #ticket-table .seat {
+        width: 100px;
+    }
+    #ticket-table #table-head .seat {
         border-right: 0;
     }
     

@@ -4,6 +4,7 @@
     
         public function getInputs() {
             return array(
+                        "actionLanauth" => array("username" => "post", "password" => "post", "seat" => "post"),
                         "actionDeletetickets" => array("purchases" => "post"),
                         "actionIssuetickets" => array("purchases" => "post", "lan" => "post", "member_tickets" => "post", "non_member_tickets" => "post", "forum_name" => "post", "email" => "post", "name" => "post"));
         }
@@ -11,6 +12,36 @@
         public function actionIndex() {
             $this->authenticate();
             echo $this->errorJSON("Invalid API Method");
+        }
+        
+        public function actionLanauth() {
+        
+            $this->authenticate();
+            $this->inputs["seat"] = strtoupper($this->inputs["seat"]);
+            $lan = $this->parent->settings->getSetting("lan_number");
+            
+            //Check login details
+            if (!$this->parent->auth->validateCredentials($this->inputs["username"], $this->inputs["password"])) $this->errorJSON("Invalid login credentials");
+            
+            $userdata = $this->parent->auth->getUserByName($this->inputs["username"]);
+            
+            //Check activated ticket
+            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND activated = 1 AND lan_number = '%s'", $userdata["xenforo"]["user_id"], $lan)->fetch_assoc();
+            if (!$ticket) $this->errorJSON("Your ticket has not been activated. Please visit the registration desk before attending the LAN");
+            
+            //Check seat
+            $seats = explode("\n", file_get_contents("seats.txt"));
+            if ($this->inputs["seat"] == "" || !in_array($this->inputs["seat"], $seats)) $this->errorJSON("Invalid seat");
+            $occupied = $this->parent->db->query("SELECT * FROM `tickets` WHERE seat = '%s' AND lan_number = '%s'", $this->inputs["seat"], $lan)->fetch_assoc();
+            if ($occupied && $occupied["assigned_forum_id"] != $userdata["xenforo"]["user_id"]) $this->errorJSON("That seat is already occupied");
+            
+            
+            //Update ticket with seat
+            $this->parent->db->query("UPDATE `tickets` SET seat = '%s' WHERE ticket_id = '%s'", $this->inputs["seat"], $ticket["ticket_id"]);
+            
+            //Everything went ok
+            echo true;
+            
         }
         
         public function actionDeletetickets() {

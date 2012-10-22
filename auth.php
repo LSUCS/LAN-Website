@@ -104,6 +104,7 @@
          */
         public function getUserByName($username) {
             $user = $this->userModel->getUserByName($username);
+            if (!$user) return false;
             return array("xenforo" => $user,
                          "lan" => $this->getUserLanData($user["user_id"]));
         }
@@ -113,6 +114,7 @@
          */
         public function getUsersByName($match) {
             $users = $this->userModel->getUsers(array("username" => $match));
+            if (!$users) return false;
             $results = array();
             foreach ($users as $user) {
                 $results[] = array("xenforo" => $user,
@@ -125,8 +127,19 @@
          * Gets the data for inputted user
          */
         public function getUserById($id) {
-            return array("xenforo" => $this->userModel->getUserById($id),
+            $user = $this->userModel->getUserById($id);
+            if (!$user) return false;
+            return array("xenforo" => $user,
                          "lan" => $this->getUserLanData($id));
+        }
+        
+        /**
+         *  Validates inputted user and password
+         */
+        public function validateCredentials($username, $password) {
+            $userId = $this->userModel->validateAuthentication($username, $password, $error);
+            if (!$userId) return false;
+            return true;
         }
         
         /**

@@ -35,7 +35,8 @@
                                 "max_order_lookup_attempts" => array("int", 60),
                                 "steam_api_key" => array("pass", ""),
                                 "lan_ip_addresses" => array("text", "0.0.0.0,0.0.0.0"),
-                                "disable_lan_van" => array("bool", false)
+                                "disable_lan_van" => array("bool", false),
+                                "map_cron_lock" => array("bool", false)
                                 );
     
         public function __construct($parent) {

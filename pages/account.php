@@ -193,6 +193,7 @@
             
             //Loop
             $return = array();
+            if (!$users) die(json_encode($return));
             foreach ($users as $user) {
                 if ($user["xenforo"]["user_id"] != $userdata["xenforo"]["user_id"]) {
                     $return[] = $user["xenforo"]["username"];
