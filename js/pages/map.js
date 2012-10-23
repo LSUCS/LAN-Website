@@ -1,3 +1,4 @@
+var loaded = false;
 $(document).ready(function() {
 
     //Load
@@ -15,11 +16,14 @@ $(document).ready(function() {
     $(".seat").live('click', function() {
         if ($(this).attr('value').length > 0) window.location = "index.php?page=profile&member=" + $(this).attr('value');
     });
+    
+    //Reload map timer
+    setInterval(function(){ loadMap(); }, 30000);
 
 });
 
 function loadMap() {
-
+    $("#map").slideUp(500);
     $.get(
         "index.php?page=map&action=load",
         function (data) {
@@ -36,6 +40,7 @@ function loadMap() {
             
             //Remove game images
             $(".game-image").remove();
+            $(".preview-icon").remove();
             
             //Loop
             for (var i = 0; i < data.length; i++) {
@@ -73,6 +78,15 @@ function loadMap() {
                 seat.append(hover);
                 
             }
+            
+            //Seat to show?
+            if (location.hash != "#" && !loaded) {
+                $(location.hash).find(".seat-hover").show();
+                loaded = true;
+            }
+            
+            //Slidedown
+            $("#map").slideDown(500);
         },
         'json');
         

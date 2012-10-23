@@ -48,7 +48,7 @@
                     $r = $this->JobPollAsync($job);
                     if ($r !== false) {
                         $done = false;
-                        if (strlen($r) > 1) {
+                        if (strpos($r, '{"seat"')) {
                             $cache[] = json_decode(substr($r, strpos($r, '{"seat"')), true);
                         }
                     }
@@ -90,13 +90,13 @@
             //Steam
             $steam = false;
             if ($userdata["lan"]["steam_name"] != "") {
-                $page = file_get_contents("http://steamcommunity.com/id/" . $userdata["lan"]["steam_name"] . "/?xml=1");
+                $page = file_get_contents("http://steamcommunity.com/id/" . urlencode($userdata["lan"]["steam_name"]) . "/?xml=1");
                 $steam = new SimpleXMLElement($page, LIBXML_NOCDATA);                
             }
             
             //Avatar
             if ($steam) $seat["avatar"] = (string)$steam->avatarFull;
-            else $seat["avatar"] = "images/avatar_blank.png";
+            else $seat["avatar"] = $this->parent->auth->getAvatarById($userdata["xenforo"]["user_id"]);
             
             //Game
             if ($steam && $steam->privacyState == "public" && $steam->onlineState == "in-game") {

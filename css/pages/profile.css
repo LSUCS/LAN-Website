@@ -1,0 +1,93 @@
+#profile {
+    display: none;
+    width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    #profile-head {
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+    }
+        #avatar {
+            height: 150px;
+            width: 150px;
+            background-size: 100%;
+            float: left;
+            border: 3px solid #0CF;
+            border-radius: 5px;
+        }
+            #profile.ingame #avatar {
+                border: 5px solid #6ACC0A;
+            }
+        #main-info {
+            float: left;
+            margin-left: 50px;
+        }
+            .info-row {
+                height: 26px;
+            }
+            #main-info b {
+                color: #0CF;
+                display: block;
+                float: left;
+                width: 100px;
+            }
+                #profile.ingame .info-row b {
+                    color: #6ACC0A;
+                }
+            #game img {
+                height: 20px;
+                width: 20px;
+                display: block;
+                float: left;
+                margin-right: 10px;
+                border-radius: 3px;
+            }
+        #favourite-games-container {
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-top: 30px;
+        }
+            #favourite-games li {
+                margin-left: 30px;
+                height: 30px;
+            }
+        #recently-played-games-container {
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-top: 30px;
+        }
+            #recently-played-games ul {
+                list-style-type: none;
+            }
+            #recently-played-games li {
+                height: 32px;
+                line-height: 32px;
+                margin-bottom: 20px;
+                margin-left: 15px;
+            }
+                #recently-played-games li img {
+                    display: block;
+                    float: left;
+                    margin-right: 30px;
+                    border-radius: 3px;
+                }
+
+#loading {
+    display: none;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    height: 42px;
+    width: 42px;
+}
+
+#invalid-profile {
+    display: none;
+    text-align: center;
+    margin-top: 100px;
+}

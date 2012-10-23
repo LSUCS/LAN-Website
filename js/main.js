@@ -42,7 +42,7 @@ $(document).ready(function() {
     var vars = q.split("&");
     for (var i = 0; i < vars.length; i++ ) {
         var element = vars[i].split("=");
-        PageVars[element[0]] = element[1];
+        PageVars[element[0].toLowerCase()] = element[1];
     }
     
 	//User dropdown

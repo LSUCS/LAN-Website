@@ -89,11 +89,13 @@
             
             //If steam name is supplied, validate it
             if ($this->inputs["steam"] != "") {
-                //Grab data from steamidconverter for inputted ID
-                $data = file_get_contents("http://steamidconverter.com/" . urlencode($this->inputs["steam"]));
+            
+                //Get data from steam community
+                $page = file_get_contents("http://steamcommunity.com/id/" . $this->inputs["steam"]. "/?xml=1");
+                $steam = new SimpleXMLElement($page, LIBXML_NOCDATA);
                 
                 //Invalid?
-                if (!preg_match('/<h2 id="customURL".*?>(.*?)<\/h2>/ims', $data, $matches)) {
+                if ($steam->error) {
                     $this->errorJSON("Invalid Steam Community Name");
                 }
             }

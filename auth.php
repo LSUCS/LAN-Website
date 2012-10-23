@@ -134,6 +134,26 @@
         }
         
         /**
+         * Gets the avatar for the inputted user
+         */
+        public function getAvatarById($id) {
+            $userdata = $this->getUserById($id);
+            
+            //Gravatar
+            if ($userdata["xenforo"]["gravatar"] != "") {
+                return XenForo_Template_Helper_Core::getAvatarUrl($userdata["xenforo"], "l");
+            }
+            
+            //Other
+            if ($userdata["xenforo"]["avatar_date"] != "") {
+                return "http://lsucs.org.uk/" . XenForo_Template_Helper_Core::getAvatarUrl($userdata["xenforo"], "l", "content");
+            }
+            
+            //Default
+            return "http://lsucs.org.uk/" . XenForo_Template_Helper_Core::getAvatarUrl($userdata["xenforo"], "l", "default");
+        }
+        
+        /**
          *  Validates inputted user and password
          */
         public function validateCredentials($username, $password) {
