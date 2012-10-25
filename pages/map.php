@@ -14,8 +14,9 @@
         public function actionLoad() {
             
             $res = $this->parent->db->query("SELECT * FROM `map_cache`");
-            $return = array();
-            while($row = $res->fetch_assoc()) $return[] = $row;
+            $return["data"] = array();
+            while($row = $res->fetch_assoc()) $return["data"][] = $row;
+            $return["interval"] = $this->parent->settings->getSetting("map_browser_update_interval");
             
             echo json_encode($return);
         
@@ -30,7 +31,7 @@
             $this->parent->settings->changeSetting("map_cron_lock", true);
                     
             //Get tickets with seats
-            $res = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND seat != '' AND activated = 1", $this->parent->settings->getSetting("lan_number"));
+            $res = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND seat != ''", $this->parent->settings->getSetting("lan_number"));
             
             //Spawn asynchronous jobs
             $jobs = array();
@@ -76,7 +77,7 @@
         function actionProcessseat() {
         
             //Ticket
-            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND  ticket_id = '%s'", $this->parent->settings->getSetting("lan_number"), $this->inputs["ticket"])->fetch_assoc();
+            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND  ticket_id = '%s'", $this->parent->settings->getSetting("lan_number"), $this->inputs["ticket"])->fetch_assoc();
             if (!$ticket) return;
         
             //Basic details

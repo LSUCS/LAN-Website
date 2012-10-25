@@ -64,6 +64,13 @@ function loadProfile() {
                 $("#recently-played-games-container").hide();
             }
             
+            if (data.raffle) {
+                $("#raffle-tickets").html(data.raffle);
+                $("#raffle-tickets-container").show();
+            } else {
+                $("#raffle-tickets-container").hide();
+            }
+            
             //Show
             $("#profile").slideDown(500);
         },

@@ -1,7 +1,9 @@
 var claimedTable = null;
 var unclaimedTable = null;
+var raffleTable = null;
 var assignID = null;
 var claimID = null;
+var raffleID = null;
 
 $(document).ready(function() {
 
@@ -15,12 +17,13 @@ $(document).ready(function() {
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
         "aoColumns": [
-            { "sTitle": "ID", "sWidth": "50px", "sClass": "idcell" },
-            { "sTitle": "Ticket Type", "sWidth": "120px" },
-            { "sTitle": "Purchased" },
-            { "sTitle": "Assigned", "sClass": "assigned" },
-            { "sTitle": "Activated", "sClass": "activated" },
-            { "sTitle": "Seat" }
+            { "sTitle": "ID", "sWidth": "40px", "sClass": "idcell" },
+            { "sTitle": "Ticket Type", "sWidth": "100px" },
+            { "sTitle": "Purchased", "bSearchable": true },
+            { "sTitle": "Purchased Name", "bSearchable": true },
+            { "sTitle": "Assigned", "sClass": "assigned", "bSearchable": true },
+            { "sTitle": "Activated", "sClass": "activated", "sWidth": "80px" },
+            { "sTitle": "Seat", "sWidth": "40px" }
         ] } );
         
     unclaimedTable = $("#unclaimed-tickets").dataTable( {
@@ -36,6 +39,21 @@ $(document).ready(function() {
             { "sTitle": "Ticket Type", "sWidth": "120px" },
             { "sTitle": "Name" },
             { "sTitle": "Email" }
+        ] } );
+        
+    raffleTable = $("#raffle-tickets").dataTable( {
+        "bJQueryUI": true,
+        "sPaginationType": "full_numbers",
+        "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "bAutoWidth": false,
+        "iDisplayLength": 10,
+        "sDom": 'Rf<"H"lrT>t<"F"ip>',
+        "aaSorting": [[ 0, "desc" ]],
+        "aoColumns": [
+            { "sTitle": "Ticket Number", "sClass": "idcell", "sWidth": "120px" },
+            { "sTitle": "Name" },
+            { "sTitle": "Username" },
+            { "sTitle": "Reason" }
         ] } );
         
     loadTables();
@@ -58,9 +76,12 @@ $(document).ready(function() {
         $("#claimed-buttons button").hide();
         $("#seat").show();
         if ($(this).find('.activated').html() == "Yes") $("#deactivate").show();
-        else $("#activate").show();
+        else if ($(this).find('.assigned').html() != "") $("#activate").show();
         if ($(this).find('.assigned').html() == "") $("#assign").show();
-        else $("#reassign").show();
+        else {
+            $("#reassign").show();
+            $("#add-raffle").show();
+        }
         
     });
     //Filter bind
@@ -81,6 +102,9 @@ $(document).ready(function() {
     $("#seat").live('click', function() {
         seat();
     });
+    $("#add-raffle").live('click', function() {
+        addRaffle();
+    });
     
     //UNCLAIMED TABLE//
     //Row clicking
@@ -99,7 +123,70 @@ $(document).ready(function() {
         claim();
     });
     
+    //RAFFLE TABLE//
+    //Row clicking
+    $("#raffle-tickets tbody tr").live('click', function() {
+        $('#raffle-tickets .row-selected').removeClass('row-selected');
+        $(this).find('td').removeClass('row-hover').addClass('row-selected');
+        $("#delete-raffle").show();
+    });
+    //Filter bind
+    $("#raffle-tickets").bind('filter', function() {
+        $("#raffle-buttons button").hide();
+        $('#raffle-tickets .row-selected').removeClass('row-selected');
+    });
+    //Button binds
+    $("#delete-raffle").live('click', function() {
+        deleteRaffle();
+    });
+    
 });
+
+function deleteRaffle() {
+
+    raffleID = $("#raffle-tickets .row-selected").parent().find('.idcell').html();
+    $("#overlay-content").html('<button id="confirm-delete">Delete Raffle Ticket?</button>');
+    $("#confirm-delete").button();
+    Overlay.openOverlay(true, "");
+    
+    $("#confirm-delete").click(function() {
+        $.post("index.php?route=admin&page=admintickets&action=deleteraffle",
+            { ticket_number: raffleID },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Raffle ticket deleted", 1500);
+                loadTables();
+            },
+            'json');
+    });
+    
+}
+
+function addRaffle() {
+
+    assignID = $("#claimed-tickets .row-selected").parent().find('.idcell').html();
+    $("#overlay-content").html('<label for="raffle-input">Reason: </label><input id="raffle-input" /><button id="raffle-button">Add Raffle Ticket</button>');
+    $("#raffle-button").button();
+    Overlay.openOverlay(true, "");
+    
+    $("#raffle-button").click(function() {
+        $.post("index.php?route=admin&page=admintickets&action=addraffle",
+            { ticket_id: assignID, reason: $("#raffle-input").val() },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Raffle ticket issued", 1500);
+                loadTables();
+            },
+            'json');
+    });
+    
+}
 
 function seat() {
 
@@ -219,8 +306,10 @@ function loadTables() {
         
             claimedTable.fnClearTable();
             unclaimedTable.fnClearTable();
+            raffleTable.fnClearTable();
             claimedTable.fnAddData(data.claimed);
             unclaimedTable.fnAddData(data.unclaimed);
+            raffleTable.fnAddData(data.raffle);
 
         },
         'json');

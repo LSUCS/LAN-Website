@@ -1,0 +1,13 @@
+/* FOOD */
+#left {
+    float: left;
+    width: 400px;
+}
+
+#right {
+    float: right;
+    width: 400px;
+}
+#content hr {
+    width: 90%;
+}

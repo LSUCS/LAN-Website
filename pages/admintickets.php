@@ -4,6 +4,8 @@
     
         public function getInputs() {
             return array(
+                        "actionDeleteraffle" => array("ticket_number" => "post"),
+                        "actionAddraffle" => array("ticket_id" => "post", "reason" => "post"),
                         "actionSeat" => array("ticket_id" => "post", "seat" => "post"),
                         "actionAssign" => array("name" => "post", "ticket_id" => "post"),
                         "actionActivate" => array("id" => "post"),
@@ -15,6 +17,21 @@
         public function actionIndex() {
             $this->parent->template->setSubTitle("Ticket Management");
             $this->parent->template->outputTemplate('admintickets');
+        }
+        
+        public function actionDeleteraffle() {
+            if ($this->inputs["ticket_number"] == "") $this->errorJSON("Invalid ticket number");
+            $this->parent->raffle->deleteTicket($this->inputs["ticket_number"]);
+        }
+        
+        public function actionAddraffle() {
+            //Validate
+            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE ticket_id = '%s'", $this->inputs["ticket_id"])->fetch_assoc();
+            if (!$ticket) $this->errorJSON("Invalid ticket ID");
+            if ($this->inputs["reason"] == "") $this->errorJSON("You must supply a reason for issuing the raffle ticket");
+            if ($ticket["assigned_forum_id"] == "") $this->errorJSON("Cannot issue raffle ticket to unassigned lan ticket");
+            
+            $this->parent->raffle->issueTicket($ticket["assigned_forum_id"], $this->inputs["reason"]);
         }
         
         public function actionSeat() {
@@ -47,7 +64,7 @@
             while ($row = $res->fetch_assoc()) {
                 $purchased = $this->parent->auth->getUserById($row["purchased_forum_id"]);
                 $assigned = $this->parent->auth->getUserById($row["assigned_forum_id"]);
-                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":"Non-Member", $purchased["xenforo"]["username"], $assigned["xenforo"]["username"], $row["activated"] == 1?"Yes":"No", $row["seat"]);
+                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":"Non-Member", '<a href="index.php?page=profile&member=' . $purchased["xenforo"]["username"] . '">' . $purchased["xenforo"]["username"] . '</a>', $row["purchased_name"], ($assigned["xenforo"]["username"] == ""?"":'<a href="index.php?page=profile&member=' . $assigned["xenforo"]["username"] . '">' . $assigned["xenforo"]["username"] . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
             }
             
             //Get unclaimed
@@ -57,8 +74,16 @@
                 $unclaimed[] = array($row["unclaimed_id"], $row["member_ticket"] == 1?"Member":"Non-Member", $row["name"], $row["email"]);
             }
             
+            //Get raffle
+            $res = $this->parent->db->query("SELECT * FROM `raffle_tickets` WHERE lan_number = '%s'", $lan);
+            $raffle = array();
+            while ($row = $res->fetch_assoc()) {
+                $userdata = $this->parent->auth->getUserById($row["user_id"]);
+                $raffle[] = array($row["raffle_ticket_number"], $userdata["lan"]["real_name"], $userdata["xenforo"]["username"], $row["reason"]);
+            }
+            
             //Output
-            echo json_encode(array("claimed" => $claimed, "unclaimed" => $unclaimed));
+            echo json_encode(array("claimed" => $claimed, "unclaimed" => $unclaimed, "raffle" => $raffle));
             
         }
         
@@ -84,8 +109,13 @@
             //Validate
             $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE ticket_id = '%s'", $this->inputs["id"])->fetch_assoc();
             if (!$ticket) $this->errorJSON("Invalid ticket id");
+            if ($ticket["assigned_forum_id"] == "") $this->errorJSON("Tickets must be assigned before being activated");
+            
             //Activate
             $this->parent->db->query("UPDATE `tickets` SET activated = 1 WHERE ticket_id = '%s'", $this->inputs["id"]);
+            
+            //Raffle ticket hook - issue them one if they haven't got one yet
+            $this->parent->raffle->issueAttendanceTicket($ticket["assigned_forum_id"]);
         }
         
         public function actionDeactivate() {
@@ -112,7 +142,7 @@
             $member = false;
             if ($unclaimed_ticket["member_ticket"] == 1) {
                 $group = $this->parent->settings->getSetting("xenforo_member_group_id");
-                if ($userdata["xenforo"]["user_group_id"] != $group && !in_array($group, explode(",", $userdata["xenforo"]["secondary_group_ids"])) && $memberAmount > 0) {
+                if ($userdata["xenforo"]["user_group_id"] != $group && !in_array($group, explode(",", $userdata["xenforo"]["secondary_group_ids"]))) {
                     $this->errorJSON("Cannot assign member ticket to non-member account");
                 }
                 $member = true;

@@ -1,4 +1,5 @@
 var loaded = false;
+var lock = false;
 $(document).ready(function() {
 
     //Load
@@ -16,14 +17,16 @@ $(document).ready(function() {
     $(".seat").live('click', function() {
         if ($(this).attr('value').length > 0) window.location = "index.php?page=profile&member=" + $(this).attr('value');
     });
-    
-    //Reload map timer
-    setInterval(function(){ loadMap(); }, 30000);
 
 });
 
 function loadMap() {
-    $("#map").slideUp(500);
+
+    //Lock
+    if (lock) return;
+    lock = true;
+    
+    //Get
     $.get(
         "index.php?page=map&action=load",
         function (data) {
@@ -43,11 +46,11 @@ function loadMap() {
             $(".preview-icon").remove();
             
             //Loop
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < data["data"].length; i++) {
             
                 //Set classes
-                var info = data[i];
-                var seat = $("#" + data[i].seat);
+                var info = data["data"][i];
+                var seat = $("#" + info.seat);
                 seat.addClass("occupied-seat");
                 if (info.ingame == 1) {
                     seat.addClass("ingame-seat");
@@ -85,8 +88,11 @@ function loadMap() {
                 loaded = true;
             }
             
-            //Slidedown
-            $("#map").slideDown(500);
+            //Set next time to load
+            setTimeout(function() { loadMap(); }, data["interval"] * 1000);
+            
+            //Unset lock
+            lock = false;
         },
         'json');
         

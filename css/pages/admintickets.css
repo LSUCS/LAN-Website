@@ -4,11 +4,11 @@
     line-height: 30px;
     font-size: 12px;
 }
-#claimed-tickets .row-hover, #unclaimed-tickets .row-hover {
+#claimed-tickets .row-hover, #unclaimed-tickets .row-hover, #raffle-tickets .row-hover {
     background-color: #FFF3ED;
     cursor: pointer;
 }
-#claimed-tickets .row-selected, #unclaimed-tickets .row-selected {
+#claimed-tickets .row-selected, #unclaimed-tickets .row-selected, #raffle-tickets .row-selected {
     background-color: #ffe8df;
     cursor: pointer;
 }

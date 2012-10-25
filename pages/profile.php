@@ -82,6 +82,16 @@
                 if (count($games) > 0) $profile["mostplayed"] = "<ul>" . implode("", $games) . "</ul>";
             }
             
+            //Raffle
+            $active = $this->parent->auth->getActiveUserData();
+            $profile["raffle"] = "";
+            if ($this->parent->auth->isLoggedIn() && $active["xenforo"]["user_id"] == $userdata["xenforo"]["user_id"]) {
+                $raffle = array();
+                $res = $this->parent->db->query("SELECT * FROM `raffle_tickets` WHERE user_id = '%s' AND lan_number = '%s'", $active["xenforo"]["user_id"], $this->parent->settings->getSetting("lan_number"));
+                while ($row = $res->fetch_assoc()) $raffle[] = '<li>' . $row["raffle_ticket_number"] . ' - ' . ucwords($row["reason"]) . '</li>';
+                if (count($raffle) > 0) $profile["raffle"] = '<ul>' . implode("", $raffle) . '</ul>';
+            }
+            
             echo json_encode($profile);
             
         }

@@ -36,7 +36,10 @@
                                 "steam_api_key" => array("pass", ""),
                                 "lan_ip_addresses" => array("text", "0.0.0.0,0.0.0.0"),
                                 "disable_lan_van" => array("bool", false),
-                                "map_cron_lock" => array("bool", false)
+                                "map_cron_lock" => array("bool", false),
+                                "map_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=map&action=process"),
+                                "map_browser_update_interval" => array('int', 30),
+                                "map_daemon_sleep_period" => array('int', 10)
                                 );
     
         public function __construct($parent) {

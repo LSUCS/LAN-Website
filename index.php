@@ -16,6 +16,7 @@
 	include("pages/page.php");
     include("email.php");
     include("simpleimage.php");
+    include("raffle.php");
 
 	$main = new Main();
 	
@@ -27,6 +28,7 @@
         public $settings;
         public $auth;
         public $template;
+        public $raffle;
 		public $pages;
 		public $page;
 		
@@ -37,6 +39,7 @@
 			$this->db       = new Db($this);
             $this->settings = new Settings($this);
             $this->auth     = new Auth($this);
+            $this->raffle   = new Raffle($this);
             
             //Load template manager
             $this->template = new Template($this);

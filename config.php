@@ -8,7 +8,7 @@
 		
 		function __construct() {
         
-            require_once("../password.php");
+            require_once("/home/soc_lsucs/lan.lsucs.org.uk/password.php");
 			
 			/**
 			 * Database

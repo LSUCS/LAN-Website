@@ -1,0 +1,19 @@
+.game {
+    height: 170px;
+}
+.game img {
+    width: 400px;
+}
+    .game img:hover {
+        margin-top: 1px;
+    }
+    
+#left {
+    float: left;
+    width: 400px;
+}
+
+#right {
+    float: right;
+    width: 400px;
+}

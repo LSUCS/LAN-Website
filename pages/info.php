@@ -41,7 +41,7 @@
         
         public function actionFood() {
             $this->parent->template->setSubTitle("Food and Drink");
-            $this->parent->template->outputTemplate(array("template" => "info-food"));
+            $this->parent->template->outputTemplate(array("template" => "info-food", "styles" => "info-food.css"));
         }
         
         public function actionDc() {

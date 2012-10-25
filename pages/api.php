@@ -136,7 +136,7 @@
                     }
                     
                     //Insert time
-                    $this->parent->db->query("INSERT INTO `tickets` (purchase_id, lan_number, member_ticket, purchased_forum_id, assigned_forum_id) VALUES ('%s', '%s', '%s', '%s', '%s')", $purchase["purchase_id"], $this->inputs["lan"], $memberTicket, $customerforumdata["user_id"], $assignID);
+                    $this->parent->db->query("INSERT INTO `tickets` (purchase_id, lan_number, member_ticket, purchased_forum_id, purchased_name, assigned_forum_id) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $purchase["purchase_id"], $this->inputs["lan"], $memberTicket, $customerforumdata["user_id"], $this->inputs["name"], $assignID);
                 
                 }
                 
