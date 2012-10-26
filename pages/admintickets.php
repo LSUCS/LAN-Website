@@ -116,6 +116,9 @@
             
             //Raffle ticket hook - issue them one if they haven't got one yet
             $this->parent->raffle->issueAttendanceTicket($ticket["assigned_forum_id"]);
+            
+            //Friends of LSUCS Hook
+            $this->parent->auth->checkFriendsOfLSUCS($ticket["assigned_forum_id"]);
         }
         
         public function actionDeactivate() {

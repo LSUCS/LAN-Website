@@ -62,9 +62,10 @@
                 $this->template->addNavElement("index.php?route=admin&page=admingallery", "Gallery", "admingallery");
                 $this->template->addNavElement("index.php?route=admin&page=admintickets", "Tickets", "admintickets");
                 $this->template->addNavElement("index.php?route=admin&page=adminlanvan", "LAN Van", "adminlanvan");
+                $this->template->addNavElement("index.php?route=admin&page=admintf2", "TF2", "admintf2");
             
                 //Set valid pages
-                $this->pages = array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan");
+                $this->pages = array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan", "admintf2");
                 
                 //Parse page - if invalid, load 'not found' template
                 if (!isset($_GET["page"]) || $_GET["page"] == "") {

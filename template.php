@@ -44,6 +44,7 @@
             $DataBag["page"] = $this->parent->page;
             $DataBag["refresh"] = $this->refresh;
             $DataBag["loggedin"] = $this->parent->auth->isLoggedIn();
+            $DataBag["admin"] = $this->parent->auth->isAdmin();
             $userData = $this->parent->auth->getActiveUserData();
             $DataBag["username"] = $userData["xenforo"]["username"];
             $DataBag["lan"] = $this->parent->settings->getSetting("lan_number");

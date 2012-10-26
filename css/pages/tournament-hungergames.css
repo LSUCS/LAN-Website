@@ -1,0 +1,34 @@
+#head-image {
+    width: 600px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#main-info {
+    margin-top: 30px;
+    height: 100px;
+}
+    #main-info #left {
+        float: left;
+    }
+    #main-info #right {
+        float: right;
+    }
+
+#structure {
+    margin-bottom: 30px;
+}
+#teams {
+    margin-left: 50px;
+}
+.team {
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 200px;
+    border: 1px solid #ddd;
+    float: left;
+    margin: 10px;
+}
+    .team h2 {
+        margin-bottom: 10px;
+    }

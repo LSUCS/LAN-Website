@@ -18,6 +18,7 @@
                                 "nonmember_ticket_available" => array("bool", true),
                                 "nonmember_ticket_available_date" => array("date", "2012-10-17 00:00:00"),
                                 "xenforo_member_group_id" => array("int", 4),
+                                "xenforo_fol_group_id" => array("int", 20),
                                 "default_page" => array("text", "home"),
                                 "default_title" => array("text", "LSUCS"),
                                 "default_admin_page" => array("text", "adminsettings"),
@@ -39,7 +40,8 @@
                                 "map_cron_lock" => array("bool", false),
                                 "map_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=map&action=process"),
                                 "map_browser_update_interval" => array('int', 30),
-                                "map_daemon_sleep_period" => array('int', 10)
+                                "map_daemon_sleep_period" => array('int', 10),
+                                "enable_tf2" => array('bool', true)
                                 );
     
         public function __construct($parent) {

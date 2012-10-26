@@ -49,9 +49,9 @@
             $this->parent->template->outputTemplate(array("template" => "info-dc"));
         }
         
-        public function actionQuiz() {
-            $this->parent->template->setSubTitle("Pub Quiz");
-            $this->parent->template->outputTemplate(array("template" => "info-quiz"));
+        public function actionRaffle() {
+            $this->parent->template->setSubTitle("Raffle");
+            $this->parent->template->outputTemplate(array("template" => "info-raffle"));
         }
         
         public function actionSleeping() {

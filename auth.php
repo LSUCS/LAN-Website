@@ -199,6 +199,27 @@
         }
         
         /**
+         * Checks if a person isn't a member and if not, grants them Friends of LSUCS
+         */
+        public function checkFriendsOfLSUCS($userID) {
+            $userdata = $this->getUserById($userID);
+            $fol = $this->parent->settings->getSetting("xenforo_fol_group_id");
+            $member = $this->parent->settings->getSetting("xenforo_member_group_id");
+            
+            //Not in group, add
+            if (!$this->userModel->isMemberOfUserGroup($userdata["xenforo"], $fol, true) && !$this->userModel->isMemberOfUserGroup($userdata["xenforo"], $member, true)) {
+                $writer = XenForo_DataWriter::create('XenForo_DataWriter_User');
+                $writer->setExistingData($userID);
+                $groups = explode(",", $userdata["xenforo"]["secondary_group_ids"]);
+                $groups[] = $fol;
+                $writer->setSecondaryGroups($groups);
+                $writer->setOption(XenForo_DataWriter_User::OPTION_ADMIN_EDIT, true);
+                $writer->save();
+            }
+        
+        }
+        
+        /**
          * Checks whether the user is physically at the LAN (by ip)
          */
         public function isPhysicallyAtLan() {

@@ -112,6 +112,7 @@
                     <div id="userdropdown">
                         <a href="index.php?page=profile&member=<?php echo $DataBag["username"]; ?>"><span class="dropdown-element">View Profile</span></a>
                         <a href="index.php?page=account"><span class="dropdown-element">Account Details</span></a>
+                        <?php if ($DataBag["admin"]) echo '<a href="admin.php"><span class="dropdown-element">Admin Panel</span></a>'; ?>
                         <a href="index.php?page=account&action=logout"><span class="dropdown-element bottom-element"><img src="images/logout.png" />Logout</span></a>
                     </div>
                 <?php } ?>
@@ -197,10 +198,10 @@
                             </div>
                         </a>
                         
-                        <a href="index.php?page=info&action=quiz">
+                        <a href="index.php?page=info&action=raffle">
                             <div class="info-element">
-                                <img class="info-image" src="images/info/quiz.png" />
-                                Pub Quiz
+                                <img class="info-image" src="images/info/raffle.png" />
+                                Raffle
                             </div>
                         </a>
                         

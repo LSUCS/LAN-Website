@@ -1,0 +1,16 @@
+#head-image {
+    width: 600px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+#main-info {
+    margin-top: 30px;
+    height: 100px;
+}
+    #main-info #left {
+        float: left;
+    }
+    #main-info #right {
+        float: right;
+    }
