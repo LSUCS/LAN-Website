@@ -174,7 +174,7 @@
             }
             
             //Check if account already has assigned ticket
-            $previousTicket = $this->parent->db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s'", $assigneduserdata["user_id"])->fetch_assoc();
+            $previousTicket = $this->parent->db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $this->parent->settings->getSetting("lan_number"), $assigneduserdata["user_id"])->fetch_assoc();
             if ($previousTicket && $previousTicket["member_ticket"] == 0 && $assignedmember) {
                 $this->parent->db->query("UPDATE `tickets` SET assigned_forum_id = '' WHERE ticket_id = '%s'", $previousTicket["ticket_id"]);
             }
@@ -282,7 +282,7 @@
             
             $userdata = $this->parent->auth->getActiveUserData();
             
-            $res = $this->parent->db->query("SELECT * FROM `tickets` WHERE purchased_forum_id = '%s' OR assigned_forum_id = '%s'", $userdata["xenforo"]["user_id"], $userdata["xenforo"]["user_id"]);
+            $res = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND (purchased_forum_id = '%s' OR assigned_forum_id = '%s')", $this->parent->settings->getSetting("lan_number"), $userdata["xenforo"]["user_id"], $userdata["xenforo"]["user_id"]);
             $tickets = array();
             while ($ticket = $res->fetch_assoc()) {
                 $purchaser = $this->parent->auth->getUserById($ticket["purchased_forum_id"]);

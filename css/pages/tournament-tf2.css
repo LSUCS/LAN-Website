@@ -32,7 +32,7 @@
 }
 
 #bracket, #servers, #teams {
-    display: none;
+    //display: none;
 }
 
 .team {

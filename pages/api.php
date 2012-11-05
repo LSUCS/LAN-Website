@@ -26,8 +26,9 @@
             $userdata = $this->parent->auth->getUserByName($this->inputs["username"]);
             
             //Check activated ticket
-            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND activated = 1 AND lan_number = '%s'", $userdata["xenforo"]["user_id"], $lan)->fetch_assoc();
-            if (!$ticket) $this->errorJSON("Your ticket has not been activated. Please visit the registration desk before attending the LAN");
+            $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $userdata["xenforo"]["user_id"], $lan)->fetch_assoc();
+            if (!$ticket) $this->errorJSON("Your do not have a ticket. Fuck off");
+            if ($ticket["activated"] == 0) $this->errorJSON("Your ticket has not been activated. Go to the front desk");
             
             //Check seat
             $seats = explode("\n", file_get_contents("seats.txt"));

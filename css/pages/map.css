@@ -206,9 +206,10 @@
             }
         #key .veteran-seat {
             top: 210px;
+            display: none;
         }
         #key .column {
-            top: 245px;
+            top: 210px;
             left: 180px;
         }
             #key .column .label {
