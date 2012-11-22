@@ -29,6 +29,8 @@
             
             //Lock
             $this->parent->settings->changeSetting("map_cron_lock", true);
+			
+			file_put_contents("derp.txt", "");
                     
             //Get tickets with seats
             $res = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND seat != ''", $this->parent->settings->getSetting("lan_number"));
@@ -75,6 +77,7 @@
         }
         
         function actionProcessseat() {
+		
         
             //Ticket
             $ticket = $this->parent->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND  ticket_id = '%s'", $this->parent->settings->getSetting("lan_number"), $this->inputs["ticket"])->fetch_assoc();
@@ -87,14 +90,27 @@
             $seat["username"] = $userdata["xenforo"]["username"];
             $seat["name"] = $userdata["lan"]["real_name"];
             $seat["steam"] = $userdata["lan"]["steam_name"];
-            
+			
             //Steam
             $steam = false;
             if ($userdata["lan"]["steam_name"] != "") {
-                $page = file_get_contents("http://steamcommunity.com/id/" . urlencode($userdata["lan"]["steam_name"]) . "/?xml=1");
-                $steam = new SimpleXMLElement($page, LIBXML_NOCDATA);                
+				$error = "";
+				for ($i = 0; $i < 4; $i++) {
+					try {
+						$page = file_get_contents("http://steamcommunity.com/id/" . urlencode($userdata["lan"]["steam_name"]) . "/?xml=1");
+						$steam = true;
+						break;
+					} catch (Exception $e) {
+						$steam = false;
+						$error = $e->getMessage();
+					}
+				}
+				
+				if ($steam) $steam = new SimpleXMLElement($page, LIBXML_NOCDATA);     
+				else file_put_contents("derp.txt", $seat["seat"] . " - " . $error . "\n", FILE_APPEND);
             }
             
+			
             //Avatar
             if ($steam) $seat["avatar"] = (string)$steam->avatarFull;
             else $seat["avatar"] = $this->parent->auth->getAvatarById($userdata["xenforo"]["user_id"]);

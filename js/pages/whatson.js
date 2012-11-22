@@ -1,6 +1,12 @@
 $(document).ready(function() {
 
-    Carousel.initialise();
+	//Day
+	var slide = 0;
+	if (Date.today().is().sunday()) slide = 3;
+	if (Date.today().is().saturday()) slide = 2;
+	if (Date.today().is().friday()) slide = 1;
+
+    Carousel.initialise(slide);
     
     getTimetable();
     
@@ -64,6 +70,7 @@ var Carousel = {
         $("#timetable-container").stop().animate({ height: $("#timetable-days .timetable-day:nth-child(" + slide + ")").height() }, 500, "swing");
         $("#day").html($("#timetable-days .timetable-day:nth-child(" + slide + ")").attr('id'));
         this.activeSlide = slide;
+		this.updateTime();
     },
     left: function() {
         if (this.activeSlide == 1) this.moveSlide(this.slideCount);
@@ -73,5 +80,25 @@ var Carousel = {
         if (this.activeSlide == this.slideCount) this.moveSlide(1);
         else this.moveSlide(this.activeSlide +1);
     },
+	updateTime: function() {
+		$("#time").hide();
+
+		if (Date.today().is().sunday() && this.activeSlide == 3 || Date.today().is().saturday() && this.activeSlide == 2 || Date.today().is().friday() && this.activeSlide == 1) {
+			
+			var d = new Date();
+			var mins = d.getMinutes();
+			var hours = d.getHours();
+			
+			var val = hours + ':00';
+			if (mins > 29) val = hours + ':30';
+			var el = $(".timetable-day:eq(" + (this.activeSlide -1) + ') .time-row[value="' + val + '"]');
+			if (el.position()) {
+				$("#time").show();
+				$("#time").css('top', el.position().top);
+				$('html,body').animate({scrollTop:el.offset().top - 50}, 500);
+			}
+			
+		}
+	}
 
 };

@@ -75,7 +75,7 @@ input, textarea {
     }
     
 a, a:visited {
-	color: #666;
+	color: #999;
     text-decoration: none;
 }
 a:hover {
@@ -650,3 +650,68 @@ body {
     border-radius: 5px;
     color: #f1642b;
 }
+
+/* ACCESS BAR */
+#access-bar-wrapper {
+    bottom: 0;
+    position: fixed;
+    z-index: 150;
+    _position: absolute;
+    _top: expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+	overflow: hidden;
+	height: 42px;
+	min-width: 100%;
+}
+	#access-bar-outer-container {
+		float: left;
+		position: relative;
+		left: 50%;
+	}
+	#access-bar-inner-container {
+		float: left;
+		left: -50%;
+		position: relative;
+	}
+	#access-bar-left {
+		background-image: url("../images/accessbar/accessbar-left.png");
+		float: left;
+		height: 43px;
+		width: 52px;
+	}
+	#access-bar-right {
+		background-image: url("../images/accessbar/accessbar-right.png");
+		float: left;
+		height: 43px;
+		width: 52px;
+	}
+	#access-bar {
+		background-image: url("../images/accessbar/accessbar-middle.png");
+		float: left;
+		height: 43px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+		.access-element {
+			font-size: 13px;
+			line-height: 48px;
+			text-shadow: 0px 1px 0px #bbb;
+			float: left;
+		}
+			.access-element img {
+				height: 28px;
+				width: 28px;
+				margin-top: 11px;
+				display: block;
+				float: left;
+				margin-right: 10px;
+			}
+		.access-divider {
+			margin-top: 13px;
+			width: 1px;
+			height: 25px;
+			margin-left: 20px;
+			margin-right: 20px;
+			background-color: #d5d5d5;
+			float: left;
+		}

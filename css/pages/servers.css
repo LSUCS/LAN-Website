@@ -1,0 +1,30 @@
+#servers {
+	margin-top: 40px;
+}
+#servers tbody td {
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
+    font-size: 12px;
+}
+#servers .row-hover {
+    background-color: #FFF3ED;
+    cursor: pointer;
+}
+.game-icon {
+	width: 20px;
+	height: 20px;
+	display: block;
+	float: left;
+	margin-top: 9px;
+}
+.connect-button {
+	display: block;
+	float: right;
+	margin-top: 12px;
+}
+.lock {
+	height: 16px;
+	width: 16px;
+	margin-top: 10px;
+}

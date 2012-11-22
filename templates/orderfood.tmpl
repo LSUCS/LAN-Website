@@ -1,0 +1,49 @@
+<div id="order-image">
+</div>
+
+<?
+	if ($DataBag["unpaid"] > 0) {
+		echo '<div id="unpaid">You have outstanding unpaid food orders. Make sure you pay &pound;' . $DataBag["unpaid"] . ' to a committee member before the cut-off point!</div>';
+	}
+?>
+
+<div id="shops">
+	<?
+		//Loop shops
+		foreach ($DataBag["shops"] as $shop) {
+			
+			echo 
+				'<div class="shop">
+					<div class="shop-details">
+						<div class="shop-title">' . $shop["shop_name"] . '</div>
+						<div class="shop-times">
+							<b>Order by: </b>' . date("l gA", strtotime($shop["order_by"])) . '&emsp;<b>Arrives: </b>' . date("l gA", strtotime($shop["arrival_time"])) . '
+						</div>
+					</div>
+					<div class="shop-options">';
+			//Shop closed
+			if ($shop["enabled"] == 0) {
+				echo "This order is closed";
+			}
+			//No options to buy	
+			else if (count($shop["options"]) == 0) {
+				echo "No options available for purchase from this shop";
+			}
+			//Echo options
+			else {
+				foreach ($shop["options"] as $option) {
+					echo 
+						'<div class="shop-option' . (strlen($option["description"]) > 0?' described':'') . '" value="' . $option["option_id"] . '">
+							<div class="option-name">' . $option["option_name"] . '</div>
+							<input class="option-amount" maxlength="1" type="text" value="0" />
+							<div class="option-price">&pound;' . $option["price"] . '</div>';
+					if (strlen($option["description"]) > 0) echo '<div class="option-description">' . $option["description"] . '</div>';
+					echo '</div>';				
+				}
+			}
+			echo '</div></div>';
+		}
+	?>
+</div>
+
+<button id="place-order">Place Order</button>

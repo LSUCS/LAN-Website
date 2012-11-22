@@ -1,0 +1,103 @@
+#order-image {
+	width: 400px;
+	height: 118px;
+	margin-left: auto;
+	margin-right: auto;
+	background-image: url('../../images/orderfood.png');
+	margin-bottom: 40px;
+}
+
+#unpaid  {
+	padding: 15px;
+	border-radius: 10px;
+	margin-bottom: 30px;
+	text-align: center;
+		font-size: 16px;
+	background: #fccfcf; /* Old browsers */
+	background: -moz-linear-gradient(top,  #fccfcf 0%, #ffb5b5 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fccfcf), color-stop(100%,#ffb5b5)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #fccfcf 0%,#ffb5b5 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #fccfcf 0%,#ffb5b5 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #fccfcf 0%,#ffb5b5 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #fccfcf 0%,#ffb5b5 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fccfcf', endColorstr='#ffb5b5',GradientType=0 ); /* IE6-9 */
+}
+
+.shop {
+	padding: 30px;
+	padding-top: 20px;
+	border-radius: 10px;
+	background-color: #eee;
+	margin-bottom: 30px;
+}
+.shop-details {
+	height: 50px;
+}
+	.shop-title {
+		font-family: reznor;
+		font-size: 30px;
+		float: left;
+	}
+	.shop-times {
+		float: right;
+		margin-top: 5px;
+	}
+.shop-option {
+	border-radius: 10px;
+	padding: 3px;
+	height: 34px;
+	margin-top: 10px;
+	position: relative;
+	background: #ffd9a8; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ffd9a8 0%, #efbd88 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffd9a8), color-stop(100%,#efbd88)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ffd9a8 0%,#efbd88 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd9a8', endColorstr='#efbd88',GradientType=0 ); /* IE6-9 */
+}
+	.shop-option.described {
+		height: 45px;
+	}
+	.option-name {
+		float: left;
+		font-size: 17px;
+		margin-left: 30px;
+		line-height: 33px;
+	}
+	.option-price {
+		float: right;
+		margin-right: 40px;
+		font-size: 17px;
+		line-height: 33px;
+	}
+		.shop-option.described .option-price {
+			line-height: 45px;
+		}
+	.option-amount {
+		display: block;
+		width: 20px;
+		text-align: center;
+		float: right;
+		margin-right: 30px;
+	}
+		.shop-option.described .option-amount{
+			margin-top: 7px;
+		}
+	.option-description {
+		left: 33px;
+		top: 30px;
+		font-size: 12px;
+		color: #666;
+		position: absolute;
+		
+	}
+	
+#place-order {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 200px;
+	height: 50px;
+}

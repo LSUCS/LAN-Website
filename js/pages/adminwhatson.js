@@ -73,7 +73,7 @@ function loadEntries() {
                     string += '<span class="start-time">' + row.start_time + '</span>';
                     string += '<span class="end-time">' + row.end_time + '</span>';
                     string += '<span class="title">' + row.title + '</span>';
-                    string += '<span class="url">' + (row.url == ""?"None":row.url) + '</span>';
+                    string += '<span class="url">' + (row.url == ""?"None":'<a href="' + row.url + '">Click</a>') + '</span>';
                     string += '<span class="colour">' + row.colour + '</span></div>';
                     $("#table-body").append(string);
                 }

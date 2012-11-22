@@ -94,7 +94,11 @@
     padding: 5px;
     margin: 5px;
     border-radius: 3px;
+	color: #333;
 }
+	.timetable-entry:hover {
+		color: #999;
+	}
     .orange {
         border: 1px solid #E8963F;
         background: rgb(255, 212, 166);
@@ -115,7 +119,15 @@
         background: rgb(138, 90, 214);
         background: rgba(138, 90, 214, 0.8);
     }
-    
-.mCSB_container.mCS_no_scrollbar {
-    margin-right: 30px;
+
+#time {
+	height: 40px;
+	background-color: rgba(255,0,0,0.2);
+	width: 700px;
+	margin-left: 65px;
+	margin-top: 1px;
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	display: none;
 }

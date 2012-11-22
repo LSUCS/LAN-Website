@@ -14,6 +14,19 @@
     #main-info #right {
         float: right;
     }
+    #sign-up {
+        right: 200px;
+        top: 20px;
+        display: none;
+    }
+    #message {
+        color: red;
+        font-weight: bold;
+        width: 400px;
+        text-align: center;
+        margin-top: 30px;
+        display: none;
+    }
 
 #structure {
     margin-bottom: 30px;

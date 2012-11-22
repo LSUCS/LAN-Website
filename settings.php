@@ -41,7 +41,12 @@
                                 "map_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=map&action=process"),
                                 "map_browser_update_interval" => array('int', 30),
                                 "map_daemon_sleep_period" => array('int', 10),
-                                "enable_tf2" => array('bool', true)
+                                "server_cron_lock" => array("bool", false),
+                                "server_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=servers&action=process"),
+                                "server_browser_update_interval" => array('int', 10),
+                                "server_daemon_sleep_period" => array('int', 5),
+								"enable_tf2" => array('bool', false),
+								"enable_hungergames" => array('bool', false)
                                 );
     
         public function __construct($parent) {

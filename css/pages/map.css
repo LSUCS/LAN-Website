@@ -273,6 +273,7 @@
         position: absolute;
         height: 200px;
         bottom: 200px;
+		display: none;
     }
         #d-block-room-door {
             right: -35px;
@@ -371,7 +372,7 @@
     #lecture-room {
         position: absolute;
         bottom: -125px;
-        width: 560px;
+        width: 555px;
         right: -5px;
         height: 120px;
         border-top: 5px solid #666;

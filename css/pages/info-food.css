@@ -11,3 +11,10 @@
 #content hr {
     width: 90%;
 }
+
+.order-button {
+	margin-left: auto;
+	margin-right: auto;
+	width: 90px;
+	display: block;
+}

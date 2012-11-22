@@ -31,6 +31,8 @@
     }
     #entry-table .title {
         width: 200px;
+		overflow: hidden;
+		height: 30px;
     }
     #entry-table .url {
         width: 210px;

@@ -63,9 +63,11 @@
                 $this->template->addNavElement("index.php?route=admin&page=admintickets", "Tickets", "admintickets");
                 $this->template->addNavElement("index.php?route=admin&page=adminlanvan", "LAN Van", "adminlanvan");
                 $this->template->addNavElement("index.php?route=admin&page=admintf2", "TF2", "admintf2");
+                $this->template->addNavElement("index.php?route=admin&page=adminhungergames", "Hungergames", "adminhungergames");
+                $this->template->addNavElement("index.php?route=admin&page=adminfood", "Food", "adminfood");
             
                 //Set valid pages
-                $this->pages = array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan", "admintf2");
+                $this->pages = array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan", "admintf2", "adminhungergames", "adminfood");
                 
                 //Parse page - if invalid, load 'not found' template
                 if (!isset($_GET["page"]) || $_GET["page"] == "") {
@@ -94,7 +96,7 @@
                 $this->template->addNavElement("http://lsucs.org.uk", "Forums", "forums");
             
                 //Set valid pages
-                $this->pages = array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact");
+                $this->pages = array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation");
             
                 //Parse page - if invalid, load 'not found' template
                 if (!isset($_GET["page"]) || $_GET["page"] == "") {

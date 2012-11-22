@@ -4,6 +4,7 @@
     
         public function getInputs() {
             return array(
+						"actionUpdategameservers" => array("data" => "post"),
                         "actionLanauth" => array("username" => "post", "password" => "post", "seat" => "post"),
                         "actionDeletetickets" => array("purchases" => "post"),
                         "actionIssuetickets" => array("purchases" => "post", "lan" => "post", "member_tickets" => "post", "non_member_tickets" => "post", "forum_name" => "post", "email" => "post", "name" => "post"));
@@ -13,6 +14,31 @@
             $this->authenticate();
             echo $this->errorJSON("Invalid API Method");
         }
+		
+		public function actionGetgameservers() {
+			$this->authenticate();
+			$res = $this->parent->db->query("SELECT * FROM `game_servers` WHERE local = 1 AND source = 1");
+			$output = array();
+			while ($row = $res->fetch_assoc()) {
+				$output[] = array("server_id" => $row["server_id"], "hostname" => $row["hostname"], "port" => $row["port"]);
+			}
+			echo json_encode($output);
+		}
+		
+		public function actionUpdategameservers() {
+			$this->authenticate();
+			$servers = json_decode($this->inputs["data"], true);
+			if (!is_array($servers)) $this->errorJSON("Inputted data is not an array");
+			
+			foreach ($servers as $server) {
+				//Check if valid server
+				$entry = $this->parent->db->query("SELECT * FROM `game_servers` WHERE server_id = '%s'", $server["server_id"])->fetch_assoc();
+				if (!$entry) continue;
+				
+				//Add to db
+				$this->parent->db->query("UPDATE `game_servers` SET name='%s', game='%s', game_icon='%s', num_players='%s', max_players='%s', password_protected='%s', map='%s', players='%s' WHERE server_id = '%s'", $server["name"], $server["game"], $server["game_icon"], $server["num_players"], $server["max_players"], $server["password_protected"], $server["map"], $server["players"], $server["server_id"]);
+			}
+		}
         
         public function actionLanauth() {
         

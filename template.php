@@ -30,6 +30,7 @@
          *   - 'data' -> array of data to be added to the databag
          *   - 'styles' -> array of styles to be included
          *   - 'scripts' -> array of scripts to be included
+		 *   - 'wrapper' -> boolean for wrapper
          */
         public function outputTemplate($options = "") {
             
@@ -68,7 +69,7 @@
             }
             
             //Include header
-            include("templates/header.tmpl");
+            if ((is_array($options) && isset($options['wrapper']) && $options['wrapper'] == true) || !is_array($options) || (is_array($options) && !isset($options['wrapper']))) include("templates/header.tmpl");
             
             //Include template
             if (is_array($options) && isset($options["template"])) include("templates/" . $options["template"] . ".tmpl");
@@ -76,7 +77,7 @@
             else if (!empty($options["content"])) echo $options["content"];
             
             //Include footer
-            include("templates/footer.tmpl");
+            if ((is_array($options) && isset($options['wrapper']) && $options['wrapper'] == true) || !is_array($options) || (is_array($options) && !isset($options['wrapper']))) include("templates/footer.tmpl");
             
         }
 

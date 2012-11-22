@@ -14,7 +14,7 @@
             $this->parent = $parent;
         
             //Require Swift Mailer
-            require_once 'lib/swift_required.php';
+            require_once 'lib/SwiftMailer/swift_required.php';
            
             //Set up message
             $this->message = Swift_Message::newInstance();
