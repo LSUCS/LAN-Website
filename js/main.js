@@ -45,16 +45,14 @@ $(document).ready(function() {
         PageVars[element[0].toLowerCase()] = element[1];
     }
     
-	//User dropdown
-	$("#navbar a").mouseenter(function() {
-        if ($(this).html() == "Essential Info") $("#info-bar").slideDown(200);
+	//Info dropdown
+	$("#navbar .info").mouseenter(function() {
+        $("#info-bar").slideDown(200);
 	});
-    $("#navbar a").mouseleave(function(e) {
-        if ($(this).html() == "Essential Info") {
-            setTimeout(function() { if (!infobar_entered) {
-                $("#info-bar").slideUp(200);
-            }}, 200);
-        }
+    $("#navbar .info").mouseleave(function(e) {
+		setTimeout(function() { if (!infobar_entered) {
+			$("#info-bar").slideUp(200);
+		}}, 200);
     });
     $("#info-bar").mouseenter(function() {
         infobar_entered = true;

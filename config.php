@@ -16,7 +16,7 @@
 			$this->database["host"] = "localhost";
 			$this->database["user"] = "lanwebsite";
 			$this->database["pass"] = $password;
-			$this->database["db"]   = "dev-lanwebsite";
+			$this->database["db"]   = "lanwebsite";
 			
 			/**
 			 *Auth

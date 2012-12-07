@@ -1,6 +1,6 @@
 <?php
     
-    echo "### LSUCS Server Daemon ###\n";
+    echo "### LSUCS LAN Website Server Daemon ###\n";
     echo "Initiating...\n";
 
     ini_set('display_errors','On');
@@ -14,9 +14,9 @@
     echo "Including required files...\n";
     
     //Include necessaries
-	include("config.php");
-	include("db.php");
-    include("settings.php");
+	include(dirname(__FILE__) . "/../config.php");
+	include(dirname(__FILE__) . "/../db.php");
+    include(dirname(__FILE__) . "/../settings.php");
     
     echo "Launching main class...\n";
     

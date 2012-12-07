@@ -46,7 +46,10 @@
                                 "server_browser_update_interval" => array('int', 10),
                                 "server_daemon_sleep_period" => array('int', 5),
 								"enable_tf2" => array('bool', false),
-								"enable_hungergames" => array('bool', false)
+								"enable_hungergames" => array('bool', false),
+								"chat_address" => array("text", "localhost"),
+								"chat_port" => array("int", 8081),
+								"chat_history_length" => array("int", 10)
                                 );
     
         public function __construct($parent) {

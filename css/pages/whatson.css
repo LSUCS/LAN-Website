@@ -1,65 +1,35 @@
-#timetable-controls {
-    width: 400px;
-    height: 70px;
-    margin-left: auto;
-    margin-right: auto;
+#labels {
+	width: 830px;
+	margin-left: 70px;
+	height: 50px;
 }
-#timetable-controls div {
-    float: left;
-}
-#left, #right {
-    height: 50px;
-    width: 50px;
-}
-#left {
-    background-image: url('../../images/left-active.png');
-    cursor: pointer;
-}
-    #left:hover {
-        background-image: url('../../images/left.png');
-    }
-#right {
-    background-image: url('../../images/right-active.png');
-    cursor: pointer;
-}
-    #right:hover {
-        background-image: url('../../images/right.png');
-    }
-#day {
-    width: 300px;
-    text-align: center;
-    height: 40px;
-    line-height: 40px;
-    font-family: reznor;
-    font-size: 30px;
-}
+	#labels div {
+		width: 270px;
+		text-align: center;
+		float: left;
+		font-family: reznor;
+		font-size: 25px;
+	}
 
 #timetable-container {
-    overflow: hidden;
     width: 830px;
     position: relative;
-    margin-left: 30px;
+    margin-left: 70px;
 }
-    #timetable-days {
-        width: 3580px;
-        list-style: none;
-        overflow: hidden;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-        #timetable-days .timetable-day {
-            position: relative;
-            float: left;
-            width: 830px;
-        }
+	.timetable-day {
+		position: relative;
+		float: left;
+		width: 270px;
+		margin-right: 1px;
+	}
         
 .time-row {
-    width: 700px;
+    width: 270px;
     margin-left: auto;
     margin-right: auto;
     position: relative;
     border: 1px solid #ddd;
+	border-left: 1px solid #999;
     border-bottom: 0;
     height: 40px;
 }
@@ -68,6 +38,9 @@
         top: 0px;
         left: -50px;
     }
+#friday .time-row {
+	border-left: 1px solid #ddd;
+}
 .bottom-row {
     border-bottom: 1px solid #ddd;
 }
@@ -81,11 +54,15 @@
     background-image: url('../../images/sleep.png');
     background-repeat: no-repeat;
     background-position: center;
-    width: 700px;
+    width: 270px;
     margin-left: auto;
     margin-right: auto;
     border: 1px solid #ddd;
     border-bottom: 0;
+	border-left: 1px solid #999;
+}
+#friday .break {
+	border-left: 1px solid #ddd;
 }
 
 .timetable-entry {

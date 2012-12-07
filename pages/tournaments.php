@@ -80,7 +80,7 @@
         }
         
         public function actionTf2() {
-            $this->parent->template->setSubTitle("Team Fortress 2");
+            $this->parent->template->setSubTitle("left 4 Dead 2");
 			$this->parent->template->outputTemplate(array("template" => "tournament-tf2", "styles" => "tournament-tf2.css", "scripts" => "tournament-tf2.js"));
         }
         

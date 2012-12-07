@@ -17,8 +17,8 @@
     margin-right: auto;
     max-width: 390px;
     max-height: 280px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px #333;
+    border-radius: 4px;
+	border: 1px solid #aaa;
 }
 
 #bottom {

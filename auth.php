@@ -12,17 +12,19 @@
          */
         public function __construct($parent) {
             $this->parent = $parent;
-            
+		
             //Initiate XenForo
-            $this->xfDir = $this->parent->config->auth["xenforoDir"];
-            $this->startTime = microtime(true);
-            require($this->xfDir . '/library/XenForo/Autoloader.php');
-            require("/home/soc_lsucs/lsucs.org.uk/htdocs/library/XenForo/Session.php");
-            XenForo_Autoloader::getInstance()->setupAutoloader($this->xfDir. '/library');
-            XenForo_Application::initialize($this->xfDir . '/library', $this->xfDir);
-            XenForo_Application::set('page_start_time', $this->startTime);
-            $this->userModel = XenForo_Model::create('XenForo_Model_User');
-            
+			if (!defined("XENFORO_AUTOLOADER_SETUP")) {
+				$this->xfDir = $this->parent->config->auth["xenforoDir"];
+				$this->startTime = microtime(true);
+				require($this->xfDir . '/library/XenForo/Autoloader.php');
+				require("/home/soc_lsucs/lsucs.org.uk/htdocs/library/XenForo/Session.php");
+				XenForo_Autoloader::getInstance()->setupAutoloader($this->xfDir. '/library');
+				XenForo_Application::initialize($this->xfDir . '/library', $this->xfDir);
+				XenForo_Application::set('page_start_time', $this->startTime);
+			}
+			$this->userModel = XenForo_Model::create('XenForo_Model_User');
+			
             //Initiate XenForo sessions
             $session = new Xenforo_Session();
             $session->startPublicSession();
@@ -150,8 +152,17 @@
             }
             
             //Default
-            return "http://lsucs.org.uk/" . XenForo_Template_Helper_Core::getAvatarUrl($userdata["xenforo"], "l", "default");
+            return "http://lsucs.org.uk/" . XenForo_Template_Helper_Core::getAvatarUrl(array(), "l", "default");
         }
+		
+		/**
+		 *	Gets the avatar for the current user
+		 */
+		public function getAvatar() {
+			$userdata = $this->getActiveUserData();
+			if (!isset($userdata["xenforo"]["user_id"])) return $this->getAvatarByid("");
+			else return $this->getAvatarById($userdata["xenforo"]["user_id"]);
+		}
         
         /**
          *  Validates inputted user and password

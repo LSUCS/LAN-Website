@@ -1,0 +1,106 @@
+#chat {
+	bottom: 0;
+	position: fixed;
+	z-index: 2000;
+	_position: absolute;
+    _top: expression(eval(document.documentElement.scrollTop+(document.documentElement.clientHeight-this.offsetHeight)));
+	height: 30px;
+	min-width: 100%;
+}
+
+#chat .chatbar-element {
+	float: right;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-weight: bold;
+	font-size: 12px;
+	background-color: #f3f3f3;
+	text-align: center;
+	margin-left: 3px;
+}
+	#chat .chatbar-element:hover {
+		cursor: pointer;
+		background-color: #f8f8f8;
+	}
+	
+#chat #contacts {
+	width: 200px;
+}
+	#chat #contacts img {
+		display: block;
+		float: left;
+		margin-top: 6px;
+	}
+	
+#chat .status {
+	font-weight: bold;
+	color: #999;
+	font-size: 28px;
+}
+	#chat .status.online {
+		color: #04cdff;
+	}
+	
+#chat #contact-list {
+	max-height: 600px;
+	position: absolute;
+	bottom: 30px;
+	right: 0px;
+	width: 220px;
+	border: 1px solid #ccc;
+	border-bottom: 0px;
+	background-color: #f9f9f9;
+	display: none;
+}
+	#chat #contact-list .contact {
+		border-bottom: 1px solid #eee;
+		font-size: 12px;
+		line-height: 30px;
+		padding-left: 30px;
+	}
+	#chat #contact-list .contact:hover {
+		background-color: #fff;
+		cursor: pointer;
+	}
+	#chat #contact-list .chat-avatar {
+		position: absolute;
+		left: 5px;
+		margin-top: 5px;
+	}
+	#chat #contact-list .status {
+		position: absolute;
+		right: -7px;
+		margin-top: -2px;
+	}
+	
+	
+#chat .chat-avatar {
+	height: 20px;
+	display: block;
+	width: 20px;
+	border-radius: 2px;
+	overflow: hidden;
+	margin-top: 10px;
+	margin-right: 0px;
+}
+	#chat .chat-avatar img {
+		width: 20px;
+	}
+	
+#chat .conversation-element {
+	position: relative;
+	width: 200px;
+}
+	#chat .conversation {
+		position: absolute;
+		left: -1px;
+		height: 300px;
+		width: 220px;
+		border: 1px solid #ccc;
+		border-bottom: 0px;
+		background-color: #f9f9f9;
+	}

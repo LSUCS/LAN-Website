@@ -52,6 +52,7 @@
             $DataBag["datestring"] = date('d', strtotime($this->parent->settings->getSetting("lan_start_date"))) . date("-dS M Y", strtotime($this->parent->settings->getSetting("lan_end_date")));
             $DataBag["styles"] = array();
             $DataBag["scripts"] = array();
+			$DataBag["avatar"] = $this->parent->auth->getAvatar();
             
             //Load template options
             if (is_array($options) && isset($options['data'])) $DataBag = array_merge($DataBag, $options['data']);

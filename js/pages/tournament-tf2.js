@@ -29,7 +29,7 @@ function signUp() {
                 Overlay.openOverlay(true, data.error);
                 return;
             }
-            Overlay.openOverlay(false, "You have signed up for TF2", 1500);
+            Overlay.openOverlay(false, "You have signed up for L4D2", 1500);
             setTimeout(function() { loadSignup(); }, 1500);
         },
         'json');

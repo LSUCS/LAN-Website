@@ -77,7 +77,6 @@
         #map .seat.committee-seat {
             background-color: #ffca92;
             border: 2px solid #ff8400;
-            height: 23px;
         }
     #map .column {
         height: 25px;
@@ -273,7 +272,6 @@
         position: absolute;
         height: 200px;
         bottom: 200px;
-		display: none;
     }
         #d-block-room-door {
             right: -35px;
