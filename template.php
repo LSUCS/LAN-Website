@@ -3,7 +3,6 @@
     class Template {
     
         private $subtitle;
-        private $navbar = array();
         private $parent;
         private $refresh = false;
         
@@ -18,10 +17,6 @@
         
         public function setSubTitle($title) {
             $this->subtitle = $title;
-        }
-        
-        public function addNavElement($url, $name, $page) {
-            $this->navbar[] = array($url, $name, $page);
         }
         
         /**
@@ -39,7 +34,6 @@
             //Load header options
             $DataBag["title"] = ucwords($this->subtitle) . " | LSUCS LAN" . $this->parent->settings->getSetting("lan_number");
             
-            $DataBag["navbar"] = $this->navbar;
             $DataBag["countdown"] = $this->parent->settings->getSetting("enable_timer");
             $DataBag["subtitle"] = $this->subtitle;
             $DataBag["page"] = $this->parent->page;

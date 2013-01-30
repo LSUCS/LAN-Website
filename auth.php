@@ -28,6 +28,7 @@
             //Initiate XenForo sessions
             $session = new Xenforo_Session();
             $session->startPublicSession();
+			$session->save();
             
             //Calculate user level
             $this->storeUserLevel();
@@ -53,6 +54,7 @@
             $session = XenForo_Application::get('session');
             $session->changeUserId($userId);
             XenForo_Visitor::setup($userId);
+			$session->save();
             
             //Calculate user level
             $this->storeUserLevel();
@@ -92,6 +94,16 @@
             $this->storeUserLevel();
             $this->loadLanData();
         }
+		
+		/**
+		 *	Returns the user ID from the cookie/session data
+		 */
+		public function getIdFromSession() {
+			$session = new Xenforo_Session();
+			$session->start();
+			$session->save();
+			return $session->get('user_id');
+		}
         
         /**
          * Get Active User Data

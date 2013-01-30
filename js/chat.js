@@ -3,14 +3,10 @@ var conversations = Array();
 
 $(document).ready(function() {
 
-	$("#chat").hide();
-	return;
-
 	//If websockets not supported, don't load chat
 	if (!('WebSocket' in window)) return;
 	
 	chatConnect();
-	
 	
 	//Contact list toggle
 	$("#contacts").click(function() { $("#contact-list").toggle(); });
@@ -24,31 +20,49 @@ $(document).ready(function() {
 
 function chatConnect() {
 
-	//TODO: Retrieve connection details
-	
-	connection = new WebSocket('ws://dev.lsucs.org.uk:8087');
-	
-	connection.onclose = function() {
-		console.log("Chat Connection Closed");
-		connection = null;
-		$("#contacts").html('Chat Service Offline');
-		$("#contact-list").html('');
-	};
-	
-	connection.onopen = function() {
-		console.log("Chat Connection Opened");
-
-		sendChatCommand("init", "");
+	//Get connection details
+	$.get(
+		"index.php?page=chat&action=getdetails",
+		function (data) {
 		
-	}
+			//Chat disabled?
+			if (data && data.disabled == 1) {
+				$("#chat").hide();
+				$("#contacts").html('Chat Service Offline');
+				$("#contact-list").html('');
+				return;
+			}
+			
+			$("#chat").show();
+			connection = new WebSocket(data.url);
+			
+			connection.onclose = function() {
+				console.log("Chat Connection Closed");
+				connection = null;
+				$("#contacts").html('Chat Service Offline');
+				$("#contact-list").html('');
+				setTimeout(function() { chatConnect(); }, 3000);
+			};
+			
+			//On open, send init command
+			connection.onopen = function() {
+				console.log("Chat Connection Opened");
+				sendChatCommand("init", "");
+			}
+			
+			connection.onerror = function(error) {
+				console.log("Chat Error: " + error);
+			}
+			
+			connection.onmessage = function(e) {
+				handleChatMessage(e.data);
+			}
+			
+		},
+		'json');
 	
-	connection.onerror = function(error) {
-		console.log("Chat Error: " + error);
-	}
 	
-	connection.onmessage = function(e) {
-		handleChatMessage(e.data);
-	}
+
 }
 
 function handleChatMessage(message) {
@@ -62,13 +76,15 @@ function handleChatMessage(message) {
 	
 	switch (command) {
 	
+		case 'updatecontactlist':
+			loadContactList(payload);
+			break;
 		case 'init':
 			loadContactList(payload.contacts);
 			break;
 		case 'openconversation':
 			openConversation(payload);
 			break;
-	
 		case 'error':
 			console.log("Chat Error: " + payload.error);
 			break;
@@ -82,9 +98,10 @@ function initiateConversation(userid) {
 }
 
 function openConversation(conversation) {
-	if ($.inArray(conversation.conversationid, conversations) > -1) return;
+	if ($.inArray(parseInt(conversation.conversationid), conversations) > -1) return;
+	conversations[conversations.length] = parseInt(conversation.conversationid)
 	$("#chat").append('<div class="chatbar-element conversation-element" value="' + conversation.conversationid + '"><span class="status ' + conversation.contacts[0].status + '"><li></li></span>' + conversation.contacts[0].name + '<div class="conversation">' + conversation.contacts[0].name + '<div class="messages"></div></div></div>');
-	conversations[conversations.length] = conversation.conversationid;
+	console.log(conversations);
 }
 
 function loadContactList(list) {
@@ -97,7 +114,9 @@ function loadContactList(list) {
 }
 
 function sendChatCommand(command, message) {
-	if (message.length > 0) message = JSON.stringify(message);
+	if (typeof(message) === 'object') {
+		message = JSON.stringify(message);
+	}
 	console.log("Sending command: " + command + ":" + message);
 	connection.send(command + ":" + message);
 }

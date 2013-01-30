@@ -49,7 +49,9 @@
 								"enable_hungergames" => array('bool', false),
 								"chat_address" => array("text", "localhost"),
 								"chat_port" => array("int", 8081),
-								"chat_history_length" => array("int", 10)
+								"chat_history_length" => array("int", 10),
+								"chat_enabled" => array("bool", 0),
+								"chat_url" => array("text", "ws://lan.lsucs.org.uk:8080")
                                 );
     
         public function __construct($parent) {

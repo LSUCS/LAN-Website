@@ -1,7 +1,5 @@
 <?php
 
-	die("AT LAN FUCK OFF");
-
     ini_set('display_errors','On');
     error_reporting(E_ALL);
     setlocale(LC_MONETARY, 'en_GB');
@@ -56,17 +54,6 @@
             if (isset($_GET["route"]) && strtolower($_GET["route"] == "admin")) {
             
                 $this->auth->requireAdmin();
-
-                //Add nav elements
-                $this->template->addNavElement("index.php?route=admin&page=adminblog", "Blog", "adminblog");
-                $this->template->addNavElement("index.php?route=admin&page=adminsettings", "Settings", "adminsettings");
-                $this->template->addNavElement("index.php?route=admin&page=adminwhatson", "What's On", "adminwhatson");
-                $this->template->addNavElement("index.php?route=admin&page=admingallery", "Gallery", "admingallery");
-                $this->template->addNavElement("index.php?route=admin&page=admintickets", "Tickets", "admintickets");
-                $this->template->addNavElement("index.php?route=admin&page=adminlanvan", "LAN Van", "adminlanvan");
-                $this->template->addNavElement("index.php?route=admin&page=admintf2", "TF2", "admintf2");
-                $this->template->addNavElement("index.php?route=admin&page=adminhungergames", "Hungergames", "adminhungergames");
-                $this->template->addNavElement("index.php?route=admin&page=adminfood", "Food", "adminfood");
             
                 //Set valid pages
                 $this->pages = array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan", "admintf2", "adminhungergames", "adminfood");
@@ -87,18 +74,8 @@
             //Regular public routing
             else {
             
-            
-                //Add nav elements
-                $this->template->addNavElement("index.php?page=home", "Home", "home");
-                $this->template->addNavElement("index.php?page=tickets", "Tickets", "tickets");
-                $this->template->addNavElement("index.php?page=whatson", "What's On", "whatson");
-                $this->template->addNavElement("index.php?page=tournaments", "Tournaments", "tournaments");
-                $this->template->addNavElement("index.php?page=info", "Essential Info", "info");
-                $this->template->addNavElement("index.php?page=contact", "Contact", "contact");
-                $this->template->addNavElement("http://lsucs.org.uk", "Forums", "forums");
-            
                 //Set valid pages
-                $this->pages = array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation");
+                $this->pages = array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation", "chat");
             
                 //Parse page - if invalid, load 'not found' template
                 if (!isset($_GET["page"]) || $_GET["page"] == "") {

@@ -6,6 +6,7 @@
     _top: expression(eval(document.documentElement.scrollTop+(document.documentElement.clientHeight-this.offsetHeight)));
 	height: 30px;
 	min-width: 100%;
+	display: none;
 }
 
 #chat .chatbar-element {
@@ -46,6 +47,8 @@
 	}
 	
 #chat #contact-list {
+	overflow-y: auto;
+	overflow-x: hidden;
 	max-height: 600px;
 	position: absolute;
 	bottom: 30px;
@@ -103,4 +106,9 @@
 		border: 1px solid #ccc;
 		border-bottom: 0px;
 		background-color: #f9f9f9;
+	}
+	#chat .conversation-element .status {
+		display: block;
+		float: left;
+		margin-top: -2px;
 	}

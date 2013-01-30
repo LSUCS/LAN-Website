@@ -5,6 +5,9 @@
 		protected $maxBufferSize = 1048576;
 		protected $userClass = 'LanChatUser';
 
+		//////////////////////////
+		// CONNECTION FUNCTIONS //
+		//////////////////////////
 		/**
 		 * Handles incoming protocol messages
 		 */
@@ -17,7 +20,7 @@
 			//Extract protocol command and payload
 			if (strpos($message, ":") === false) return $this->error($user, "Invalid message structure");
 			$command = strtolower(substr($message, 0, strpos($message, ":")));
-			$payload = json_decode(substr($message, strpos($message, ":")), true);
+			$payload = json_decode(substr($message, strpos($message, ":")+1), true);
 			if ($payload === NULL && strlen($payload) > 0) return $this->error($user, "Invalid JSON payload");
 			
 			//Select protocol command action
@@ -27,7 +30,6 @@
 				//params - { }
 				//return - JSON array of open conversations and user list
 				case "init":
-				
 					$this->sendCommand($user, "init", array("contacts" => $this->getContactList(), "conversations" => ""));
 					break;
 				
@@ -104,41 +106,65 @@
 					break;
 			
 			}
-			
 		}
-
+		
 		/**
 		 * Handles authenticating the connecting websocket
 		 */
 		protected function connected($user) {
 			global $_MAIN;
 			
-			//Handle cookie and create new auth object for user
+			//Handle cookie and get user ID
 			$cookies = explode("; ", $user->headers['cookie']);
+			$_COOKIE = array();
 			foreach ($cookies as $cookie) {
 				$cookie = explode("=", $cookie);
 				$_COOKIE[$cookie[0]] = $cookie[1];
 			}
-			$user->auth = new Auth($_MAIN);
+			$user->userID = $_MAIN->auth->getIdFromSession();
 			
 			//If user is not logged in, fatal error
-			if (!$user->auth->isLoggedIn()) $this->fatalError($user, "Must be logged in to use chat");
-			$userdata = $user->auth->getActiveUserData();
+			if ($user->userID == null) return $this->fatalError($user, "Must be logged in to use chat");
+			$userdata = $_MAIN->auth->getUserById($user->userID);
 			
 			//Store userID
 			$user->userID = $userdata["xenforo"]["user_id"];
 			
 			$this->stdout("Authorised connection " . $user->id . " for " . $userdata["xenforo"]["username"]);
 			
-			//TODO: Mark as online, update online presence to other sockets
+			//Update presence to other sockets
+			$this->allSendCommand($user, "updatecontactlist", $this->getContactList());
 			
 		}
 		
 		/**
-		 * Sends a message to all sockets with a userID in $userIDs, excluding the optional $user
+		 * Shuts down the connection
+		 */
+		protected function closed($user) {
+			$this->stdout("Connection " . $user->id . " closed by user");
+			//Update presence to other sockets
+			$this->allSendCommand($user, "updatecontactlist", $this->getContactList());
+		}
+		
+		
+		
+		//////////////////////
+		//  SEND FUNCTIONS  //
+		//////////////////////
+		/**
+		 *	Sends a command to all sockets
+		 */
+		protected function allSendCommand($userExclude = null, $command, $payload) {
+			if ($userExclude != null) $this->stdout("WAT: " . $userExclude->userID);
+			$this->multiSendCommand(array_map(function ($o) { return $o->userID; }, $this->users), $userExclude, $command, $payload);
+		}
+		
+		/**
+		 * Sends a command to all sockets with a userID in $userIDs, excluding the optional $user
 		 * Returns an array of IDs that don't have sockets so can't be sent
 		 */
 		protected function multiSendCommand($userIDs, $userExclude = null, $command, $payload) {
+	
 			$sent = array();
 			
 			foreach ($this->users as $user) {
@@ -154,11 +180,11 @@
 		}
 		
 		/**
-		 * Shuts down the connection
+		 * Sends a command to a socket
 		 */
-		protected function closed($user) {
-			//TODO: Mark as offline if no other sockets open for user, update online presence to other sockets
-			$this->stdout("Connection " . $user->id . " closed by user");
+		protected function sendCommand($user, $command, $payload) {
+			$this->stdout("SEND - " . $command . " - TO - " . $user->userID . " " . $user->id);
+			$this->send($user, $command . ":" . json_encode($payload));
 		}
 		
 		/**
@@ -177,12 +203,6 @@
 			$this->disconnect($user->socket);
 		}
 		
-		/**
-		 * Sends a command to a socket
-		 */
-		protected function sendCommand($user, $command, $payload) {
-			$this->send($user, $command . ":" . json_encode($payload));
-		}
 		
 		
 		///////////////////////
@@ -235,7 +255,7 @@
 		private function getContact($userid) {
 			global $_MAIN;
 			$userdata = $_MAIN->auth->getUserById($userid);
-			$contact = new Contact($userid, $userdata["lan"]["real_name"], "offline", $_MAIN->auth->getAvatarById($userid));
+			$contact = new Contact($userid, $userdata["xenforo"]["username"], "offline", $_MAIN->auth->getAvatarById($userid));
 			foreach ($this->users as $user) {
 				if ($user->userID == $userid) $contact->status = "online";
 			}
@@ -249,25 +269,29 @@
 		
 			global $_MAIN;
 			
-			$contacts = array();
-			$ids = array();
+			$online = array();
+			$ingame = array();
+			$offline = array();
 			
-			//Load online contacts
-			foreach ($this->users as $user) {
-				if (!in_array($user->userID, $ids) && (($excludeUser != false && $user->userID != $excludeUser->userID) || $excludeUser == false)) {
-					$contacts[] = $this->getContact($user->userID);
-				}
-			}
-			
-			//Load offline
+			//Get activated tickets for LAN
 			$res = $_MAIN->db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", $_MAIN->settings->getSetting("lan_number"));
 			while ($row = $res->fetch_assoc()) {
-				if (!in_array($row["assigned_forum_id"], $ids) && (($excludeUser != false && $row["assigned_forum_id"] != $excludeUser->userID) || $excludeUser == false)) {
-					$contacts[] = $this->getContact($row["assigned_forum_id"]);
+				if (($excludeUser != false && $row["assigned_forum_id"] != $excludeUser->userID) || $excludeUser == false) {
+					$contact = $this->getContact($row["assigned_forum_id"]);
+					switch ($contact->status) {
+						case "online": $online[] = $contact; break;
+						case "in-game": $ingame[] = $contact; break;
+						default: $offline[] = $contact; break;
+					}
 				}
 			}
 			
-			return $contacts;
+			//Sort
+			usort($online, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
+			usort($ingame, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
+			usort($offline, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
+			
+			return array_merge($ingame, $online, $offline);
 			
 		}
 		
