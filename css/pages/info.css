@@ -1,5 +1,8 @@
 .info-row {
     height: 250px;
+    width: 860px;
+    margin-left: auto;
+    margin-right: auto;
 }
     .info-row .info-element {
         float: left;

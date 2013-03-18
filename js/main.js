@@ -118,7 +118,7 @@ var Overlay = {
     initialiseOverlay: function() {
         $(window).resize(function() { Overlay.resizeScreen(); });
         $(document).scroll(function() { Overlay.resizeScreen(); });
-        $("#close-overlay").live("click", function() { Overlay.closeOverlay(); });
+        $("#close-overlay").on({ click: function() { Overlay.closeOverlay(); } });
     },
     openOverlay: function(showButton, text, timeout) {
 
@@ -142,7 +142,7 @@ var Overlay = {
         
     },
     loadingOverlay: function() {
-        this.openOverlay(false, '<img src="images/loading.gif" />');
+        this.openOverlay(false, '<img src="/images/loading.gif" />');
     },
     closeOverlay: function() {
         $("#screen").fadeOut("300");

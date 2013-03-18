@@ -1,0 +1,213 @@
+<div id="background"></div>
+
+<div id="chat">
+    <div id="contacts" class="chatbar-element">
+        Chat Service Offline
+    </div>
+    <div id="contact-list"></div>
+</div>
+
+<div id="wrapper">
+
+    <div id="header">
+        <div id="navbar-container">
+            <div id="navbar">
+                <ul>
+                    <li class="nav-left nav-logo"><a href="http://lsucs.org.uk">dev<b>cs</b></a></li>
+                    <li class="nav-left nav-divider"></li>
+                    <li class="nav-left"><a href="<? echo LanWebsite_Main::buildUrl(false); ?>">Home</a></li>
+                    <li class="nav-left info"><a href="<? echo LanWebsite_Main::buildUrl(false, "info"); ?>">Essential Info</a></li>
+                    <li class="nav-left"><a href="<? echo LanWebsite_Main::buildUrl(false, "tickets"); ?>">Tickets</a></li>
+                    <li class="nav-left"><a href="<? echo LanWebsite_Main::buildUrl(false, "whatson"); ?>">What's On</a></li>
+                    <li class="nav-left"><a href="<? echo LanWebsite_Main::buildUrl(false, "contact"); ?>">Contact</a></li>
+                    <li class="nav-left"><a href="http://lsucs.org.uk">Forums</a></li>
+                    
+                    <?php if ($DataBag["loggedin"]) { ?>
+                        <a href="<? echo LanWebsite_Main::buildUrl(false, "account", "logout"); ?>" title="Logout"><li class="nav-right logout"></li></a>
+                        <?php if ($DataBag["admin"]) echo '<a href="' . LanWebsite_Main::buildUrl(true) .'" title="Admin Panel"><li class="nav-right admin"></li></a>'; ?>
+                        <a href="<? echo LanWebsite_Main::buildUrl(false, "account"); ?>" title="Account Details"><li class="nav-right account"></li></a>
+                        <li class="nav-right"><a href="<? echo LanWebsite_Main::buildUrl(false, 'profile', null, array('member' => $DataBag["user"]->getUsername())); ?>" title="Profile"><? echo $DataBag["user"]->getUsername(); ?></a></li>
+                    <?php } else echo '<li class="nav-right"><a href="' . LanWebsite_Main::buildUrl(false, 'account') . '">Sign In</a></li>'; ?>
+                    <li class="nav-right nav-avatar"><img src="<?php echo $DataBag["user"]->getAvatar(); ?>" /></li>
+                
+                </ul>
+                
+            </div>
+        </div>
+        
+        <div id="info-bar-container">
+            <div id="info-bar">
+                <div class="info-group">
+                    <h3>About</h3>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "gallery"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/gallery.png" />
+                            Gallery
+                        </div>
+                    </a>
+                </div>
+                <div class="info-group">
+                    <h3>Before the LAN</h3>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "equipment"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/equipment.png" />
+                            What to Bring
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "lanvan"); ?>">
+                        <div class="info-element">
+                            <img id="van" class="info-image" src="/images/info/van.png" />
+                            LAN Van
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "parking"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/parking.png" />
+                            Location and Parking
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "arrival"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/arrival.png" />
+                            Arrival Details
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="info-group">
+                    <h3>At the LAN</h3>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "rules"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/rules.png" />
+                            LAN Rules
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "map"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/map.png" />
+                            <span>Live Map</span>
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "food"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/food.png" />
+                            Food and Drink
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "sleeping"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/sleep.png" />
+                            Sleeping
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "tournamentrules"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/tournament.png" />
+                            Tournament Rules
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "raffle"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/raffle.png" />
+                            Raffle
+                        </div>
+                    </a>
+                    
+                    <a href="<? echo LanWebsite_Main::buildUrl(false, "info", "dc"); ?>">
+                        <div class="info-element">
+                            <img class="info-image" src="/images/info/dc.png" />
+                            DC++
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+                
+        <div style="clear: both;"></div>
+        
+        <div id="title-container">
+            <a href="index.php"><div id="landetails">
+                <div id="lan">LAN<span><?php echo $DataBag["lan"]; ?></span></div>
+                <?php echo $DataBag["datestring"]; ?>
+            </div></a>
+            <? if ($DataBag["countdown"]) { ?>
+                <div id="booking-container">
+                    <div id="countdown">
+                        <span class="countdown-section">
+                            <span class="countdown-amount" id="countdown-days">0</span>
+                            <span class="countdown-label">Days</span>
+                        </span>
+                        <span class="countdown-section">
+                            <span class="countdown-amount" id="countdown-hours">0</span>
+                            <span class="countdown-label">Hours</span>
+                        </span>
+                        <span class="countdown-section">
+                            <span class="countdown-amount" id="countdown-minutes">0</span>
+                            <span class="countdown-label">Minutes</span>
+                        </span>
+                        <span class="countdown-section">
+                            <span class="countdown-amount" id="countdown-seconds">0</span>
+                            <span class="countdown-label">Seconds</span>
+                        </span>
+                    </div>
+                    <a href="index.php?page=tickets">
+                        <div id="book-now">
+                            Book your LAN<?php echo $DataBag["lan"]; ?> ticket!
+                        </div>
+                    </a>
+                </div>
+            <? } ?>
+        </div>
+        
+        <div style="clear: both;"></div>
+        
+        <ul class="subtabs lantabs">
+            <li><a href="index.php?page=map"><img src="/images/accessbar/map.png">Live Map</a></li>
+            <li><a href="index.php?page=tournaments"><img src="/images/accessbar/game.png">Tournaments</a></li>
+            <li><a href="index.php?page=servers"><img src="/images/accessbar/servers.png">Game Servers</a></li>
+            <li><a href="index.php?page=whatson"><img src="/images/accessbar/timetable.png">Timetable</a></li>
+            <li><a href="index.php?page=info&action=food"><img src="/images/accessbar/pizza.png">Food</a></li>
+        </ul>
+        
+        <? if (isset($_GET["route"]) && strtolower($_GET["route"] == "admin")) { ?>
+        
+            <ul class="subtabs admintabs">
+                <li><a href="index.php?route=admin&page=adminsettings">Settings</a></li>
+                <li><a href="index.php?route=admin&page=adminblog">Blog</a></li>
+                <li><a href="index.php?route=admin&page=adminwhatson">Timetable</a></li>
+                <li><a href="index.php?route=admin&page=admingallery">Gallery</a></li>
+                <li><a href="index.php?route=admin&page=admintickets">Tickets</a></li>
+                <li><a href="index.php?route=admin&page=adminlanvan">LAN Van</a></li>
+                <li><a href="index.php?route=admin&page=admintf2">Games</a></li>
+                <li><a href="index.php?route=admin&page=adminfood">Food</a></li>
+            </ul>
+        
+        <? } ?>
+        
+        <div id="subtitle">
+            <img src="/images/arrow.png" /><?php echo $DataBag["subtitle"]; ?>
+        </div>
+
+    </div>
+
+    <div id="overlay" class="content-overlay">
+        <div id="overlay-content">
+        </div>
+        <div id="close-overlay">
+        </div>
+    </div>
+    <div id="screen">
+    </div>
+    
+    <div id="content">

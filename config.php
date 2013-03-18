@@ -1,30 +1,29 @@
 
 <?php
-
-	class Config {
-		
-		public $database;
-		public $auth;
-		
-		function __construct() {
         
-            require_once("/home/soc_lsucs/lan.lsucs.org.uk/password.php");
-			
-			/**
-			 * Database
-			 */
-			$this->database["host"] = "localhost";
-			$this->database["user"] = "dev-lanwebsite";
-			$this->database["pass"] = $password;
-			$this->database["db"]   = "dev-lanwebsite";
-			
-			/**
-			 *Auth
-			 */
-            $this->auth["xenforoDir"] = "/home/soc_lsucs/lsucs.org.uk/htdocs";
-			
-		}
-		
-	}
+    include "/home/soc_lsucs/lan.lsucs.org.uk/password.php";
+    
+    /**
+     * Database Settings
+     */
+    $config['database']["host"] = "localhost";
+    $config['database']["user"] = "lanwebsite";
+    $config['database']["pass"] = $password;
+    $config['database']["db"]   = "dev-lanwebsite";
+    
+    /**
+     * Auth Mechanism
+     */
+    $config['auth'] = "LanWebsite_Auth_Lsucs";
+
+    /**
+     * UserManager
+     */
+    $config['usermanager'] = "LanWebsite_UserManager_Lsucs";
+    
+    /**
+     * SEO-friendly URLs
+     */
+    $config['seo_enabled'] = true;
 
 ?>

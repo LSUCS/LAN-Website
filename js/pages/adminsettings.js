@@ -4,7 +4,7 @@ $(document).ready(function() {
     $(".setting-date").datetimepicker({
         dateFormat: "yy-mm-dd",
         timeFormat: "hh:mm:ss",
-        setDate: new Date($(this).attr('value'))
+        setDate: new Date($(this).prop('value'))
         });
 
     
@@ -19,8 +19,8 @@ function saveSettings() {
 
     $(".setting input").each(function() {
     
-        var name = $(this).attr('name');
-        var val = $(this).attr('value');
+        var name = $(this).prop('name');
+        var val = $(this).prop('value');
         
         //Bool inputs
         if ($(this).hasClass('setting-bool')) {

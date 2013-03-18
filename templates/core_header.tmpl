@@ -1,0 +1,15 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+    <head>
+    
+        <noscript>
+            <meta http-equiv="refresh" content="0; url=no-js.html" />
+        </noscript>
+        
+        <link rel="shortcut icon" href="images/favicon.ico" />
+        
+        <?php
+            foreach ($DataBag["styles"] as $style) echo '<link rel="stylesheet" type="text/css" href="' . $style. '">';
+            foreach ($DataBag["scripts"] as $script) echo '<script type="text/javascript" src="' . $script . '"></script>';
+        ?>

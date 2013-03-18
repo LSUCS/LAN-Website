@@ -121,6 +121,7 @@
 				$cookie = explode("=", $cookie);
 				$_COOKIE[$cookie[0]] = $cookie[1];
 			}
+			print_r($_COOKIE);
 			$user->userID = $_MAIN->auth->getIdFromSession();
 			
 			//If user is not logged in, fatal error
@@ -155,7 +156,6 @@
 		 *	Sends a command to all sockets
 		 */
 		protected function allSendCommand($userExclude = null, $command, $payload) {
-			if ($userExclude != null) $this->stdout("WAT: " . $userExclude->userID);
 			$this->multiSendCommand(array_map(function ($o) { return $o->userID; }, $this->users), $userExclude, $command, $payload);
 		}
 		

@@ -6,7 +6,7 @@ $(document).ready(function() {
         album = $(this).find('.folder-label').html();
         loadGallery($(this).find('.folder-label').html());
     });
-    Galleria.loadTheme('js/galleria/themes/classic/galleria.classic.min.js');
+    Galleria.loadTheme('/js/galleria/themes/classic/galleria.classic.min.js');
     Galleria.run("#galleria", { autoplay: 5000, lightbox: true });
     
     //Load hash

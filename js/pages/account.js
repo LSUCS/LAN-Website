@@ -37,9 +37,9 @@ $(document).ready(function() {
         Overlay.openOverlay(true, "");
     });
     
-    $("#confirm-claim").live('click', function() {
+    $("#confirm-claim").on({'click': function() {
         claimTicket();
-    });
+    }});
     
     //Code link
     if (PageVars["code"] && PageVars["code"] != "") {
@@ -48,7 +48,7 @@ $(document).ready(function() {
     }
     
     //Assign link
-    $(".assign-link").live('click', function() {
+    $(".assign-link").on({'click': function() {
         assignID = $(this).parent().siblings().first().html();
         $("#overlay-content").html('<label for="assign-name">Forum Name: </label><input id="assign-name" /><button id="assign-ticket">Assign</button>');
         $("#assign-ticket").button();
@@ -57,8 +57,8 @@ $(document).ready(function() {
             minLength: 2
         });
         Overlay.openOverlay(true, "");
-    });
-    $("#assign-ticket").live('click', function() {
+    }});
+    $("#assign-ticket").on({'click': function() {
         $.post("index.php?page=account&action=assignticket",
         { name: $("#assign-name").val(), ticket_id: assignID },
         function (data) {
@@ -70,7 +70,7 @@ $(document).ready(function() {
             loadTickets();
         },
         'json');
-    });
+    }});
     
     //Game autocomplete
     $("#add-game").autocomplete({
@@ -92,7 +92,7 @@ $(document).ready(function() {
     });
     
     //Delete game
-    $(".delete-game").live('click', function() {
+    $(".delete-game").on({'click': function() {
         $(this).parent().remove();
         odd = true;
         $(".game").each(function() {
@@ -102,7 +102,7 @@ $(document).ready(function() {
             odd = !odd;
         });
         if ($(".game").length == 0) $("#favourite-games").html("No Games Added");
-    });
+    }});
     
     //Save game details
     $("#save-game-details").click(function() {
@@ -126,7 +126,7 @@ function saveVanDetails() {
                 "Only two pieces of equipment may be transported per person in the LAN Van.<br /><button id='accept-van'>Continue</button>";
     Overlay.openOverlay(true, string);
     $("#accept-van").button();
-    $("#accept-van").live('click', function() {
+    $("#accept-van").on({'click': function() {
         $.post(
             "index.php?page=account&action=editvandetails",
             { phone: $("#phone_number").val(), address: $("#address").val(), postcode: $("#postcode").val(), collection: $("#collection").prop("checked"), dropoff: $("#dropoff").prop("checked"), availability: $("#availability").val() },
@@ -139,7 +139,7 @@ function saveVanDetails() {
                 loadDetails();
             },
             'json');
-    });
+    }});
 }
 
 function deleteVan() {

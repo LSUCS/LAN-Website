@@ -12,9 +12,8 @@ $(document).ready(function() {
 	$("#contacts").click(function() { $("#contact-list").toggle(); });
 	
 	//Contact click
-	$(".contact").live('click', function() {
-		initiateConversation($(this).attr('value'));
-	});
+	$(".contact").on({ click: function() { initiateConversation($(this).attr('value')); } });
+	
 	
 });
 
