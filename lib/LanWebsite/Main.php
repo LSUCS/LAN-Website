@@ -3,11 +3,14 @@
 	class LanWebsite_Main {
 		
         private static $init = false;
+        
+        private static $controllerdir = '';
 		
 		private static $db;
         private static $settings;
         private static $auth;
         private static $usermanager;
+        private static $templatemanager;
         
         
         /**
@@ -21,12 +24,16 @@
     
             //Load base config
             include 'config.php';
+            
+            //Load controller location
+            self::$controllerdir = $config['controllerdir'];
 			
             //Load base objects
 			self::$db       = new LanWebsite_Db();
             self::$settings = new LanWebsite_Settings();
             self::$auth     = new $config['auth'];
             self::$usermanager = new $config['usermanager'];
+            self::$templatemanager = new LanWebsite_TemplateManager();
             
             //Init auth
             self::$auth->init();
@@ -35,60 +42,16 @@
         
         
         /**
-         * Public routing engine
+         *  Sets the base controller dir
          */
-        public static function routePublic() {
-        
-            //Validate route
-            $page = self::validateRequestRoutes(array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation", "chat"));
-            if (!$page) $page = self::$settings->getSetting("default_page");
-            
-            //Force data requirement if at LAN
-            if (self::isAtLan() && $page != "account") {
-            
-                $userdata = self::$auth->getActiveUserData();
-                $message = null;
-                
-                //Ticket checks
-                $ticket = self::$db->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $userdata["xenforo"]["user_id"], self::$settings->getSetting("lan_number"))->fetch_assoc();
-                if (!$ticket || $ticket["activated"] == 0 || $userdata["lan"]["real_name"] == "" || $userdata["lan"]["emergency_contact_name"] == "" || $userdata["lan"]["emergency_contact_number"] == "") {
-                    header("location: index.php?page=account");
-                }
-            }
-            
-            //Load controller and handle request
-            require_once "controllers/public/" . $page . ".php";
-            $class = ucwords($page) . "_Controller";
-            $controller = new $class;
-            $controller->handleRequest();
-            
+        public static function setControllerDir($dir) {
+            self::$controllerdir = $dir;
         }
         
-        
         /**
-         * Public routing engine
+         *  Route the current request according to inputted valid controllers
          */
-        public static function routeAdmin() {
-
-            self::$auth->requireAdmin();
-            
-            //Validate route
-            $page = self::validateRequestRoutes(array("adminsettings", "admintournaments", "adminwhatson", "adminblog", "admingallery", "admintickets", "adminlanvan", "admintf2", "adminhungergames", "adminfood"));
-            if (!$page) $page = self::$settings->getSetting("default_admin_page");
-            
-            //Load controller and handle request
-            require_once "controllers/admin/" . $page . ".php";
-            $class = ucwords($page) . "_Controller";
-            $controller = new $class($page . "_Admin_Controller");
-            $controller->handleRequest();
-        
-        }
-        
-        
-        /**
-         *  Private function to validate current http request against a lit of routes
-         */
-        private static function validateRequestRoutes($routes) {
+        public static function route($validControllers, $default) {
             
             //Initialisation check
             if (self::$init == false) throw new Exception('Attempting to route before core initialization');
@@ -100,27 +63,33 @@
             }
             
             //Parse page - if invalid, load 'not found' template
-            if (!isset($_GET["page"]) || $_GET["page"] == "") {
-                $page = false;
-            } else if (in_array(strtolower($_GET["page"]), $routes)) {
+            if (isset($_GET["page"]) && in_array(strtolower($_GET["page"]), $validControllers)) {
                 $page = strtolower($_GET["page"]);
+            } else if (isset($_GET["page"])) {
+                return self::pageNotFound();
             } else {
-                self::pageNotFound();
-                return;
+                $page = $default;
             }
             
-            return $page;
+            
+            //Check controller file exists
+            if (!file_exists(trim(self::$controllerdir, "/") . "/" . $page . ".php")) return self::pageNotFound();
+            
+            //Load controller and handle request
+            require_once trim(self::$controllerdir, "/") . "/" . $page . ".php";
+            $class = ucwords($page) . "_Controller";
+            $controller = new $class;
+            $controller->handleRequest();
             
         }
-        
         
         /**
          *  Page not found
          */
         public static function pageNotFound() {
-            $tmpl = new LanWebsite_Template();
+            $tmpl = self::$templatemanager;
 			$tmpl->setSubTitle("page not found");
-            $tmpl->addTemplate('public/notfound');
+            $tmpl->addTemplate('notfound');
 			$tmpl->output();
         }
         
@@ -186,6 +155,10 @@
         
         public static function getUserManager() {
             return self::$usermanager;
+        }
+        
+        public static function getTemplateManager() {
+            return self::$templatemanager;
         }
         
         

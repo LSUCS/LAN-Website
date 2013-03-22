@@ -77,6 +77,10 @@
             return $result;
         }
         
+        public function checkFriendsOfLsucs($userID) {
+            $this->getLsucsAuthResponse("checkfol", array("userid" => $userID));
+        }
+        
         private function getLanData($userid) {
             //Get data from LAN website
             $data = LanWebsite_Main::getDb()->query("SELECT * FROM `user_data` WHERE user_id = '%s'", $userid)->fetch_assoc();

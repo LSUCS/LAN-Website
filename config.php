@@ -12,6 +12,11 @@
     $config['database']["db"]   = "dev-lanwebsite";
     
     /**
+     * Default Controller location
+     */
+    $config['controllerdir'] = '/public/controllers/';
+    
+    /**
      * Auth Mechanism
      */
     $config['auth'] = "LanWebsite_Auth_Lsucs";

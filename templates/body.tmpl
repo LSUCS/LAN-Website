@@ -180,17 +180,16 @@
             <li><a href="index.php?page=info&action=food"><img src="/images/accessbar/pizza.png">Food</a></li>
         </ul>
         
-        <? if (isset($_GET["route"]) && strtolower($_GET["route"] == "admin")) { ?>
+        <? if (defined("LANWEBSITE_ADMIN") && LANWEBSITE_ADMIN == true) { ?>
         
             <ul class="subtabs admintabs">
-                <li><a href="index.php?route=admin&page=adminsettings">Settings</a></li>
-                <li><a href="index.php?route=admin&page=adminblog">Blog</a></li>
-                <li><a href="index.php?route=admin&page=adminwhatson">Timetable</a></li>
-                <li><a href="index.php?route=admin&page=admingallery">Gallery</a></li>
-                <li><a href="index.php?route=admin&page=admintickets">Tickets</a></li>
-                <li><a href="index.php?route=admin&page=adminlanvan">LAN Van</a></li>
-                <li><a href="index.php?route=admin&page=admintf2">Games</a></li>
-                <li><a href="index.php?route=admin&page=adminfood">Food</a></li>
+                <li><a href="admin.php?page=settings">Settings</a></li>
+                <li><a href="admin.php?page=blog">Blog</a></li>
+                <li><a href="admin.php?page=whatson">Timetable</a></li>
+                <li><a href="admin.php?page=gallery">Gallery</a></li>
+                <li><a href="admin.php?page=tickets">Tickets</a></li>
+                <li><a href="admin.php?page=lanvan">LAN Van</a></li>
+                <li><a href="admin.php?page=food">Food</a></li>
             </ul>
         
         <? } ?>
