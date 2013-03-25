@@ -30,11 +30,11 @@
 			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `food_orders` WHERE lan_number = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"));
 			while ($order = $res->fetch_assoc()) {
 				$shop = $shops[$order["shop_id"]];
-				$userdata = LanWebsite_Main::getUserManager()->getUserById($order["user_id"]);
+				$user = LanWebsite_Main::getUserManager()->getUserById($order["user_id"]);
 				$ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
 				$out = array();
 				$out[] = $order["order_id"];
-				$out[] = $userdata["lan"]["real_name"];
+				$out[] = $user->getFullName();
 				$out[] = $ticket["seat"];
 				$out[] = $shop["shop_name"];
 				$out[] = $order["option_name"];
@@ -57,6 +57,8 @@
 			
 			//Mark is paid
 			LanWebsite_Main::getDb()->query("UPDATE `food_orders` SET paid = 1 WHERE order_id = '%s'", $order["order_id"]);
+            
+            echo true;
 			
 		}
 	

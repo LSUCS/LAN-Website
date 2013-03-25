@@ -34,7 +34,7 @@ $(document).ready(function() {
 
 function editEntry() {
     $.post(
-        "index.php?route=admin&page=adminblog&action=edit",
+        UrlBuilder.buildUrl(true, 'blog', 'edit'),
         { id: selectedid, title: $("#edit-entry-title").val(), content: $("#edit-entry-content").val() },
         function (data) {
             if (data != null && data.error) {
@@ -50,7 +50,7 @@ function editEntry() {
 function deleteEntry() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?route=admin&page=adminblog&action=delete",
+        UrlBuilder.buildUrl(true, 'blog', 'delete'),
         { id: selectedid },
         function (data) {
             if (data != null && data.error) {
@@ -66,7 +66,7 @@ function deleteEntry() {
 function loadEntry(id) {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?route=admin&page=adminblog&action=load",
+        UrlBuilder.buildUrl(true, 'blog', 'load'),
         { id: id },
         function (data) {
             var string = '<div id="edit-error"></div><div id="edit-entry"><div id="edit-entry-title-container"><label for="edit-entry-title">Title: </label><input type="text" id="edit-entry-title" value="' + data.title + '" /></div>' +
@@ -86,7 +86,7 @@ function loadEntry(id) {
 function submitEntry() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?route=admin&page=adminblog&action=add",
+        UrlBuilder.buildUrl(true, 'blog', 'add'),
         { title: $("#entry-title").val(), content: $("#entry-content").val() },
         function (data) {
             if (data != null && data.error) {
@@ -103,7 +103,7 @@ function submitEntry() {
 
 function loadEntries() {
     $.get(
-        "index.php?route=admin&page=adminblog&action=getentries",
+        UrlBuilder.buildUrl(true, 'blog', 'getentries'),
         function (data) {
             $("#table-body").html("");
             if (data.length > 0) {

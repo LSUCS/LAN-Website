@@ -12,6 +12,9 @@ $(document).ready(function() {
         "iDisplayLength": 10,
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
+        "oTableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
             { "sTitle": "ID", "sWidth": "40px", "sClass": "idcell" },
             { "sTitle": "Name", "bSearchable": true },
@@ -29,6 +32,9 @@ $(document).ready(function() {
         "iDisplayLength": 10,
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
+        "oTableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
             { "sTitle": "ID", "sWidth": "40px", "sClass": "idcell" },
             { "sTitle": "Name", "bSearchable": true },
@@ -74,7 +80,7 @@ $(document).ready(function() {
 
 function loadTables() {
     $.get(
-        "index.php?route=admin&page=adminfood&action=loadtables",
+        UrlBuilder.buildUrl(true, 'food', 'loadtables'),
         function (data) {
         
             paidTable.fnClearTable();
@@ -88,7 +94,7 @@ function loadTables() {
 
 function paid() {
     Overlay.loadingOverlay();
-	$.post("index.php?route=admin&page=adminfood&action=paid",
+	$.post(UrlBuilder.buildUrl(true, 'food', 'paid'),
 		{ order_id: $("#unpaid-orders .row-selected").parent().find('.idcell').html() },
 		function (data) {
 			if (data != null && data.error) {

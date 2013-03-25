@@ -9,7 +9,7 @@ function loadProfile() {
     $("#loading").show();
     $("#invalid-profile").hide();
     $.post(
-        "index.php?page=profile&action=loadprofile",
+        UrlBuilder.buildUrl(false, "profile", "loadprofile"),
         { name: PageVars.member },
         function (data) {
             //Error checking

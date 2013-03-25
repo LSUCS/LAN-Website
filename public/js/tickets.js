@@ -35,7 +35,7 @@ $(document).ready(function() {
 function checkout() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?page=tickets&action=checkout",
+        UrlBuilder.buildUrl(false, "tickets", "checkout"),
         { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val() },
         function (data) {
             if (data != null && data.error) {

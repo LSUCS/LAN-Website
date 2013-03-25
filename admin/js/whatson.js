@@ -14,7 +14,7 @@ $(document).ready(function() {
     
     $("#add-button").click(function() {
         $.post(
-            "index.php?route=admin&page=adminwhatson&action=addentry",
+            UrlBuilder.buildUrl(true, "whatson", "addentry"),
             { day: $("#entry-day option:selected").val(),
               start_time: $("#entry-start-time option:selected").val(),
               end_time: $("#entry-end-time option:selected").val(),
@@ -40,7 +40,7 @@ $(document).ready(function() {
         $("#confirm-delete").button();
         $("#confirm-delete").click(function() {
             $.post(
-                "index.php?route=admin&page=adminwhatson&action=deleteentry",
+                UrlBuilder.buildUrl(true, "whatson", "deleteentry"),
                 { entry_id: entry_id },
                 function (data) {
                     if (data != null && data.error) {
@@ -61,7 +61,7 @@ $(document).ready(function() {
 
 function loadEntries() {
     $.get(
-        "index.php?route=admin&page=adminwhatson&action=getentries",
+        UrlBuilder.buildUrl(true, "whatson", "getentries"),
         function (data) {
             $("#table-body").html("");
             if (data.length > 0) {

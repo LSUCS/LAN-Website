@@ -16,12 +16,12 @@
         
         private $plugins = array(
                                 "jquery" => array( "scripts" => array( "/js/jquery.min.js" ), "styles" => array(), "include" => true ),
+                                "jquery-ui" => array( "scripts" => array( "/js/jquery-ui.custom.min.js" ), "styles" => array( "/css/jquery-ui/jquery-ui.custom.css" ), "include" => true ),
                                 "cleditor" => array( "scripts" => array( "/js/jquery.cleditor.min.js" ), "styles" => array( "/css/jquery.cleditor.css" ), "include" => false ),
                                 "datatables" => array( "scripts" => array( "/js/jquery.dataTables.min.js", "/js/TableTools.min.js", "/js/ZeroClipboard.js" ), "styles" => array( "/css/jquery.dataTables_themeroller.css", "/css/TableTools_JUI.css" ), "include" => false ),
                                 "scrollbar" => array( "scripts" => array( "/js/jquery.mCustomScrollbar.min.js" ), "styles" => array( "css/jquery.mCustomScrollbar.css" ), "include" => false ),
                                 "timers" => array( "scripts" => array( "/js/jquery.timers.js" ), "styles" => array(), "include" => false ),
                                 "tools" => array( "scripts" => array( "/js/jquery.tools.min.js", "/js/jquery.mousewheel.min.js", "/js/jquery.easing.js" ), "styles" => array(), "include" => false ),
-                                "jquery-ui" => array( "scripts" => array( "/js/jquery-ui.custom.min.js" ), "styles" => array( "/css/jquery-ui/jquery-ui.custom.css" ), "include" => true ),
                                 "timepicker" => array( "scripts" => array( "/js/jquery-ui.timepicker.js" ), "styles" => array(), "include" => false ),
                                 "spinner" => array( "scripts" => array( "/js/ui.spinner.min.js" ), "styles" => array( "/css/ui.spinner.css" ), "include" => false ),
                                 "galleria" => array( "scripts" => array( "/js/galleria/galleria-1.2.8.min.js" ), "styles" => array( ), "include" => false),

@@ -23,7 +23,7 @@ $(document).ready(function() {
     });
     
     //Date countdown
-    $.get("index.php?page=account&action=date",
+    $.get(UrlBuilder.buildUrl(true, 'account', 'date'),
           function (data) {
             Countdown.start(data);
           });
@@ -67,7 +67,7 @@ $(document).ready(function() {
 //Check account details
 function checkAccountDetails() {
     $.get(
-        "index.php?page=account&action=checkdetails",
+        UrlBuilder.buildUrl(true, 'account', 'checkdetails'),
         function (data) {
             if (data != null && data.incomplete) {
                 window.location = "index.php?page=account";
@@ -162,6 +162,66 @@ var Overlay = {
     },
     showCloseButton: function() {
         $("#close-overlay").css('display', 'block');
+    }
+
+}
+
+
+var UrlBuilder = {
+    
+    seo: true,
+    
+    buildUrl: function(admin, controller, action, args) {
+        
+        //SEO urls
+        if (this.seo) {
+            
+            //admin or not
+            if (admin) var url = "/admin/";
+            else var url = "/";
+            
+            //controller
+            if (controller != null) url += controller + "/";
+            
+            //action
+            if (action != null) url += action + "/";
+            
+            //arguments
+            var a = [];
+            for (var k in args) {
+                a.push(k + "=" + args[k]);
+            }
+            if (a.length > 0) url += "?" + a.join("&");
+            
+            return url;
+        
+        }
+        
+        //Standard urls
+        else {
+        
+            //admin or not
+            if (admin) var url = "/admin.php";
+            else var url = "/index.php";
+            
+            //action
+            if (action != null) args.action = action;
+            
+            //controller
+            if (controller != null) args.page = controller;
+            
+            //arguments
+            var a = [];
+            for (var k in args) {
+                a.push(k + "=" + args[k]);
+            }
+            a.reverse();
+            if (a.length > 0) url += "?" + a.join("&");
+            
+            return url;
+            
+        }
+        
     }
 
 }

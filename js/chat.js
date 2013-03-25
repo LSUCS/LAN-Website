@@ -21,7 +21,7 @@ function chatConnect() {
 
 	//Get connection details
 	$.get(
-		"index.php?page=chat&action=getdetails",
+		UrlBuilder.buildUrl(false, 'chat', 'getdetails'),
 		function (data) {
 		
 			//Chat disabled?

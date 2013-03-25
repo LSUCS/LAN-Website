@@ -4,8 +4,9 @@
         
         public function get_Index() {
 			$tmpl = LanWebsite_Main::getTemplateManager();
-			$tmpl->setSubTitle("Food Ordering");
-            $tmpl->addTemplate('food');
+			$tmpl->setSubTitle("Lan Van");
+            $tmpl->enablePlugin("datatables");
+            $tmpl->addTemplate('lanvan');
 			$tmpl->output();
         }
         

@@ -16,6 +16,9 @@ $(document).ready(function() {
         "iDisplayLength": 10,
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
+        "oTableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
             { "sTitle": "ID", "sWidth": "40px", "sClass": "idcell" },
             { "sTitle": "Ticket Type", "sWidth": "100px" },
@@ -34,6 +37,9 @@ $(document).ready(function() {
         "iDisplayLength": 10,
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
+        "oTableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
             { "sTitle": "ID", "sWidth": "50px", "sClass": "idcell" },
             { "sTitle": "Ticket Type", "sWidth": "120px" },
@@ -49,6 +55,9 @@ $(document).ready(function() {
         "iDisplayLength": 10,
         "sDom": 'Rf<"H"lrT>t<"F"ip>',
         "aaSorting": [[ 0, "desc" ]],
+        "oTableTools": {
+            "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+        },
         "aoColumns": [
             { "sTitle": "Ticket Number", "sClass": "idcell", "sWidth": "120px" },
             { "sTitle": "Name" },
@@ -150,7 +159,8 @@ function deleteRaffle() {
     Overlay.openOverlay(true, "");
     
     $("#confirm-delete").click(function() {
-        $.post("index.php?route=admin&page=admintickets&action=deleteraffle",
+        $.post(
+            UrlBuilder.buildUrl(true, "tickets", "deleteraffle"),
             { ticket_number: raffleID },
             function (data) {
                 if (data != null && data.error) {
@@ -173,7 +183,7 @@ function addRaffle() {
     Overlay.openOverlay(true, "");
     
     $("#raffle-button").click(function() {
-        $.post("index.php?route=admin&page=admintickets&action=addraffle",
+        $.post(UrlBuilder.buildUrl(true, "tickets", "addraffle"),
             { ticket_id: assignID, reason: $("#raffle-input").val() },
             function (data) {
                 if (data != null && data.error) {
@@ -196,7 +206,7 @@ function seat() {
     Overlay.openOverlay(true, "");
     
     $("#seat-button").click(function() {
-        $.post("index.php?route=admin&page=admintickets&action=seat",
+        $.post(UrlBuilder.buildUrl(true, "tickets", "seat"),
             { seat: $("#seat-input").val(), ticket_id: assignID },
             function (data) {
                 if (data != null && data.error) {
@@ -214,7 +224,7 @@ function seat() {
 function activate() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?route=admin&page=admintickets&action=activate",
+        UrlBuilder.buildUrl(true, "tickets", "activate"),
         { id: $("#claimed-tickets .row-selected").first().parent().find('.idcell').html() },
         function (data) {
             if (data != null && data.error) {
@@ -231,7 +241,7 @@ function activate() {
 function deactivate() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?route=admin&page=admintickets&action=deactivate",
+        UrlBuilder.buildUrl(true, "tickets", "deactivate"),
         { id: $("#claimed-tickets .row-selected").first().parent().find('.idcell').html() },
         function (data) {
             if (data != null && data.error) {
@@ -242,7 +252,6 @@ function deactivate() {
             loadTables();
         },
         'json');
-    $("#claimed-buttons button").hide();
 }
 
 function claim() {
@@ -251,13 +260,13 @@ function claim() {
     $("#overlay-content").html('<label for="claim-name">Forum Name: </label><input id="claim-name" /><button id="claim-ticket">Claim</button>');
     $("#claim-ticket").button();
     $("#claim-name").autocomplete({
-        source: "index.php?page=account&action=autocomplete",
+        source: UrlBuilder.buildUrl(false, "account", "autocomplete"),
         minLength: 2
     });
     Overlay.openOverlay(true, "");
     
     $("#claim-ticket").click(function() {
-        $.post("index.php?route=admin&page=admintickets&action=claim",
+        $.post(UrlBuilder.buildUrl(true, "tickets", "claim"),
             { name: $("#claim-name").val(), ticket_id: claimID },
             function (data) {
                 if (data != null && data.error) {
@@ -278,13 +287,13 @@ function assign() {
     $("#overlay-content").html('<label for="assign-name">Forum Name: </label><input id="assign-name" /><button id="assign-ticket">Assign</button>');
     $("#assign-ticket").button();
     $("#assign-name").autocomplete({
-        source: "index.php?page=account&action=autocomplete",
+        source: UrlBuilder.buildUrl(false, "account", "autocomplete"),
         minLength: 2
     });
     Overlay.openOverlay(true, "");
     
     $("#assign-ticket").click(function() {
-        $.post("index.php?route=admin&page=admintickets&action=assign",
+        $.post(UrlBuilder.buildUrl(true, "tickets", "assign"),
             { name: $("#assign-name").val(), ticket_id: assignID },
             function (data) {
                 if (data != null && data.error) {
@@ -301,7 +310,7 @@ function assign() {
 
 function loadTables() {
     $.get(
-        "index.php?route=admin&page=admintickets&action=loadtables",
+        UrlBuilder.buildUrl(true, "tickets", "loadtables"),
         function (data) {
         
             claimedTable.fnClearTable();

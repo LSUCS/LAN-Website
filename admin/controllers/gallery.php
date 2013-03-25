@@ -16,9 +16,11 @@
         }
         
         public function post_Process($inputs) {
+        
+            require_once "lib/simpleimage.php";
             
             //Loop through folders
-            $folders = glob("gallery/*");
+            $folders = glob("data/gallery/*");
             $total = 0;
             $processed = 0;
             foreach ($folders as $folder) {

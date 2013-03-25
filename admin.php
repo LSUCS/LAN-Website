@@ -9,6 +9,7 @@
     define("LANWEBSITE_ADMIN", true);
     
     LanWebsite_Main::initialize();
+    
     LanWebsite_Main::setControllerDir("/admin/controllers/");
     LanWebsite_Main::getTemplateManager()->setBaseDir('/admin/');
     LanWebsite_Main::getAuth()->requireAdmin();

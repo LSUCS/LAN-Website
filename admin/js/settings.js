@@ -48,7 +48,7 @@ function saveSettings() {
     });
     
     $.post(
-        "index.php?route=admin&page=adminsettings&action=savesettings",
+        UrlBuilder.buildUrl(true, "settings", "savesettings"),
         { settings: JSON.stringify(settings) },
         function(response) {
             if (!response) alert("An error occurred");

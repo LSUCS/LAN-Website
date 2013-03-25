@@ -18,3 +18,6 @@ RewriteCond $1 !=admin.php
 RewriteCond %{SCRIPT_FILENAME} !-d  
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^([^/]+)/([^/]+)/?$ index.php?page=$1&action=$2 [QSA,L]
+
+
+ErrorDocument 404 /notfound/

@@ -26,7 +26,7 @@
             include 'config.php';
             
             //Load controller location
-            self::$controllerdir = $config['controllerdir'];
+            self::$controllerdir = $config['controllerdir'];            
 			
             //Load base objects
 			self::$db       = new LanWebsite_Db();
@@ -37,7 +37,7 @@
             
             //Init auth
             self::$auth->init();
-        
+            
 		}
         
         

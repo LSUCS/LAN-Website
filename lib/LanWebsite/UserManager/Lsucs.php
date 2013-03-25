@@ -36,7 +36,7 @@
 		
 		public function getUsersByName($name) {
             //Get user data from LSUCS auth system
-            $users = $this->getLsucsAuthResponse('getuserbyusername', array("username" => $name));
+            $users = $this->getLsucsAuthResponse('getusersbyusername', array("username" => $name));
             if (isset($users['error'])) return false;
             
             $output = array();

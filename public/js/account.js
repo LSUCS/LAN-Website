@@ -13,7 +13,7 @@ $(document).ready(function() {
     
     //Check details
     $.get(
-        "index.php?page=account&action=checkdetails",
+        UrlBuilder.buildUrl(false, "account", "checkdetails"),
         function (data) {
             if (data != null && data.incomplete) {
                 Overlay.openOverlay(true, data.message);
@@ -37,9 +37,9 @@ $(document).ready(function() {
         Overlay.openOverlay(true, "");
     });
     
-    $("#confirm-claim").on({'click': function() {
+    $(document).on({'click': function() {
         claimTicket();
-    }});
+    }}, "#confirm-claim");
     
     //Code link
     if (PageVars["code"] && PageVars["code"] != "") {
@@ -48,18 +48,18 @@ $(document).ready(function() {
     }
     
     //Assign link
-    $(".assign-link").on({'click': function() {
+    $(document).on({'click': function() {
         assignID = $(this).parent().siblings().first().html();
         $("#overlay-content").html('<label for="assign-name">Forum Name: </label><input id="assign-name" /><button id="assign-ticket">Assign</button>');
         $("#assign-ticket").button();
         $("#assign-name").autocomplete({
-            source: "index.php?page=account&action=autocomplete",
+            source: UrlBuilder.buildUrl(false, "account", "autocomplete"),
             minLength: 2
         });
         Overlay.openOverlay(true, "");
-    }});
-    $("#assign-ticket").on({'click': function() {
-        $.post("index.php?page=account&action=assignticket",
+    }}, ".assign-link");
+    $(document).on({'click': function() {
+        $.post(UrlBuilder.buildUrl(false, "account", "assignticket"),
         { name: $("#assign-name").val(), ticket_id: assignID },
         function (data) {
             if (data != null && data.error) {
@@ -70,11 +70,11 @@ $(document).ready(function() {
             loadTickets();
         },
         'json');
-    }});
+    }}, "#assign-ticket");
     
     //Game autocomplete
     $("#add-game").autocomplete({
-        source: "index.php?page=account&action=suggestgame",
+        source: UrlBuilder.buildUrl(false, "account", "suggestgame"),
         minLength: 2
     });
     
@@ -92,7 +92,7 @@ $(document).ready(function() {
     });
     
     //Delete game
-    $(".delete-game").on({'click': function() {
+    $(document).on({'click': function() {
         $(this).parent().remove();
         odd = true;
         $(".game").each(function() {
@@ -102,7 +102,7 @@ $(document).ready(function() {
             odd = !odd;
         });
         if ($(".game").length == 0) $("#favourite-games").html("No Games Added");
-    }});
+    }}, ".delete-game");
     
     //Save game details
     $("#save-game-details").click(function() {
@@ -126,9 +126,9 @@ function saveVanDetails() {
                 "Only two pieces of equipment may be transported per person in the LAN Van.<br /><button id='accept-van'>Continue</button>";
     Overlay.openOverlay(true, string);
     $("#accept-van").button();
-    $("#accept-van").on({'click': function() {
+    $("#accept-van").click(function() {
         $.post(
-            "index.php?page=account&action=editvandetails",
+            UrlBuilder.buildUrl(false, "account", "editvandetails"),
             { phone: $("#phone_number").val(), address: $("#address").val(), postcode: $("#postcode").val(), collection: $("#collection").prop("checked"), dropoff: $("#dropoff").prop("checked"), availability: $("#availability").val() },
             function (data) {
                 if (data != null && data.error) {
@@ -139,13 +139,13 @@ function saveVanDetails() {
                 loadDetails();
             },
             'json');
-    }});
+    });
 }
 
 function deleteVan() {
     Overlay.loadingOverlay();
     $.get(
-        "index.php?page=account&action=deletevan",
+        UrlBuilder.buildUrl(false, "account", "deletevan"),
         function (data) {
             if (data != null && data.error) {
                 Overlay.openOverlay(true, data.error);
@@ -160,7 +160,7 @@ function deleteVan() {
 function saveGameDetails() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?page=account&action=editgamedetails",
+        UrlBuilder.buildUrl(false, "account", "editgamedetails"),
         { steam: $("#steam-name").val(), currently_playing: $("#currently-playing").val(), favourite_games: $.map($(".game"), function (a) { return $(a).attr('value'); }) },
         function (data) {
             if (data != null && data.error) {
@@ -176,7 +176,7 @@ function saveGameDetails() {
 function saveAccountDetails() {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?page=account&action=editaccountdetails",
+        UrlBuilder.buildUrl(false, "account", "editaccountdetails"),
         { name: $("#real-name").val(), emergency_contact_name: $("#emergency-contact-name").val(), emergency_contact_number: $("#emergency-contact-number").val() },
         function (data) {
             if (data != null && data.error) {
@@ -191,7 +191,7 @@ function saveAccountDetails() {
 
 function claimTicket() {
     $.post(
-        "index.php?page=account&action=claimticket",
+        UrlBuilder.buildUrl(false, "account", "claimticket"),
         { email: $("#claim-email").val(), code: $("#claim-code").val()  },
         function (data) {
             if (data != null && data.error) {
@@ -207,7 +207,7 @@ function claimTicket() {
 
 function loadDetails() {
     $.post(
-        "index.php?page=account&action=getdetails",
+        UrlBuilder.buildUrl(false, "account", "getdetails"),
         function (data) {
             //Account details
             $("#real-name").val(data.real_name);
@@ -262,7 +262,7 @@ function loadDetails() {
 
 function loadTickets() {
     $.post(
-        "index.php?page=account&action=gettickets",
+        UrlBuilder.buildUrl(false, "account", "gettickets"),
         function (data) {
             $("#table-body").html("");
             if (data.length > 0) {

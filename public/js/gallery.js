@@ -28,7 +28,7 @@ $(document).ready(function() {
 function loadGallery(folder) {
     Overlay.loadingOverlay();
     $.post(
-        "index.php?page=gallery&action=loadfolder",
+        UrlBuilder.buildUrl(false, "gallery", "loadfolder"),
         { folder: folder },
         function (data) {
             if (data != null && data.error) {

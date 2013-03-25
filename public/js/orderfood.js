@@ -23,7 +23,7 @@ function order() {
 	
 	Overlay.loadingOverlay();
 	$.post(
-		"index.php?page=orderfood&action=order",
+        UrlBuilder.buildUrl(false, "orderfood", "order"),
 		{ options: JSON.stringify(options) },
 		function (data) {
 			if (data && data.error) {

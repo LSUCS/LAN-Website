@@ -67,7 +67,7 @@
             while ($row = $res->fetch_assoc()) {
                 $purchased = LanWebsite_Main::getUserManager()->getUserById($row["purchased_forum_id"]);
                 $assigned = LanWebsite_Main::getUserManager()->getUserById($row["assigned_forum_id"]);
-                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":"Non-Member", '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], ($assigned->getUsername() == ""?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
+                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":"Non-Member", '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], (!$assigned?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
             }
             
             //Get unclaimed
@@ -82,7 +82,7 @@
             $raffle = array();
             while ($row = $res->fetch_assoc()) {
                 $user = LanWebsite_Main::getUserManager()->getUserById($row["user_id"]);
-                $raffle[] = array($row["raffle_ticket_number"], $user->getRealName(), $user->getUsername(), $row["reason"]);
+                $raffle[] = array($row["raffle_ticket_number"], $user->getFullName(), $user->getUsername(), $row["reason"]);
             }
             
             //Output

@@ -24,10 +24,11 @@
             if ($this->isInvalid("title")) $this->errorJSON("You must supply a title!");
             if ($this->isInvalid("content")) $this->errorJSON("You must supply content!");
             
-            $userdata = $this->parent->auth->getactiveUserData();
+            $user = LanWebsite_Main::getUserManager()->getActiveUser();
             
             //Let's insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `blog` (user_id, title, body) VALUES ('%s', '%s', '%s')", $userdata["xenforo"]["user_id"], $inputs["title"], $inputs["content"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `blog` (user_id, title, body) VALUES ('%s', '%s', '%s')", $user->getUserId(), $inputs["title"], $inputs["content"]);
+            echo true;
         }
         
         public function get_Getentries() {
@@ -59,16 +60,17 @@
             
             //Update
             LanWebsite_Main::getDb()->query("UPDATE `blog` SET title='%s', body='%s' WHERE blog_id = '%s'", $inputs["title"], $inputs["content"], $inputs["id"]);
-            
+            echo true;
         }
         
-        public function actionDelete() {
+        public function post_Delete($inputs) {
             //Check id
             $entry = LanWebsite_Main::getDb()->query("SELECT * FROM `blog` WHERE blog_id = '%s'", $inputs["id"])->fetch_assoc();
             if (!$entry) $this->errorJSON("Invalid ID");
             
             //Delete
             LanWebsite_Main::getDb()->query("DELETE FROM `blog` WHERE blog_id = '%s'", $inputs["id"]);
+            echo true;
         }
         
     }

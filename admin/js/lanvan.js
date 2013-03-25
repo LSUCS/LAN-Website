@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $.get(
-        "index.php?route=admin&page=adminlanvan&action=load",
+        UrlBuilder.buildUrl(true, "lanvan", "load"),
         function (data) {
         
             $("#lan-van").dataTable( {
@@ -11,6 +11,9 @@ $(document).ready(function() {
                 "bAutoWidth": false,
                 "iDisplayLength": 10,
                 "sDom": 'Rf<"H"lrT>t<"F"ip>',
+                "oTableTools": {
+                    "sSwfPath": "/swf/copy_csv_xls_pdf.swf"
+                },
                 "aaSorting": [[ 0, "desc" ]],
                 "aoColumns": [
                     { "sTitle": "Name" },

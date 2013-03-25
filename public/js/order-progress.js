@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 function checkComplete() {
     $.post(
-        "/index.php?page=tickets&action=checkcomplete",
+        UrlBuilder.buildUrl(false, "tickets", "checkcomplete"),
         { pending_id: $("#pending_id").val(), attempt: attempt},
         function (data) {
             if (data != null && data.error) {

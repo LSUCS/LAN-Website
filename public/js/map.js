@@ -15,7 +15,7 @@ $(document).ready(function() {
     
     //Click seat
     $(".seat").live('click', function() {
-        if ($(this).attr('value').length > 0) window.location = "index.php?page=profile&member=" + $(this).attr('value');
+        if ($(this).attr('value').length > 0) window.location = UrlBuilder.buildUrl(false, "profile", null, { member:  $(this).attr('value') });
     });
 
 });
@@ -28,7 +28,7 @@ function loadMap() {
     
     //Get
     $.get(
-        "index.php?page=map&action=load",
+        UrlBuilder.buildUrl(false, "map", "load"),
         function (data) {
             if (!data) return;
             

@@ -155,7 +155,7 @@
             if ($this->isInvalid("name", "notnull")) $this->errorJSON("Please supply a forum name to assign to");
             
             //Check ticket
-            $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE ticket_id = '%s' AND assigned_forum_id = '' AND purchased_forum_id = '%s'", $inputs["ticket_id"], $user->getUserById())->fetch_assoc();
+            $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE ticket_id = '%s' AND assigned_forum_id = '' AND purchased_forum_id = '%s'", $inputs["ticket_id"], $user->getUserId())->fetch_assoc();
             if (!$ticket) $this->errorJSON("Invalid ticket - either you did not buy it or it doesn't exist");
             
             //Check name
@@ -197,7 +197,7 @@
             if (!$users) die(json_encode($return));
             foreach ($users as $user) {
                 if ($user->getUserId() != $activeuser->getUserId()) {
-                    $return[] = $user->getUsername;
+                    $return[] = $user->getUsername();
                 }
             }
             echo json_encode($return);

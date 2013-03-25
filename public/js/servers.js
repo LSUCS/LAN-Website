@@ -43,7 +43,7 @@ function loadServers() {
     
     //Get
     $.get(
-        "index.php?page=servers&action=loadservers",
+        UrlBuilder.buildUrl(false, "servers", "loadservers"),
         function (data) {
             if (!data) return;
 			

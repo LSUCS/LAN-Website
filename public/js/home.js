@@ -23,7 +23,7 @@ function runGallery() {
 
 function loadGallery() {
     $.get(
-        "index.php?page=home&action=getimage",
+        UrlBuilder.buildUrl(false, "home", "getimage"),
         function (data) {
             images = data;
             runGallery();

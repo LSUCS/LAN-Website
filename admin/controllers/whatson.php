@@ -1,6 +1,6 @@
 <?php
 
-    class Adminwhatson_Controller extends LanWebsite_Controller {
+    class Whatson_Controller extends LanWebsite_Controller {
         
         public function getInputFilters($action) {
             switch ($action) {
@@ -10,8 +10,10 @@
         }
         
         public function get_Index() {
-            $this->parent->template->setSubtitle("What's On");
-            $this->parent->template->outputTemplate("adminwhatson");
+            $tmpl = LanWebsite_Main::getTemplateManager();
+            $tmpl->setSubtitle("What's On");
+            $tmpl->addTemplate("whatson");
+            $tmpl->output();
         }
         
         public function get_Getentries() {
@@ -41,7 +43,7 @@
         
         }
         
-        public function post_Deleteentry() {
+        public function post_Deleteentry($inputs) {
         
             if (!LanWebsite_Main::getDb()->query("SELECT * FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"])->fetch_assoc()) $this->errorJSON("Invalid entry ID");
             LanWebsite_Main::getDb()->query("DELETE FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);

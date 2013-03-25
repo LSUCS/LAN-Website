@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 function getTimetable() {
     $.get(
-        "index.php?page=whatson&action=gettimetable",
+        UrlBuilder.buildUrl(false, "whatson", "gettimetable"),
         function (data) {
             for (var i = 0; i < data.length; i++) {
             
