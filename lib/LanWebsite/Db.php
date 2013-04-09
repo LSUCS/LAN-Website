@@ -6,7 +6,7 @@
 		private $db;
 		
 		public function __construct() {
-            include 'config.php';
+            $config = LanWebsite_Main::getConfig();
 			$this->db = new mysqli($config['database']["host"], $config['database']["user"], $config['database']["pass"], $config['database']["db"]);
 			if (mysqli_connect_errno()) die("Unable to connect to SQL Database: " . mysqli_connect_error());
 			$this->createTables();

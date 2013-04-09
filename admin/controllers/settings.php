@@ -9,8 +9,14 @@
         }
     
         public function get_Index() {
-            //Get settings and output template
-            $data["settings"] = LanWebsite_Main::getSettings()->getSettings();
+            //Get settings and group
+            $settings = LanWebsite_Main::getSettings()->getSettings();
+            $groups = array();
+            foreach ($settings as $setting) {
+                $groups[$setting["setting_group"]][] = $setting;
+            }
+            
+            $data["groups"] = $groups;
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("Site Settings");
             $tmpl->enablePlugin('timepicker');

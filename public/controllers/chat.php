@@ -7,7 +7,7 @@
 		
 		public function get_Getdetails() {
 			//Check if chat is enabled in settings
-			if (!LanWebsite_Main::getAuth()->isLoggedIn() || LanWebsite_Main::getSettings()->getSetting("chat_enabled") == 0 || !LanWebsite_Main::getUserManager()->getActiveUser()->isAdmin()) {
+			if (!LanWebsite_Main::getAuth()->isLoggedIn() || LanWebsite_Main::getSettings()->getSetting("chat_enabled") == 0) {
 				echo json_encode(array("disabled" => true));
 				return;
 			}

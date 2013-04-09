@@ -1,7 +1,17 @@
 #settings-container {
     margin-left: 40px;
 }
-
+    #settings-container h2 {
+        font-family: reznor;
+        color: #333;
+        font-size: 28px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+#content p:not(.exclude) {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 .setting {
     height: 30px;
     margin-bottom: 20px;
@@ -15,7 +25,7 @@
     .setting-int {
         width: 50px;
     }
-    .setting-text {
+    .setting-text, .setting-email, .setting-ip, .setting-url {
         width: 200px;
     }
     .setting p label {

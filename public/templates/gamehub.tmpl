@@ -1,0 +1,164 @@
+<div id="lobbyeditor-container">
+    <div class="lobbyeditor">
+        <div class="error"></div>
+        <div class="editor-section">
+            <div class="section-title">Title:</div>
+            <div class="section-elements">
+                <input class="title" type="text" />
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="editor-section game-section">
+            <div class="section-title">Game:</div>
+            <div class="section-elements">
+                <div class="element-line">
+                    <p><input type="radio" id="select-steam-game" name="game-radio" checked /><label for="select-steam-game" class="steam-game-label">Steam Game</label></p>
+                    <div class="steam-input-container"><div class="searchicon"></div><input type="text" class="steam-game"/><div class="spinner"></div></div>
+                </div>
+                <div class="steam-search"></div>
+                <div class="element-line">
+                    <p><input type="radio" id="select-other-game" name="game-radio" /><label for="select-other-game" class="other-game-label">Other</label></p>
+                    <input type="text" class="other-game" />
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="editor-section icon-section">
+            <div class="section-title">Image URL:</div>
+            <div class="section-elements">
+                <input class="custom-icon" type="text" />
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="editor-section">
+            <div class="section-title">Players:</div>
+            <div class="section-elements">
+                <div class="element-line">
+                    <p><input type="radio" id="select-max-players" name="players-radio" checked /><label for="select-max-players" class="max-players-label">Max</label></p>
+                    <span><input type="text" class="spinner-input max-players" value="5" /></span>
+                </div>
+                <div class="element-line">
+                    <p><input type="radio" id="select-unlimited-players" name="players-radio" /><label for="select-unlimited-players" class="unlimited-players-label">Unlimited</label></p>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="editor-section">
+            <div class="section-title">Password:</div>
+            <div class="section-elements">
+                <div class="element-line">
+                    <p><input type="radio" id="select-password" name="password-radio" /><label for="select-password" class="password-label">Yes</label></p>
+                    <input type="password" class="password" />
+                </div>
+                <div class="element-line">
+                    <p><input type="radio" id="select-nopassword" name="password-radio" checked /><label for="select-nopassword" class="nopassword-label">No</label></p>
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <div class="editor-section">
+            <div class="section-title">Description:</div>
+            <div class="section-elements">
+                <textarea class="description"></textarea>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+        <button class="submit-lobbyeditor"></button>
+        <div class="loading"></div>
+    </div>
+</div>
+
+<div id="connecting">
+    Attempting to connect to lobby server
+    <div id="connecting-icon"></div>
+</div>
+
+<div id="lobby-client">
+
+    <div id="top">
+
+        <div id="in-lobby">
+            <div class="box-title">Dota CR 3v3 ARAR</div>
+            <div class="edit-lobby">Edit</div>
+            <div class="leave-lobby">Leave</div>
+            <div class="messages"></div>
+            <div class="input" contentEditable=true></div><button class="send">Send</button>
+        </div>
+
+        <div id="lobbies-container">
+            <div class="box-title">Lobbies</div>
+            <div class="create-lobby">Create Lobby</div>
+            <div id="lobbies">
+                <div class="lobby">
+                    <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/440/header_292x136.jpg" /></div>
+                    <div class="title">TF2 Prophunt</div>
+                    <div class="game">Team Fortress 2</div>
+                    <div class="locked"></div>
+                    <div class="players">4/5</div>
+                </div>
+                <div class="lobby">
+                    <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/570/header_292x136.jpg" /></div>
+                    <div class="title">Dota 2 CR ARAR</div>
+                    <div class="game">DotA 2</div>
+                    <div class="locked"></div>
+                    <div class="players">4/5</div>
+                </div>
+                <div class="lobby">
+                    <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/440/header_292x136.jpg" /></div>
+                    <div class="title">Highlander</div>
+                    <div class="game">Team Fortress 2</div>
+                    <div class="locked"></div>
+                    <div class="players">4/5</div>
+                </div>
+                <div class="lobby">
+                    <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/440/header_292x136.jpg" /></div>
+                    <div class="title">TF2 Balloon race</div>
+                    <div class="game">Team Fortress 2</div>
+                    <div class="locked"></div>
+                    <div class="players">4/5</div>
+                </div>
+                <div class="lobby">
+                    <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/440/header_292x136.jpg" /></div>
+                    <div class="title">Derpin around</div>
+                    <div class="game">Team Fortress 2</div>
+                    <div class="locked"></div>
+                    <div class="players">4/5</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="lobby-info">
+            <div class="box-title">lobby info</div>
+            <div id="info-container">
+                <div class="image"><img src="http://cdn3.steampowered.com/v/gfx/apps/570/header_292x136.jpg" /></div>
+                <div class="info-element title">Dota CR 3v3 ARAR</div>
+                <div class="info-element"><b>Game:</b> <span class="game">Dota 2</span></div>
+                <div class="info-element"><b>Description:</b> <span class="description">Dota 2 Custom Realms random heroes random skills! You need the client from here: url. Make sure to follow the instructions, then join lobby x. Adding more description to make this overflow into the scrollbar container lol what is this. I need to type more to make this overflow</span></div>
+                <div class="locked info-element"><b>Password protected:</b> Yes</div>
+                <div class="info-element"><b>Leader:</b> <span class="leader">oliverw92</span></div>
+                <div class="info-element"><b>Player Limit:</b> <span class="playerlimit">6/10</span></div>
+                <div class="players">
+                    <b>Players:</b>
+                    <ul>
+                        <li>oliverw92</li>
+                        <li>Shunt19</li>
+                        <li>icyminx</li>
+                        <li>fawwles</li>
+                        <li>JustGodlike</li>
+                        <li>Al_Da_Best</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="lobby-notice">
+            <div class="box-title">welcome!</div>
+        </div>
+    </div>
+
+    <div id="global-chat">
+        <div class="box-title">global chat/notifications</div>
+        <div class="messages"></div>
+        <div class="input" contentEditable=true></div><button class="send">Send</button>
+    </div>
+
+</div>

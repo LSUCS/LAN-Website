@@ -1,0 +1,419 @@
+/* MAIN STRUCTURES */
+#top {
+    height: 400px;
+    margin-bottom: 20px;
+}
+#lobbies-container, #in-lobby {
+    float: left;
+    height: 400px;
+    width: 650px;
+    background: #f6f6f6;
+    border-radius: 8px;
+    position: relative;
+}  
+#lobby-info, #lobby-notice {
+    float: right;
+    height: 400px;
+    width: 230px;
+    background: #f6f6f6;
+    border-radius: 8px;
+    font-family: tahoma, helvetica;
+    font-size: 12px;
+}
+#connecting {
+    background: #f6f6f6;
+    border-radius: 8px;
+    font-family: reznor;
+    font-size: 25px;
+    color: #333;
+    text-align: center;
+    padding-top: 20px;
+    width: 900px;
+    height: 90px;
+}
+    #connecting #connecting-icon {
+        width: 30px;
+        height: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        background-image: url("/images/loading.gif");
+        background-size: 30px;
+        margin-top: 10px;
+    }
+#lobby-client {
+    display: none;
+}
+
+/* IN LOBBY */
+#in-lobby {
+    display: none;
+}
+    #in-lobby .edit-lobby, #in-lobby .leave-lobby {
+        font-family: reznor;
+        font-size: 23px;
+        color: #888;
+        position: absolute;
+        top: 11px;
+        cursor: pointer;
+    }
+        #in-lobby .edit-lobby:hover, #in-lobby .leave-lobby:hover {
+            color: #bbb;
+        }
+    #in-lobby .edit-lobby {
+        right: 140px;
+    }
+    #in-lobby .leave-lobby {
+        right: 40px;
+    }
+    #in-lobby .messages {
+        height: 300px;
+        border: 1px solid #e8e8e8;
+        background: white;
+        width: 600px;
+        margin-top: 10px;
+        margin-left: 23px;
+        border-radius: 3px;
+        overflow: auto;
+    }
+    #in-lobby .input {
+        width: 523px;
+        float: left;
+        height: 24px;
+        margin-left: 23px;
+        margin-top: 10px;
+        border: 1px solid #e8e8e8;
+        background: white;
+        border-radius: 3px;
+        padding-left: 4px;
+        padding-top: 5px;
+        padding-right: 5px;
+    }
+    #in-lobby .send {
+        height: 29px;
+        width: 66px;
+        margin-left: 2px;
+        font-size: 12px;
+        margin-top: 11px;
+    }
+
+    
+/* LOBBY INFO */
+#lobby-info {
+    
+}
+    #lobby-info #info-container {
+        margin: 10px;
+        margin-top: 8px;
+        max-height: 340px;
+    }
+    #lobby-info .title {
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .info-element {
+        margin-bottom: 5px;
+    }        
+    #lobby-info .image {
+        height: 46px;
+        width: 99px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+        margin-bottom: 2px;
+    }
+        #lobby-info .image img {
+            max-height: 100%;
+            max-width: 100%;
+            border: 1px solid #e8e8e8;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+        
+/* LOBBY NOTICE */
+#lobby-notice {
+    display: none;
+}
+
+
+/* LOBBY LIST */
+#lobbies-container {
+    
+} 
+    #lobbies-container .create-lobby {
+        font-family: reznor;
+        font-size: 23px;
+        color: #888;
+        position: absolute;
+        top: 11px;
+        cursor: pointer;
+        right: 40px;
+    }
+        #lobbies-container .create-lobby:hover {
+            color: #bbb;
+        }
+#lobbies {
+    width: 620px;
+    margin-left: 20px;
+    margin-right: auto;
+    margin-top: 10px;
+    height: 340px;
+    overflow: auto;
+}
+    #lobbies .lobby {
+        width: 598px;
+        height: 60px;
+        background: white;
+        border-radius: 3px;
+        border: 1px solid #e8e8e8;
+        position: relative;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+        #lobbies .lobby:hover {
+            background: #f8f8f8;
+        }
+        #lobbies .lobby .image {
+            height: 46px;
+            width: 99px;
+            position: absolute;
+            left: 7px;
+            top: 7px;
+        }
+            #lobbies .lobby .image img {
+                max-height: 100%;
+                max-width: 100%;
+                border: 1px solid #e8e8e8;
+                position: absolute;
+                margin: auto;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+        #lobbies .lobby .title {
+            position: absolute;
+            font-family: tf2;
+            text-shadow: 0px 0px 1px #999;
+            font-size: 19px;
+            left: 115px;
+            top: 8px;
+        }
+        #lobbies .lobby .game {
+            position: absolute;
+            text-shadow: 0px 0px 1px #999;
+            left: 125px;
+            top: 30px;
+            font-family: tf2;
+            font-size: 18px;
+            color: #555;
+        }
+        #lobbies .lobby .players {
+            position: absolute;
+            text-shadow: 0px 0px 1px #999;
+            top: 20px;
+            right: 20px;
+            font-family: tf2;
+            font-size: 18px;
+            color: #555;
+        }
+        #lobbies .lobby .locked {
+            position: absolute;
+            top: 21px;
+            right: 70px;
+            background-image: url(/images/locked.png);
+            height: 16px;
+            width: 16px;
+        }
+
+        
+/* GLOBAL CHAT */
+#global-chat {
+    width: 100%;
+    height: 300px;
+    background: #f6f6f6;
+    border-radius: 8px;
+}
+    #global-chat .messages {
+        height: 200px;
+        border: 1px solid #e8e8e8;
+        background: white;
+        width: 855px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 3px;
+        overflow: auto;
+    }
+    #global-chat .input {
+        width: 777px;
+        height: 24px;
+        margin-left: 23px;
+        float: left;
+        margin-top: 10px;
+        border: 1px solid #e8e8e8;
+        background: white;
+        border-radius: 3px;
+        padding-left: 4px;
+        padding-top: 5px;
+        padding-right: 5px;
+    }
+    #global-chat .send {
+        height: 29px;
+        width: 66px;
+        margin-left: 2px;
+        font-size: 12px;
+        margin-top: 11px;
+    }
+
+.box-title {
+    font-family: reznor;
+    font-size: 25px;
+    padding-left: 10px;
+    padding-top: 10px;
+    color: #666;
+}
+
+/* EDITOR */
+#lobbyeditor-container {
+    display: none;
+}
+.lobbyeditor {
+
+}
+    .lobbyeditor .editor-section {
+        margin-bottom: 20px;
+        line-height: 34px;
+        text-align: left;
+        clear: both;
+    }
+        .lobbyeditor .section-elements {
+            float: left;
+            width: 320px;
+        }
+        .lobbyeditor .section-title {
+            float: left;
+            width: 120px;
+        }
+        .lobbyeditor .title, .lobbyeditor .custom-icon {
+            width: 280px;
+        }
+        .lobbyeditor label {
+            width: 95px;
+            float: left;
+        }
+        .lobbyeditor .element-line {
+            height: 34px;
+        }
+        .lobbyeditor .other-game {
+            display: none;
+        }
+        .lobbyeditor .steam-game-label, .lobbyeditor .other-game-label {
+            margin-top: 8px;
+        }
+        .lobbyeditor .max-players-label, .lobbyeditor .unlimited-players-label {
+            margin-top: 8px;
+        }
+        .lobbyeditor .max-players {
+            width: 50px;
+            margin-top: 3px;
+        }
+        .lobbyeditor .password-label, .lobbyeditor .nopassword-label {
+            margin-top: 8px;
+        }
+        .lobbyeditor .description {
+            resize: none;
+            width: 280px;
+            height: 80px;
+        }
+        .lobbyeditor .password {
+            display: none;
+        }
+        .lobbyeditor .steam-input-container {
+            position: relative;
+        }
+            .lobbyeditor .steam-input-container .spinner {
+                width: 20px;
+                height: 20px;
+                right: 28px;
+                top: 7px;
+                position: absolute;
+                background-image: url(/images/loading.gif);
+                background-size: 20px;
+                display: none;
+            }
+            .lobbyeditor .steam-input-container .searchicon {
+                width: 15px;
+                height: 15px;
+                right: 177px;
+                top: 9px;
+                position: absolute;
+                background-image: url(/images/search.png);
+                background-size: 15px;
+                opacity: 0.5;
+            }
+            .lobbyeditor .steam-input-container .steam-game {
+                padding-right: 24px;
+                padding-left: 23px;
+                width: 125px;
+            }
+    .lobbyeditor .steam-search {
+        height: 100px;
+        width: 275px;
+        border: 1px solid #f1642b;
+        padding: 10px;
+        border-radius: 5px;
+        overflow: auto;
+        display: none;
+    }
+        .lobbyeditor .steam-search .search-result {
+            height: 40px;
+            border-bottom: 1px solid #ccc;
+            position: relative;
+            min-width: 255px;
+            white-space: nowrap;
+        }
+            .lobbyeditor .steam-search .search-result:hover {
+                background-color: #eee;
+                cursor: pointer;
+            }
+            .lobbyeditor .steam-search .search-result img {
+                max-height: 30px;
+                margin-top: 5px;
+                margin-right: 5px;
+                display: inline-block;
+            }
+            .lobbyeditor .steam-search .search-result .name {
+                position: absolute;
+                left: 85px;
+                top: 3px;
+            }
+        .lobbyeditor .steam-search .result-selected {
+            background-color: #eee
+        }
+        .lobbyeditor .steam-search .search-noresults {
+            text-align: center;
+        }
+    .lobbyeditor .icon-section {
+        display: none;
+    }
+    .lobbyeditor .error {
+        color: red;
+        text-align: center;
+        display: none;
+        padding-bottom: 5px;
+    }
+    .lobbyeditor .loading {
+        width: 30px;
+        height: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        background: url(/images/loading.gif);
+        background-size: 30px;
+        display: none;
+    }

@@ -1,6 +1,6 @@
 <?php
     
-    echo "### LSUCS LAN Website Chat Daemon ###\n";
+    echo "### LSUCS LAN Website Lobby Daemon ###\n";
     echo "Initiating...\n";
 
     ini_set('display_errors','On');
@@ -20,15 +20,15 @@
     
     include(dirname(__FILE__) . '/../lib/LanWebsite/Autoload.php');
     include(dirname(__FILE__) . "/../lib/WebSockets/websockets.php");
-	include(dirname(__FILE__) . "/chat/chatserver.php");
-	include(dirname(__FILE__) . "/chat/chatuser.php");
+	include(dirname(__FILE__) . "/lobby/lobbyserver.php");
+	include(dirname(__FILE__) . "/lobby/lobbyuser.php");
     
     echo "Initialising LanWebsite framework...\n";
     LanWebsite_Main::initialize();
     
-    echo "Instantiating websocket chat server...\n";
-    LanWebsite_Main::getSettings()->changeSetting('chat_daemon_online', true);
-    new ChatServer(LanWebsite_Main::getSettings()->getSetting("chat_address"), LanWebsite_Main::getSettings()->getSetting("chat_port"));
+    echo "Instantiating websocket lobby server...\n";
+    LanWebsite_Main::getSettings()->changeSetting('lobby_daemon_online', true);
+    new LobbyServer(LanWebsite_Main::getSettings()->getSetting("lobby_address"), LanWebsite_Main::getSettings()->getSetting("lobby_port"));
     
     
     
@@ -37,7 +37,7 @@
     }
     function shutdown() {
         echo "Daemon shutting down...\n";
-        LanWebsite_Main::getSettings()->changeSetting('chat_daemon_online', 0);
+        LanWebsite_Main::getSettings()->changeSetting('lobby_daemon_online', 0);
     }
     
     

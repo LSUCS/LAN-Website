@@ -3,6 +3,11 @@
     include "/home/soc_lsucs/lan.lsucs.org.uk/password.php";
     
     /**
+     * Base LanWebsite Library Directory
+     */
+    $config['libdir'] = "/home/soc_lsucs/dev.lan.lsucs.org.uk/htdocs/lib/";
+    
+    /**
      * Database Settings
      */
     $config['database']["host"] = "localhost";

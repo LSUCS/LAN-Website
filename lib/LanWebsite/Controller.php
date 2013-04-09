@@ -62,19 +62,19 @@
                             break;
                             
                         case 'bool':
-                            if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null) $invalid = 'bool';
+                            if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null) $invalid[] = 'bool';
                             break;
                             
                         case 'email':
-                            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) $invalid = 'email';
+                            if (!filter_var($value, FILTER_VALIDATE_EMAIL)) $invalid[] = 'email';
                             break;
                             
                         case 'ip':
-                            if (!filter_var($value, FILTER_VALIDATE_IP)) $invalid = 'ip';
+                            if (!filter_var($value, FILTER_VALIDATE_IP)) $invalid[] = 'ip';
                             break;
                             
                         case 'url':
-                            if (!filter_var($value, FILTER_VALIDATE_URL)) $invalid = 'url';
+                            if (!filter_var($value, FILTER_VALIDATE_URL)) $invalid[] = 'url';
                             break;
                         
                     }

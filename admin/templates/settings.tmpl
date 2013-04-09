@@ -1,27 +1,39 @@
 <div id="settings-container">
     <?php
-        foreach ($DataBag["settings"] as $setting) {
-            echo '<div class="setting">
-                  <span class="setting-label">' . ucwords(str_replace("_", " ", $setting["setting_name"])) . " (" . $setting["setting_type"] . "): </span>";
-            
-            switch ($setting["setting_type"]) {
-                case "int":
-                    echo '<input type="text" class="setting-int" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
-                    break;
-                case "text":
-                    echo '<input type="text" class="setting-text" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
-                    break;
-                case "pass":
-                    echo '<input type="password" class="setting-text" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
-                    break;
-                case "bool":
-                    echo '<p><input type="checkbox" class="setting-bool" id="' . $setting["setting_name"] . '" name="' . $setting["setting_name"] . '" ' . ($setting["setting_value"]?"checked":"") . ' /><label for="' . $setting["setting_name"] . '"></label></p>';
-                    break;
-                case "date":
-                    echo '<input type="text" readonly="readonly" class="setting-date" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
-                    break;
+        foreach ($DataBag["groups"] as $group => $settings) {
+            echo '<h2>' . strtolower($group) . '</h2>';
+            foreach ($settings as $setting) {
+                echo '<div class="setting">
+                      <span class="setting-label">' . ucwords(str_replace("_", " ", $setting["setting_name"])) . " (" . $setting["setting_type"] . "): </span>";
+                
+                switch ($setting["setting_type"]) {
+                    case "int":
+                        echo '<input type="text" class="setting-int" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "text":
+                        echo '<input type="text" class="setting-text" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "pass":
+                        echo '<input type="password" class="setting-text" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "bool":
+                        echo '<p><input type="checkbox" class="setting-bool" id="' . $setting["setting_name"] . '" name="' . $setting["setting_name"] . '" ' . ($setting["setting_value"]?"checked":"") . ' /><label for="' . $setting["setting_name"] . '"></label></p>';
+                        break;
+                    case "date":
+                        echo '<input type="text" readonly="readonly" class="setting-date" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "email":
+                        echo '<input type="text" class="setting-email" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "url":
+                        echo '<input type="text" class="setting-url" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                    case "ip":
+                        echo '<input type="text" class="setting-ip" name="' . $setting["setting_name"] . '" value="' . $setting["setting_value"] . '" />';
+                        break;
+                }
+                echo "</div>";
             }
-            echo "</div>";
         }
         
     ?>

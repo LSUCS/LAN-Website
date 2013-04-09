@@ -23,7 +23,7 @@
             self::$init = true;
     
             //Load base config
-            include 'config.php';
+            $config = self::getConfig();
             
             //Load controller location
             self::$controllerdir = $config['controllerdir'];            
@@ -91,6 +91,15 @@
 			$tmpl->setSubTitle("page not found");
             $tmpl->addTemplate('notfound');
 			$tmpl->output();
+        }
+        
+        
+        /**
+         *  Get Base Config
+         */
+        public static function getConfig() {
+            include dirname(__FILE__) . '/../../config.php';
+            return $config;
         }
         
         

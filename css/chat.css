@@ -4,9 +4,11 @@
 	z-index: 2000;
 	_position: absolute;
     _top: expression(eval(document.documentElement.scrollTop+(document.documentElement.clientHeight-this.offsetHeight)));
-	height: 30px;
-	min-width: 100%;
+	right: 0;
+    height: 100%;
+    width: 100%;
 	display: none;
+    pointer-events: none;
 }
 
 #chat .chatbar-element {
@@ -30,6 +32,10 @@
 	
 #chat #contacts {
 	width: 200px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    pointer-events: auto;
 }
 	#chat #contacts img {
 		display: block;
@@ -58,6 +64,7 @@
 	border-bottom: 0px;
 	background-color: #f9f9f9;
 	display: none;
+    pointer-events: auto;
 }
 	#chat #contact-list .contact {
 		border-bottom: 1px solid #eee;
@@ -80,7 +87,6 @@
 		margin-top: -2px;
 	}
 	
-	
 #chat .chat-avatar {
 	height: 20px;
 	display: block;
@@ -93,22 +99,108 @@
 	#chat .chat-avatar img {
 		width: 20px;
 	}
-	
+    
+#chat #conversations {
+    position: absolute;
+    bottom: 0;
+    right: 225px;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}   
+ 
 #chat .conversation-element {
-	position: relative;
-	width: 200px;
+	float: right;
+    margin-right: 3px;
+    pointer-events: auto;
 }
-	#chat .conversation {
-		position: absolute;
-		left: -1px;
-		height: 300px;
-		width: 220px;
+    #chat .conversation-element.conversation-open {
+        width: 250px;
+        height: 314px;
+    }
+    #chat .conversation-element.conversation-closed {
+        width: 180px;
+        height: 30px;
+    }
+    #chat .conversation-element .messages {
+		height: 250px;
+		width: 200px;
 		border: 1px solid #ccc;
 		border-bottom: 0px;
-		background-color: #f9f9f9;
-	}
-	#chat .conversation-element .status {
-		display: block;
-		float: left;
-		margin-top: -2px;
-	}
+		background-color: #fefefe;
+        width: 250px;
+        overflow-y: auto;
+        word-wrap: break-word;
+    }
+        #chat .conversation-element.conversation-closed .messages {
+            display: none;
+        }
+        #chat .conversation-element.conversation-open .messages {
+            display: block;
+        }
+    #chat .conversation-element .status-bar {
+        border: 1px solid #ccc;
+        line-height: 30px;
+        font-weight: bold;
+        font-size: 12px;
+        background-color: #f3f3f3;
+        text-align: center;
+        margin-right: 3px;
+        height: 30px;
+        position: relative;
+    }
+        #chat .conversation-element.conversation-blink .status-bar {
+            background-color: #e2e2e2;
+        }
+        #chat .conversation-element .status-bar:hover {
+            cursor: pointer;
+            background-color: #f8f8f8;
+        }
+        #chat .conversation-element .status-bar .status {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            left: 10px;
+            bottom: 22px;
+        }
+        #chat .conversation-element .status-bar .close {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            right: 10px;
+            bottom: 4px;
+            background-image: url('../../images/close.png');
+            background-size: 20px 20px;
+            opacity: 0.1;
+        }
+            #chat .conversation-element .status-bar .close:hover {
+                opacity: 0.3;
+            }
+        #chat .conversation-element.conversation-closed .status-bar {
+            width: 180px;
+            border-bottom: 0px;
+        }
+        #chat .conversation-element.conversation-open .status-bar {
+            width: 250px;
+            border-bottom: 1px;
+        }
+    #chat .conversation-element .input {
+		min-height: 18px;
+		border: 1px solid #ccc;
+		border-bottom: 0px;
+		background: #fff;
+        width: 238px;
+        padding: 6px;
+    }
+        #chat .conversation-element .input .input-box {
+            background: #fff;
+            max-height: 100px;
+            font-size: 12px;
+            overflow: hidden;
+        }
+        #chat .conversation-element.conversation-closed .input {
+            display: none;
+        }
+        #chat .conversation-element.conversation-open .input {
+            display: block;
+        }

@@ -5,6 +5,7 @@
     setlocale(LC_MONETARY, 'en_GB');
 
     include 'lib/LanWebsite/Autoload.php';
+    include 'config.php';
     
     LanWebsite_Main::initialize();
     
@@ -21,7 +22,7 @@
         
     }
             
-    LanWebsite_Main::route(array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation", "chat"), "home");
+    LanWebsite_Main::route(array("api", "home", "tickets", "whatson", "tournaments", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation", "chat", "gamehub"), "home");
 
 	
 ?>

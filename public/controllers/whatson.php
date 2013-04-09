@@ -3,10 +3,13 @@
     class Whatson_Controller extends LanWebsite_Controller {
         
         public function get_Index() {
+            $data["rota"] = LanWebsite_Main::getSettings()->getSetting('committee_rota_url');
+            $data["rotawidth"] = LanWebsite_Main::getSettings()->getSetting('committee_rota_width');
+            $data["rotaheight"] = LanWebsite_Main::getSettings()->getSetting('committee_rota_height');
         
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("What's On");
-            $tmpl->addTemplate('whatson');
+            $tmpl->addTemplate('whatson', $data);
 			$tmpl->output();
         
         }

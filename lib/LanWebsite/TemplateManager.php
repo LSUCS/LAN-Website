@@ -19,7 +19,7 @@
                                 "jquery-ui" => array( "scripts" => array( "/js/jquery-ui.custom.min.js" ), "styles" => array( "/css/jquery-ui/jquery-ui.custom.css" ), "include" => true ),
                                 "cleditor" => array( "scripts" => array( "/js/jquery.cleditor.min.js" ), "styles" => array( "/css/jquery.cleditor.css" ), "include" => false ),
                                 "datatables" => array( "scripts" => array( "/js/jquery.dataTables.min.js", "/js/TableTools.min.js", "/js/ZeroClipboard.js" ), "styles" => array( "/css/jquery.dataTables_themeroller.css", "/css/TableTools_JUI.css" ), "include" => false ),
-                                "scrollbar" => array( "scripts" => array( "/js/jquery.mCustomScrollbar.min.js" ), "styles" => array( "css/jquery.mCustomScrollbar.css" ), "include" => false ),
+                                "scrollbar" => array( "scripts" => array( "/js/jquery.mCustomScrollbar.min.js", "/js/jquery.mousewheel.min.js" ), "styles" => array( "/css/jquery.mCustomScrollbar.css" ), "include" => false ),
                                 "timers" => array( "scripts" => array( "/js/jquery.timers.js" ), "styles" => array(), "include" => false ),
                                 "tools" => array( "scripts" => array( "/js/jquery.tools.min.js", "/js/jquery.mousewheel.min.js", "/js/jquery.easing.js" ), "styles" => array(), "include" => false ),
                                 "timepicker" => array( "scripts" => array( "/js/jquery-ui.timepicker.js" ), "styles" => array(), "include" => false ),

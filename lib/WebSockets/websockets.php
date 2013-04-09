@@ -21,6 +21,7 @@
 		protected $master;
 		protected $sockets                              = array();
 		protected $users                                = array();
+        protected $connecting                           = array();
 		protected $interactive                          = true;
 		protected $headerOriginRequired                 = false;
 		protected $headerSecWebSocketProtocolRequired   = false;
@@ -56,11 +57,14 @@
 						$numBytes = @socket_recv($socket,$buffer,$this->maxBufferSize,0); // todo: if($numBytes === false) { error handling } elseif ($numBytes === 0) { remote client disconected }
 						if ($numBytes == 0) {
 							$this->disconnect($socket);
-						} else {
-							$user = $this->getUserBySocket($socket);
-							if (!$user->handshake) {
-								$this->doHandshake($user,$buffer);
+						} else {    
+                            
+							if (in_array($socket, $this->connecting)) {
+                                $this->connecting = array_diff($this->connecting, array($socket));
+								$this->doHandshake($socket,$buffer);
 							} else {
+                            
+                                $user = $this->getUserBySocket($socket);
 								if ($message = $this->deframe($buffer, $user)) {
 									$this->process($user, utf8_encode($message));
 									if($user->hasSentClose) {
@@ -105,10 +109,8 @@
 		}
 
 		protected function connect($socket) {
-			$user = new $this->userClass(uniqid(),$socket);
-			array_push($this->users,$user);
-			array_push($this->sockets,$socket);
-			$this->connecting($user);
+			array_push($this->connecting, $socket);
+			array_push($this->sockets, $socket);
 		}
 
 		protected function disconnect($socket,$triggerClosed=true) {
@@ -140,7 +142,10 @@
 			}
 		}
 
-		protected function doHandshake($user, $buffer) {
+		protected function doHandshake($socket, $buffer) {
+        
+			$user = new $this->userClass(uniqid(),$socket);
+            
 			$magicGUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 			$headers = array();
 			$lines = explode("\n",$buffer);
@@ -210,7 +215,9 @@
 
 			$handshakeResponse = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: $handshakeToken$subProtocol$extensions\r\n";
 			socket_write($user->socket,$handshakeResponse,strlen($handshakeResponse));
-		$this->connected($user);
+            
+			array_push($this->users,$user);
+            $this->connected($user);
 		}
 
 		protected function checkHost($hostName) {

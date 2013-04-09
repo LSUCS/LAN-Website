@@ -18,41 +18,47 @@
                                 "nonmember_ticket_available" => array("bool", true, SettingsGroup::Tickets),
                                 "nonmember_ticket_available_date" => array("date", "2012-10-17 00:00:00", SettingsGroup::Tickets),
                                 "xenforo_member_group_id" => array("int", 4, SettingsGroup::Auth),
-                                "xenforo_fol_group_id" => array("int", 20, SettingsGroup::Auth),
-                                "default_page" => array("text", "home", SettingsGroup::General),
-                                "default_title" => array("text", "LSUCS", SettingsGroup::General),
-                                "default_admin_page" => array("text", "adminsettings", SettingsGroup::General),
                                 "api_key" => array("pass", '', SettingsGroup::General),
-                                "paypal_email" => array("text", "paypal@lsucs.org.uk", SettingsGroup::PayPal),
-                                "paypal_return_url" => array("text", "http://lan.lsucs.org.uk/index.php?page=tickets&action=complete", SettingsGroup::PayPal),
-                                "paypal_ipn_url" => array("text", "http://lan.lsucs.org.uk/index.php?page=tickets&action=ipn", SettingsGroup::PayPal),
-                                "paypal_url" => array("text", "https://www.paypal.com/cgi-bin/webscr", SettingsGroup::PayPal),
-                                "email_user" => array("text", "receipts@lsucs.org.uk", SettingsGroup::Email),
+                                "paypal_email" => array("email", "paypal@lsucs.org.uk", SettingsGroup::PayPal),
+                                "paypal_return_url" => array("url", "http://lan.lsucs.org.uk/index.php?page=tickets&action=complete", SettingsGroup::PayPal),
+                                "paypal_ipn_url" => array("url", "http://lan.lsucs.org.uk/index.php?page=tickets&action=ipn", SettingsGroup::PayPal),
+                                "paypal_url" => array("url", "https://www.paypal.com/cgi-bin/webscr", SettingsGroup::PayPal),
+                                "email_user" => array("email", "receipts@lsucs.org.uk", SettingsGroup::Email),
                                 "email_pass" => array("pass", "", SettingsGroup::Email),
                                 "email_host" => array("text", "ssl://smtp.gmail.com", SettingsGroup::Email),
                                 "email_port" => array("text", "465", SettingsGroup::Email),
-                                "receipt_api_availability_url" => array("text", "http://receipts2.lsucs.org.uk/index.php?page=api&action=lanavailability", SettingsGroup::ReceiptSystem),
-                                "receipt_api_issue_url" => array("text", "http://receipts2.lsucs.org.uk/index.php?page=api&action=issuelanreceipt", SettingsGroup::ReceiptSystem),
+                                "receipt_api_availability_url" => array("url", "http://receipts2.lsucs.org.uk/index.php?page=api&action=lanavailability", SettingsGroup::ReceiptSystem),
+                                "receipt_api_issue_url" => array("url", "http://receipts2.lsucs.org.uk/index.php?page=api&action=issuelanreceipt", SettingsGroup::ReceiptSystem),
                                 "max_order_lookup_attempts" => array("int", 60, SettingsGroup::General),
-                                "steam_api_key" => array("pass", "", SettingsGroup::Steam),
                                 "lan_ip_addresses" => array("text", "0.0.0.0,0.0.0.0", SettingsGroup::General),
                                 "disable_lan_van" => array("bool", false, SettingsGroup::LanVan),
                                 "map_cron_lock" => array("bool", false, SettingsGroup::Map),
-                                "map_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=map&action=process", SettingsGroup::Map),
+                                "map_update_url" => array("url", "http://lans.lsucs.org.uk/index.php?page=map&action=process", SettingsGroup::Map),
                                 "map_browser_update_interval" => array('int', 30, SettingsGroup::Map),
                                 "map_daemon_sleep_period" => array('int', 10, SettingsGroup::Map),
                                 "server_cron_lock" => array("bool", false, SettingsGroup::GameServer),
-                                "server_update_url" => array("text", "http://lans.lsucs.org.uk/index.php?page=servers&action=process", SettingsGroup::GameServer),
+                                "server_update_url" => array("url", "http://lans.lsucs.org.uk/index.php?page=servers&action=process", SettingsGroup::GameServer),
                                 "server_browser_update_interval" => array('int', 10, SettingsGroup::GameServer),
                                 "server_daemon_sleep_period" => array('int', 5, SettingsGroup::GameServer),
-								"enable_tf2" => array('bool', false, SettingsGroup::General),
-								"enable_hungergames" => array('bool', false, SettingsGroup::General),
 								"chat_address" => array("text", "localhost", SettingsGroup::Chat),
 								"chat_port" => array("int", 8081, SettingsGroup::Chat),
 								"chat_history_length" => array("int", 10, SettingsGroup::Chat),
-								"chat_enabled" => array("bool", 0, SettingsGroup::Chat),
-								"chat_url" => array("text", "ws://lan.lsucs.org.uk:8080", SettingsGroup::Chat),
-                                "lsucs_auth_url" => array("text", "http://auth.lsucs.org.uk/", SettingsGroup::Auth)
+								"chat_enabled" => array("bool", false, SettingsGroup::Chat),
+                                "chat_daemon_online" => array("bool", false, SettingsGroup::Chat),
+								"chat_url" => array("text", "ws://lan.lsucs.org.uk:8087", SettingsGroup::Chat),
+                                "require_ticket_for_chat" => array("bool", false, SettingsGroup::Chat),
+                                "lsucs_auth_url" => array("url", "http://auth.lsucs.org.uk/", SettingsGroup::Auth),
+                                "presentation_url" => array("url", "https://docs.google.com/presentation/embed?id=1xSQaCi9f6lRTms75rQqLbYCPX88z6JegMQkTBNYAths&start=true&loop=true&delayms=15000", SettingsGroup::Presentation),
+                                "presentation_refresh_interval" => array("int", 60000, SettingsGroup::Presentation),
+                                "committee_rota_url" => array("url", "https://docs.google.com/spreadsheet/pub?key=0Ar_sSX-R25mQdEF4ekVBektsV0o1U0JoOEZuZ3NhUXc&output=html&widget=true", SettingsGroup::CommitteeRota),
+                                "committee_rota_width" => array("int", 700, SettingsGroup::CommitteeRota),
+                                "committee_rota_height" => array("int", 500, SettingsGroup::CommitteeRota),
+								"lobby_address" => array("text", "localhost", SettingsGroup::Chat),
+								"lobby_port" => array("int", 8088, SettingsGroup::Chat),
+								"lobby_history_length" => array("int", 20, SettingsGroup::Chat),
+								"lobby_enabled" => array("bool", false, SettingsGroup::Chat),
+                                "lobby_daemon_online" => array("bool", false, SettingsGroup::Chat),
+								"lobby_url" => array("text", "ws://lan.lsucs.org.uk:8088", SettingsGroup::Chat)
                                 );
     
         public function __construct() {
@@ -60,16 +66,25 @@
         }
         
         public function getSetting($setting) {
-            if (!$this->settingIsReal($setting)) return false;
+            if (!$this->settingIsReal($setting)) {
+                $this->deleteSetting($setting);
+                return false;
+            }
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
             $arr = $res->fetch_array();
-            return $arr[2];
+            return $arr[1];
         }
         
         public function getSettings() {
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings`");
             $arr = array();
-            while ($row = $res->fetch_assoc()) $arr[] = $row;
+            while ($row = $res->fetch_assoc()) {
+                if (!$this->settingIsReal($row["setting_name"])) continue $this->deleteSetting($row["setting_name"]);
+                $row["setting_group"] = $this->defaults[$row["setting_name"]][2];
+                $row["setting_default"] = $this->defaults[$row["setting_name"]][1];
+                $row["setting_type"] = $this->defaults[$row["setting_name"]][0];
+                $arr[] = $row;
+            }
             return $arr;
         }
         
@@ -86,9 +101,14 @@
                     if (!is_numeric($value)) return false;
                     break;
                 case "bool":
-                    if ($value && $value !== 1 && $value !== 0) return false;
-                    if ($value) $value = true;
-                    else $value = false;
+                    if (filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) === null) return false;
+                    break;
+                case "email":
+                    if (!filter_var($value, FILTER_VALIDATE_EMAIL)) return false;
+                    break;
+                case "url":
+                case "ip":
+                    if (!filter_var($value, FILTER_VALIDATE_URL) || !filter_var($value, FILTER_VALIDATE_IP)) return false;
                     break;
                 case "text":
                 case "pass":
@@ -105,6 +125,9 @@
             return array_key_exists($setting, $this->defaults);
         }
         
+        private function deleteSetting($setting) {
+            LanWebsite_Main::getDb()->query("DELETE FROM `settings` WHERE setting_name = '%s'", $setting);
+        }
         private function settingIsStored($setting) {
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
             if (mysqli_num_rows($res) > 0) return true;
@@ -113,7 +136,7 @@
         private function checkDefaults() {
             foreach ($this->defaults as $setting => $properties) {
                 if (!$this->settingIsStored($setting)) {
-                    LanWebsite_Main::getDb()->query("INSERT INTO `settings` (setting_name, setting_type, setting_value) VALUES ('%s', '%s', '%s')", $setting, $properties[0], $properties[1]);
+                    LanWebsite_Main::getDb()->query("INSERT INTO `settings` (setting_name, setting_value) VALUES ('%s', '%s')", $setting, $properties[1]);
                 }
             }
         }
@@ -128,11 +151,12 @@
         const PayPal = "PayPal";
         const Email = "Email";
         const ReceiptSystem = "Receipt System";
-        const Steam = "Steam";
         const LanVan = "LAN Van";
         const Map = "Live Map";
         const GameServer = "Server List";
         const Chat = "Chat";
+        const Presentation = "LAN Presentation";
+        const CommitteeRota = "Committee Rota";
     }
 
 ?>

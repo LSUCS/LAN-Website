@@ -125,7 +125,7 @@ var Overlay = {
         if (showButton) this.showCloseButton();
         else this.hideCloseButton();
         
-        if (text.length > 0) {
+        if (text != null && text.length > 0) {
             $("#overlay").removeClass().addClass("notice-overlay");
             $("#overlay-content").html(text);
         }
