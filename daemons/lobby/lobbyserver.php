@@ -5,8 +5,8 @@
 		protected $maxBufferSize = 1048576;
 		protected $userClass = 'LobbyUser';
         
-        private $lobbies;
-        private $lobbyPasswords;
+        private $lobbies = array();
+        private $lobbyPasswords = array();
         private $contacts;
 
 		//////////////////////////
@@ -50,7 +50,7 @@
                     
                     
                 //CREATELOBBY - Create a new lobby
-				//params - { title:, game:, icon:, maxplayers:, password:, description: }
+				//params - { title:, game:, icon:, maxplayers:, password:, description:, steam: }
                 case "createlobby":
                 
                     //Validate
@@ -63,7 +63,7 @@
                     }
                     
                     //Prepare values
-                    if (!isset($payload["icon"]) || strlen(trim($payload["icon"])) == 0) $icon = "derp";
+                    if (!isset($payload["icon"]) || strlen(trim($payload["icon"])) == 0) $icon = "/images/no-game.png";
                     else $icon = $payload["icon"];
                     if (!isset($payload["maxplayers"]) || $payload["maxplayers"] < 2) $playerlimit = 0;
                     else $playerlimit = $payload["maxplayers"];
@@ -76,9 +76,20 @@
                     }
                     if (isset($payload["description"])) $description = $payload["description"];
                     else $description = "";
+                    if (!isset($payload["steam"]) || $payload["steam"] == 0) $steam = false;
+                    else $steam = true;
+                    
+                    //Check icon
+                    $ch = curl_init($icon);
+                    curl_setopt($ch, CURLOPT_NOBODY, true);
+                    curl_exec($ch);
+                    $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+                    $this->stdout($retcode . " hi");
+                    if ($retcode != 200) $icon = "/images/no-game.png";
                     
                     //Create lobby object and save
-                    $lobby = new Lobby(null, array($this->getContact($user->data->getUserId())), array(), $payload["game"], $icon, $playerlimit, $locked, $description, $this->getContact($user->data->getUserId()));
+                    $lobby = new Lobby(null, array($this->getContact($user->data->getUserId())), array(), $payload["title"], $payload["game"], $icon, $playerlimit, $locked, $description, $this->getContact($user->data->getUserId()), $steam);
                     $lobby = $this->saveLobby($lobby, $password);
                     
                     //Set contact lobby
@@ -87,8 +98,12 @@
                     //Reciprocate empty create lobby to signify success
                     $this->sendCommand($user, "createlobby", array());
                     
-                    //Send join lobby
-                    $this->sendCommand($user, "joinlobby", $lobby);
+                    //Send join lobby to all sockets for user
+                    foreach ($this->users as $u) {
+                        if ($u->data->getUserId() == $user->data->getUserId()) {
+                            $this->sendCommand($u, "joinlobby", $lobby);
+                        }
+                    }
                     
                     //Update lobbies to relevant users
                     $this->sendLobbyUpdate($lobby);
@@ -97,20 +112,137 @@
                    
                    
                 //EDITLOBBY - Create a new lobby
-				//params - { lobbyID:, title:, game:, icon:, maxplayers:, password:, description: }
+				//params - { lobbyID:, title:, game:, icon:, maxplayers:, password:, description:, steam: }
                 case "editlobby":
+                
+                    //Validate
+                    $error = false;
+                    if (!isset($payload["lobbyID"]) || !$this->getLobby($payload["lobbyID"])) $error = "Invalid lobby ID";
+                    if (!isset($payload["title"]) || strlen(trim($payload["title"])) == 0) $error = "Invalid title, must be at least 1 character in length";
+                    if (!isset($payload["game"]) || strlen(trim($payload["game"])) == 0) $error = "Invalid game, must be at least 1 character in length";
+                    if (isset($payload["password"]) && strlen(trim($payload["password"])) < 3 && strlen(trim($payload["password"])) > 0) $error = "Invalid password - must be at least 3 characters in length";
+                    if ($error) {
+                        return $this->sendCommand($user, "createlobby", array("error" => $error));
+                    }
+                    
+                    //Prepare values
+                    if (!isset($payload["icon"]) || strlen(trim($payload["icon"])) == 0) $icon = "/images/no-game.png";
+                    else $icon = $payload["icon"];
+                    if (!isset($payload["maxplayers"]) || $payload["maxplayers"] < 2) $playerlimit = 0;
+                    else $playerlimit = $payload["maxplayers"];
+                    if (isset($payload["password"]) && strlen(trim($payload["password"])) > 3) {
+                        $locked = true;
+                        $password = $payload["password"];
+                    } else {
+                        $locked = false;
+                        $password = null;
+                    }
+                    if (isset($payload["description"])) $description = $payload["description"];
+                    else $description = "";
+                    if (!isset($payload["steam"]) || $payload["steam"] == 0) $steam = false;
+                    else $steam = true;
+                    
+                    //Check icon
+                    $ch = curl_init($icon);
+                    curl_setopt($ch, CURLOPT_NOBODY, true);
+                    curl_exec($ch);
+                    $retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+                    if ($retcode == 400) $icon = "/images/no-game.png";
+                    
+                    //Create lobby object and save
+                    $lobby = new Lobby($payload["lobbyID"], array($this->getContact($user->data->getUserId())), array(), $payload["title"], $payload["game"], $icon, $playerlimit, $locked, $description, $this->getContact($user->data->getUserId()), $steam);
+                    $lobby = $this->saveLobby($lobby, $password);
+                    
+                    //Reciprocate empty create lobby to signify success
+                    $this->sendCommand($user, "createlobby", array());
+                    
+                    //Update lobby to relevant users
+                    $this->sendLobbyUpdate($lobby);
+                
                     break;
                     
                     
 				//JOINLOBBY - Join specified lobby ID
-				//params - { lobbyID: }
+				//params - { lobbyID:, password: }
                 case "joinlobby":
+                
+                    //Validate
+                    $error = false;
+                    if (!isset($payload["lobbyID"]) || !$this->getLobby($payload["lobbyID"])) $error = "Invalid lobby ID";
+                    $lobby = $this->getLobby($payload["lobbyID"]);
+                    if ($lobby->locked == 1 && (!isset($payload["password"]) || sha1($payload["password"]) != $this->lobbyPasswords[$lobby->lobbyid])) $error = "Invalid password";
+                    if ($lobby->playerlimit > 0 && count($lobby->contacts) == $lobby->playerlimit) $error = "Lobby is full";
+                    $contact = $this->getContact($user->data->getUserId());
+                    if ($contact->activelobbyid != null) $error = "Contact already in lobby";
+                    if ($error) {
+                        return $this->sendCommand($user, "joinlobby", array("error" => $error));
+                    }
+                    
+                    //Update contact and lobby
+                    $contact->activelobbyid = $lobby->lobbyid;
+                    $lobby->contacts[] = $contact;
+                    $this->saveLobby($lobby, $this->lobbyPasswords[$lobby->lobbyid]);
+                    $this->setContactLobby($contact->userid, $lobby->lobbyid);
+                    
+                    //Reciprocate join lobby command to all sockets for user
+                    foreach ($this->users as $u) {
+                        if ($u->data->getUserId() == $user->data->getUserId()) {
+                            $this->sendCommand($u, "joinlobby", $lobby);
+                        }
+                    }
+                    
+                    //Update lobby to relevant users
+                    $this->sendLobbyUpdate($lobby);
+                
                     break;
                     
                     
 				//LEAVELOBBY - Leave lobby user is in
 				//params - { }
                 case "leavelobby":
+                
+                    //Check if in lobby
+                    $contact = $this->getContact($user->data->getUserId());
+                    if ($contact->activelobbyid == null) return $this->error($user, "Not in lobby, unable to leave");
+                    
+                    //Get lobby
+                    $lobby = $this->getLobby($contact->activelobbyid);
+                    
+                    //Check if contact is only member of lobby, if so remove entire lobby
+                    if (count($lobby->contacts) == 1) {
+                        $this->deleteLobby($lobby->lobbyid);
+                        $this->sendLobbyDelete($lobby);
+                    }
+                    //Otherwise remove from lobby
+                    else {
+                        
+                        //Remove from contacts
+                        foreach ($lobby->contacts as $key => $c) {
+                            if ($c->userid == $contact->userid) {
+                                $lobby->contacts = array_diff($lobby->contacts, array($c));
+                                break;
+                            }
+                        }
+                        
+                        //If contact is leader of lobby, set next contact to be leader and update
+                        if ($lobby->leader->userid == $contact->userid) {
+                            $lobby->leader = reset($lobby->contacts);
+                        }
+                            
+                        //Save lobby
+                        $this->saveLobby($lobby);
+                        
+                        //Reciprocate leave lobby
+                        $this->sendCommand($user, "leavelobby", array());
+                        
+                        //Send lobby updates
+                        $this->sendLobbyUpdate($lobby);
+                    }
+                    
+                    //Update contact status
+                    $this->setContactLobby($contact->userid, null);
+                    
                     break;
                     
                     
@@ -209,6 +341,28 @@
         }
         
         /**
+         *  Sends a lobby delete to all sockets that aren't in a lobby and a lobby leave to all sockets in the specified lobby
+         */
+        protected function sendLobbyDelete($lobby) {
+            foreach ($this->users as $user) {
+                $contact = $this->getContact($user->data->getUserId());
+                if ($contact->activelobbyid == null) {
+                    $this->sendCommand($user, "deletelobby", $lobby);
+                } else if ($contact->activelobbyid == $lobby->lobbyid) {
+                    $this->sendCommand($user, "leavelobby", array());
+                }
+            }
+        }
+        
+        /**
+         *  Removes a lobby
+         */
+        protected function deleteLobby($lobbyId) {
+            $this->lobbies = array_diff_key($this->lobbies, array($lobbyId => ""));
+            $this->lobbyPasswords = array_diff_key($this->lobbyPasswords, array($lobbyId => ""));
+        }
+        
+        /**
          *  Returns active lobby for user if it exists, null if not
          */
 		protected function getActiveLobby($userId) {
@@ -230,12 +384,12 @@
         protected function saveLobby($lobby, $password=null) {
             //If new lobby, generate ID
             if ($lobby->lobbyid == null) {
-                $lobby->lobbyid = uniqid('', true);
+                $lobby->lobbyid = uniqid('');
             }
             //Store
             $this->lobbies[$lobby->lobbyid] = $lobby;
             //Store password if applicable
-            if ($password != null) $this->lobbyPasswords = sha2($password);
+            if ($password != null) $this->lobbyPasswords[$lobby->lobbyid] = sha1($password);
             
             return $lobby;
         }
@@ -301,23 +455,27 @@
 		public $lobbyid;
 		public $contacts;
 		public $history;
+        public $title;
         public $game;
         public $icon;
         public $playerlimit;
         public $locked;
         public $description;
         public $leader;
+        public $steam;
 		
-		public function __construct($lobbyid=null, $contacts=array(), $history=array(), $game=null, $icon=null, $playerlimit=null, $locked=null, $description=null, $leader=null) {
+		public function __construct($lobbyid=null, $contacts=array(), $history=array(), $title=null, $game=null, $icon=null, $playerlimit=null, $locked=null, $description=null, $leader=null, $steam=null) {
 			$this->lobbyid = $lobbyid;
 			$this->contacts = $contacts;
 			$this->history = $history;
+            $this->title = $title;
             $this->game = $game;
             $this->icon = $icon;
             $this->playerlimit = $playerlimit;
             $this->locked = $locked;
             $this->description = $description;
             $this->leader = $leader;
+            $this->steam = $steam;
 		}
 	}
 	
@@ -335,6 +493,10 @@
             $this->steam = $steam;
             $this->activelobbyid = $activelobbyid;
 		}
+        
+        public function __toString() {
+            return serialize($this);
+        }
 	}
 
 ?>

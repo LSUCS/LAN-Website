@@ -2,6 +2,7 @@
 #top {
     height: 400px;
     margin-bottom: 20px;
+    position: relative;
 }
 #lobbies-container, #in-lobby {
     float: left;
@@ -11,7 +12,7 @@
     border-radius: 8px;
     position: relative;
 }  
-#lobby-info, #lobby-notice {
+#lobby-info {
     float: right;
     height: 400px;
     width: 230px;
@@ -19,6 +20,19 @@
     border-radius: 8px;
     font-family: tahoma, helvetica;
     font-size: 12px;
+    z-index: 10;
+    position: relative;
+    display: none;
+}
+#lobby-info-blank {
+    position: absolute;
+    z-index: 5;
+    right: 0px;
+    top: 0px;
+    height: 400px;
+    width: 230px;
+    background: #f6f6f6;
+    border-radius: 8px;
 }
 #connecting {
     background: #f6f6f6;
@@ -133,12 +147,6 @@
             bottom: 0;
             right: 0;
         }
-
-        
-/* LOBBY NOTICE */
-#lobby-notice {
-    display: none;
-}
 
 
 /* LOBBY LIST */
@@ -417,3 +425,10 @@
         background-size: 30px;
         display: none;
     }
+    
+    
+/* JOIN LOBBY */
+.submit-password {
+    height: 33px;
+    font-size: 14px;
+}

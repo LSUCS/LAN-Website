@@ -9,6 +9,7 @@
         }
     
         public function get_Index() {
+            LanWebsite_Main::getAuth()->requireLogin();
             $tmpl = LanWebsite_Main::getTemplateManager();
             $tmpl->setSubTitle("Game Hub");
             $tmpl->addTemplate("gamehub");
