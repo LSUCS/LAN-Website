@@ -4,6 +4,11 @@
 		
 		protected $maxBufferSize = 1048576;
 		protected $userClass = 'ChatUser';
+        
+        private $conversationContacts = array();
+        private $contactDetails = array();
+        private $conversations = array();
+        private $messages = array();
 
 		//////////////////////////
 		// CONNECTION FUNCTIONS //
@@ -29,12 +34,8 @@
 				//return - JSON array of open conversations and user list
 				case "init":
                     $conversations = array();
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE user_id = '%s' AND open = 1", $user->data->getUserId());
-                    while ($conv = $res->fetch_assoc()) {
-                        $c = $this->getConversation($conv["conversation_id"]);
-                        $c->minimised = $conv["minimised"];
-                        $c->read = $conv["read"];
-                        $conversations[] = $c;
+                    foreach ($this->getConversations($user->data->getUserId()) as $conv) {
+                        if ($conv->contacts[$user->data->getUserId()]->open == 1) $conversations[$conv->conversationid] = $conv;
                     }
 					$this->sendCommand($user, "init", array("contacts" => $this->getContactList($user), "conversations" => $conversations, "userid" => $user->data->getUserId()));
 					break;
@@ -49,45 +50,45 @@
                 
                     //Check if conv id is valid
                     if (!isset($payload["convID"])) return $this->error($user, "Conversation ID not provided");
-                    $conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $payload["convID"])->fetch_assoc();
+                    $conv = $this->getConversation($payload["convID"]);
                     if (!$conv) return $this->error($user, "Invalid conversation ID");
                     
-                    //Get conversation participants, check if user is part of it
-                    $participants = array();
+                    //Get conversation contacts, check if user is part of it
                     $in = false;
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s'", $payload["convID"]);
-                    while ($row = $res->fetch_assoc()) {
-                        $participants[] = $row;
-                        if ($row["user_id"] == $user->data->getUserId()) $in = true;
+                    foreach ($conv->contacts as $contact) {
+                        if ($contact->userid == $user->data->getUserId()) $in = true;
                     }
                     if (!$in) return $this->error($user, "User not part of conversation");
-                
-                    //Insert into db
-                    LanWebsite_Main::getDb()->query("INSERT INTO `chat_messages` (conversation_id, user_id, message) VALUES ('%s', '%s', '%s')", $payload['convID'], $user->data->getUserId(), $payload['message']);
+        
+                    //Create and save message object
+                    $message = new Message(time(), $conv->conversationid, $user->data->getUserId(), $this->getContactDetails($user->data->getUserId()), $payload['message']);
+                    $this->saveMessage($message);
                     
-                    //Get message object
-                    $message = $this->getMessage(LanWebsite_Main::getDb()->getLink()->insert_id);
+                    //Loop contacts, updating read status and messaging them if need be
+                    foreach ($conv->contacts as $contact) {
                     
-                    //Loop participants, updating read status and messaging them if need be
-                    foreach ($participants as $participant) {
                         //Mark as unread
-                        if ($participant["user_id"] == $user->data->getUserId()) LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET `read` = 1 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $participant["user_id"]);
-                        else LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET `read` = '0' WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $participant["user_id"]);
-                        
-                        //If conversation is closed, open it
-                        if ($participant["open"] == 0) LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET open = 1 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $participant["user_id"]);
+                        if ($contact->userid == $user->data->getUserId()) $contact->read = 1;
+                        else $contact->read = 0;
                                                 
-                        //Check for online users for participant
+                        //Check for online users for contact
                         foreach ($this->users as $chatuser) {
-                            if ($chatuser->data->getUserId() == $participant["user_id"]) {
-                                if ($participant["open"] == 0) {
-                                    $this->sendCommand($chatuser, "openconversation", $this->getConversation($payload["convID"], $chatuser));
-                                    $participant["open"] = 1;
+                            if ($chatuser->data->getUserId() == $contact->userid) {
+                                if ($contact->open == 0) {
+                                    $contact->minimised = 0;
+                                    $this->saveConversationContact($contact);
+                                    $this->sendCommand($chatuser, "openconversation", $this->getConversation($conv->conversationid));
+                                } else {
+                                    $this->sendCommand($chatuser, "sendmessage", $message);
                                 }
-                                $this->sendCommand($chatuser, "sendmessage", $message);
                                 break;
                             }
                         }
+                        
+                        //Update contact
+                        $contact->open = 1;
+                        $this->saveConversationContact($contact);
+                        
                     }
                     
 					break;
@@ -98,32 +99,26 @@
 				case "openconversation":
 				
 					//Validate user id
-					if (!isset($payload["userid"]) || $payload["userid"] == $user->data->getUserId()) return $this->error($user, "Invalid user id for conversation");
-					/*$ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND activated = 1", LanWebsite_Main::getSettings()->getSetting("lan_number"), $user->data->getUserId())->fetch_assoc();
-					if (!$ticket) return $this->error($user, "Cannot open conversation with user not at LAN");*/
+					if (!isset($payload["userID"]) || $payload["userID"] == $user->data->getUserId() || !$this->getContactDetails($payload["userID"])) return $this->error($user, "Invalid user id for conversation");
 				
-					//Check if a conversation already exists between these two users exclusively and return it if it does
-					$res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE user_id = '%s'", $user->data->getUserId());
-					while ($row = $res->fetch_assoc()) {
-						$res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s'", $row["conversation_id"]);
-                        if (mysqli_num_rows($res) > 2) continue;
-                        $exists = false;
-                        while ($row2 = $res->fetch_assoc()) if ($row2["user_id"] == $payload["userid"]) $exists = true;
-						if ($exists) {
-                            LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET open = 1 WHERE conversation_id = '%s' AND user_id = '%s'", $row["conversation_id"], $user->data->getUserId());
-							$this->sendCommand($user, "openconversation", $this->getConversation($row["conversation_id"], $user));
-							return;
-						}
-					}
-					
-					//Create conversation
-					LanWebsite_Main::getDb()->query("INSERT INTO `chat_conversations` () VALUES ()");
-					$convid = LanWebsite_Main::getDb()->getLink()->insert_id;
-					LanWebsite_Main::getDb()->query("INSERT INTO `chat_users` (conversation_id, user_id, open, minimised, `read`) VALUES ('%s', '%s', 1, 0, 1)", $convid, $user->data->getUserId());
-					LanWebsite_Main::getDb()->query("INSERT INTO `chat_users` (conversation_id, user_id, open, minimised, `read`) VALUES ('%s', '%s', 0, 0, 1)", $convid, $payload["userid"]);
-					
+					//Check if a conversation already exists between these two users and return it if it does
+                    foreach ($this->getConversations($user->data->getUserId()) as $conv) {
+                        foreach ($conv->contacts as $contact) {
+                            if ($contact->userid == $payload["userID"]) {
+                                $this->sendCommand($user, "openconversation", $conv);
+                                return;
+                            }
+                        }
+                    }
+                    
+					//Create and save conversation
+                    $contacts[] = new ConversationContact($user->data->getUserId(), null, 1, 0, 1);
+                    $contacts[] = new ConversationContact($payload["userID"], null, 0, 1, 1);
+                    $conv = new Conversation(null, $contacts, array());
+                    $conv = $this->saveConversation($conv);
+                    
 					//Reciprocate open conversation
-					$this->sendCommand($user, "openconversation", $this->getConversation($convid, $user));
+					$this->sendCommand($user, "openconversation", $conv);
 					
 					break;
 					
@@ -133,16 +128,17 @@
 				case "closeconversation":
                 
                     //Check if conv id is valid
-                    if (!isset($payload["convID"])) return $this->error($user, "Conversation ID not provided");
-                    $conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $payload["convID"])->fetch_assoc();
+                    if (!isset($payload["convID"]) || !$this->getConversation($payload["convID"])) return $this->error($user, "Conversation ID not provided");
+                    $conv = $this->getConversation($payload["convID"]);
                     if (!$conv) return $this->error($user, "Invalid conversation ID");
                     
                     //Check if user is part of it
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId())->fetch_assoc();
-                    if (!$res) return $this->error($user, "User is not part of conversation, cannot close");
+                    $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
+                    if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
                     //Mark as closed
-                    LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET open = 0 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId());
+                    $contact->open = 0;
+                    $this->saveConversationContact($contact);
                     
 					break;
 					
@@ -152,16 +148,17 @@
 				case "minimiseconversation":
                 
                     //Check if conv id is valid
-                    if (!isset($payload["convID"])) return $this->error($user, "Conversation ID not provided");
-                    $conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $payload["convID"])->fetch_assoc();
+                    if (!isset($payload["convID"]) || !$this->getConversation($payload["convID"])) return $this->error($user, "Conversation ID not provided");
+                    $conv = $this->getConversation($payload["convID"]);
                     if (!$conv) return $this->error($user, "Invalid conversation ID");
                     
                     //Check if user is part of it
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId())->fetch_assoc();
-                    if (!$res) return $this->error($user, "User is not part of conversation, cannot close");
+                    $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
+                    if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
-                    //Mark as minimised
-                    LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET minimised = 1 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId());
+                    //Mark as closed
+                    $contact->minimised = 1;
+                    $this->saveConversationContact($contact);
                     
 					break;
                     
@@ -171,16 +168,17 @@
 				case "maximiseconversation":
                 
                     //Check if conv id is valid
-                    if (!isset($payload["convID"])) return $this->error($user, "Conversation ID not provided");
-                    $conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $payload["convID"])->fetch_assoc();
+                    if (!isset($payload["convID"]) || !$this->getConversation($payload["convID"])) return $this->error($user, "Conversation ID not provided");
+                    $conv = $this->getConversation($payload["convID"]);
                     if (!$conv) return $this->error($user, "Invalid conversation ID");
                     
                     //Check if user is part of it
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId())->fetch_assoc();
-                    if (!$res) return $this->error($user, "User is not part of conversation, cannot close");
+                    $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
+                    if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
-                    //Mark as maximimised
-                    LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET minimised = 0 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId());
+                    //Mark as closed
+                    $contact->minimised = 0;
+                    $this->saveConversationContact($contact);
                     
 					break;
                     
@@ -190,16 +188,17 @@
 				case "readconversation":
                 
                     //Check if conv id is valid
-                    if (!isset($payload["convID"])) return $this->error($user, "Conversation ID not provided");
-                    $conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $payload["convID"])->fetch_assoc();
+                    if (!isset($payload["convID"]) || !$this->getConversation($payload["convID"])) return $this->error($user, "Conversation ID not provided");
+                    $conv = $this->getConversation($payload["convID"]);
                     if (!$conv) return $this->error($user, "Invalid conversation ID");
                     
                     //Check if user is part of it
-                    $res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId())->fetch_assoc();
-                    if (!$res) return $this->error($user, "User is not part of conversation, cannot close");
+                    $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
+                    if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
-                    //Mark as read
-                    LanWebsite_Main::getDb()->query("UPDATE `chat_users` SET `read` = 1 WHERE conversation_id = '%s' AND user_id = '%s'", $payload["convID"], $user->data->getUserId());
+                    //Mark as closed
+                    $contact->read = 1;
+                    $this->saveConversationContact($contact);
                     
 					break;
 
@@ -233,7 +232,14 @@
 			$this->stdout("Authorised connection " . $user->data->getUserId() . " for " . $user->data->getUsername());
 			
 			//Update presence to other sockets, excluding current user
-			$this->updateContactLists($user);
+            $this->getContactDetails($user->data->getUserId());
+            $this->setContactStatus($user->data->getUserId(), "online");
+            $details = $this->getContactDetails($user->data->getUserId());
+            foreach ($this->users as $u) {
+                if ($user->data->getUserId() != $u->data->getUserId()) {
+                    $this->sendCommand($u, "updatecontact", $details);
+                }
+            }
 			
 		}
 		
@@ -242,10 +248,16 @@
 		 */
 		protected function closed($user) {
 			$this->stdout("Connection " . $user->id . " closed by user");
-			//Update presence to other sockets
-			$this->updateContactLists();
+            
+			//Update presence to other sockets, excluding current user
+            $this->setContactStatus($user->data->getUserId(), "offline");
+            $details = $this->getContactDetails($user->data->getUserId());
+            foreach ($this->users as $u) {
+                if ($user->data->getUserId() != $u->data->getUserId()) {
+                    $this->sendCommand($u, "updatecontact", $details);
+                }
+            }
 		}
-		
 		
 		
 		//////////////////////
@@ -273,132 +285,192 @@
 		protected function fatalError($user, $message) {
 			$this->error($user, $message);
 			$this->disconnect($user->socket);
-		}
-		
-		
-		
-		///////////////////////
-		// UTILITY FUNCTIONS //
-		///////////////////////
+		}	
+        
+        
+        ////////////////////////////
+		// CONVERSATION FUNCTIONS //
+		////////////////////////////
+        /**
+         *  Returns a conversation by its ID
+         */
+        protected function getConversation($conversationId) {
+            if (isset($this->conversations[$conversationId])) {
+                $conv = $this->conversations[$conversationId];
+                $conv->contacts = $this->getConversationContacts($conversationId);
+                $conv->history = $this->getConversationHistory($conversationId);
+                return $conv;
+            }
+            else return false;
+        }
         
         /**
-         *  Updates contact list on all sockets
+         *  Get conversations for a user
          */
-        private function updateContactLists($excludeUser = false) {
-            foreach ($this->users as $user) {
-                if (($excludeUser != false && $user->data->getUserId() != $excludeUser->data->getUserId()) || $excludeUser == false) {
-                    $this->sendCommand($user, "updatecontactlist", $this->getContactList($user));
+        protected function getConversations($userId) {
+            $return = array();
+            foreach ($this->conversationContacts as $conv) {
+                foreach ($conv as $contact) {
+                    if ($contact->userid == $userId) {
+                        $return[$contact->conversationid] = $this->getConversation($contact->conversationid);
+                        break;
+                    }
                 }
             }
+            return $return;
         }
-		
-		/**
-		 *	Returns a conversation object
-		 */
-		private function getConversation($conversationid, $excludeUser=false) {
-		
-			//Check convo exists
-			$conv = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_conversations` WHERE conversation_id = '%s'", $conversationid)->fetch_assoc();
-			if (!$conv) return false;
-			
-			//New object
-			$conversation = new Conversation($conversationid);
-			
-			//Load contacts
-			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_users` WHERE conversation_id = '%s'", $conversationid);
-			while ($row = $res->fetch_assoc()) {
-				if (($excludeUser != false && $row["user_id"] != $excludeUser->data->getUserId()) || $excludeUser == false) {
-					$conversation->contacts[] = $this->getContact($row["user_id"]);
-				}
-			}
-			
-			//Load history
-			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_messages` WHERE conversation_id = '%s' ORDER BY time desc LIMIT 0,10", $conversationid);
-			while ($row = $res->fetch_assoc()) {
-				$conversation->history[] = $this->getMessage($row["message_id"]);
-			}
-            $conversation->history = array_reverse($conversation->history);
-			
-			return $conversation;
-		}
-		
-		/**
-		 *	Returns a message object
-		 */
-		private function getMessage($messageid) {
-			$msg = LanWebsite_Main::getDb()->query("SELECT * FROM `chat_messages` WHERE message_id = '%s'", $messageid)->fetch_assoc();
-			return new Message($messageid, $msg["time"], $msg["conversation_id"], $this->getContact($msg["user_id"]), $msg["message"]);
-		}
-		
-		/**
-		 *	Returns a contact object
-		 */
-		private function getContact($userid) {
-			$user = LanWebsite_Main::getUserManager()->getUserById($userid);
-			$contact = new Contact($userid, $user->getUsername(), "offline", $user->getAvatar());
-			foreach ($this->users as $user) {
-				if ($user->data->getUserId() == $userid) $contact->status = "online";
-			}
-			return $contact;
-		}
-		
-		/**
-		 * Returns contact list
-		 */
-		private function getContactList($excludeUser = false) {
-			
-			$online = array();
-			$ingame = array();
-			$offline = array();
-            
-            $ids = array();
-			
-			//Get activated tickets for LAN
-			/*$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
-			while ($row = $res->fetch_assoc()) {
-				if (($excludeUser != false && $row["assigned_forum_id"] != $excludeUser->data->getUserId()) || $excludeUser == false) {
-					$contact = $this->getContact($row["assigned_forum_id"]);
-					switch ($contact->status) {
-						case "online": $online[] = $contact; break;
-						case "in-game": $ingame[] = $contact; break;
-						default: $offline[] = $contact; break;
-					}
-				}
-			}*/
-            
-            foreach ($this->users as $user) {
-                if ((($excludeUser != false && $user->data->getUserId() != $excludeUser->data->getUserId()) || $excludeUser == false) && !in_array($user->data->getUserId(), $ids)) {
-					$contact = $this->getContact($user->data->getUserId());
-                    $ids[] = $user->data->getUserId();
-					switch ($contact->status) {
-						case "online": $online[] = $contact; break;
-						case "in-game": $ingame[] = $contact; break;
-						default: $offline[] = $contact; break;
-					}
+        
+        /**
+         *  Save a conversation, creates a new entry if it doesn't exist/id is null
+         */
+        protected function saveConversation($conversation) {
+            //If new conversation, generate ID
+            if ($conversation->conversationid == null) {
+                $conversation->conversationid = uniqid('');
+                foreach ($conversation->contacts as $key => $contact) {
+                    $conversation->contacts[$key]->conversationid = $conversation->conversationid;
                 }
             }
-			
-			//Sort
-			usort($online, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
-			usort($ingame, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
-			usort($offline, function ($a, $b) { if ($a->name == $b->name) return 0; else return ($a->name > $b->name) ? +1:-1; });
-			
-			return array_merge($ingame, $online, $offline);
-			
-		}
+            //Store
+            $this->conversations[$conversation->conversationid] = $conversation;
+            foreach ($conversation->contacts as $contact) {
+                $this->saveConversationContact($contact);
+            }
+            
+            return $this->getConversation($conversation->conversationid);
+        }
+        
+        /**
+         *  Removes a conversation
+         */
+        protected function deleteConversation($conversationId) {
+            $this->conversations = array_diff_key($this->conversations, array($conversationId => ""));
+            $this->conversationContacts = array_diff_key($this->conversationContacts, array($conversationId => ""));
+            $this->messages = array_diff_key($this->messages, array($conversationId => ""));
+        }
+        
+        
+        //////////////////////
+		// MESSAGE FUNCTION //
+		//////////////////////
+        /**
+         *  Gets history for a conversation
+         */
+        protected function getConversationHistory($conversationId) {
+            $return = array();
+            if (isset($this->messages[$conversationId])) {
+                foreach ($this->messages[$conversationId] as $message) {
+                    $message->contact = $this->getContactDetails($message->userid);
+                    $return[] = $message;
+                }
+            }
+            return $return;
+        }
+        
+        /**
+         *  Saves a message
+         */
+        protected function saveMessage($message) {
+            $this->messages[$message->conversationid][] = $message;
+        }
+        
+        
+        ////////////////////////////////////
+		// CONVERSATION CONTACT FUNCTIONS //
+		////////////////////////////////////
+        /**
+         *  Get a conversation contact object by user id and conversation id
+         */
+        protected function getConversationContact($userId, $conversationId) {
+            if (isset($this->conversationContacts[$conversationId][$userId])) {
+                $contact = $this->conversationContacts[$conversationId][$userId];
+                $contact->details = $this->getContactDetails($userId);
+                return $contact;
+            }
+            else return false;
+        }
+        
+        /**
+         *  Get all contacts for a conversation
+         */
+        protected function getConversationContacts($conversationId) {
+            $return = array();
+            foreach ($this->conversationContacts[$conversationId] as $userId => $contact) {
+                $return[$contact->userid] = $this->getConversationContact($userId, $conversationId);
+            }
+            return $return;
+        }
+        
+        /**
+         *  Save a conversation contact
+         */
+        protected function saveConversationContact($contact) {
+            $this->conversationContacts[$contact->conversationid][$contact->userid] = $contact;
+        }
+        
+        
+		//////////////////////////////
+		// CONTACT DETAIL FUNCTIONS //
+		//////////////////////////////
+        /**
+         *  Returns a contact details object by user id
+         */
+        protected function getContactDetails($userId) {
+            //Check if details exist
+            if (!isset($this->contactDetails[$userId])) {
+                $data = LanWebsite_Main::getUserManager()->getUserById($userId);
+                if (!$data) return false;
+                $this->contactDetails[$userId] = new ContactDetails($userId, $data->getUsername(), "offline", $data->getAvatar());
+            }
+            return $this->contactDetails[$userId];
+        }
+        
+        /**
+         *  Set the contact's status in their details
+         */
+        protected function setContactStatus($userId, $status) {
+            $this->contactDetails[$userId]->status = $status;
+        }
+        
+        /**
+         *  Get contact list
+         */
+        protected function getContactList($exclude=false) {
+            $contacts = array();
+            
+            //No ticket mode
+            if (LanWebsite_Main::getSettings()->getSetting("require_ticket_for_chat") == 0) {
+                foreach ($this->users as $u) {
+                    if (!isset($contacts[$u->data->getUserId()]) && (($exclude != false && $u->data->getUserId() != $exclude->data->getUserId()) || $exclude == false) ) $contacts[$u->data->getUserId()] = $this->getContactDetails($u->data->getUserId());
+                }
+            }
+            
+            //Ticket mode
+            else {
+                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                while ($row = $res->fetch_assoc()) {
+                    if (!isset($contacts[$row["assigned_forum_id"]]) && (($exclude != false && $row["assigned_forum_id"] != $exclude->data->getUserId()) || $exclude == false)) {
+                        $contacts[$row["assigned_forum_id"]] = $this->getContactDetails($row["assigned_forum_id"]);
+                    }
+                }
+            }
+            
+            return $contacts;
+        }
+        
 		
 	}
 	
 	class Message {
-		public $messageid;
 		public $time;
 		public $conversationid;
-		public $contact;
+        public $userid;
 		public $message;
+		public $contact;
 		
-		public function __construct($messageid=null, $time=null, $conversationid=null, $contact=null, $message=null) {
-			$this->messageid = $messageid;
+		public function __construct($time=null, $conversationid=null, $userid=null, $contact=null, $message=null) {
 			$this->time = $time;
+            $this->userid = $userid;
 			$this->conversationid = $conversationid;
 			$this->contact = $contact;
 			$this->message = $message;
@@ -416,8 +488,26 @@
 			$this->history = $history;
 		}
 	}
+    
+    class ConversationContact {
+        public $userid;
+        public $conversationid;
+        public $open;
+        public $minimised;
+        public $read;
+        public $details;
+        
+        public function __construct($userid=null, $conversationid=null, $open=null, $minimised=null, $read=null, $details=null) {
+            $this->userid = $userid;
+            $this->conversationid = $conversationid;
+            $this->open = $open;
+            $this->minimised = $minimised;
+            $this->read = $read;
+            $this->details = $details;
+        }
+    }
 	
-	class Contact {
+	class ContactDetails {
 		public $userid;
 		public $name;
 		public $status;

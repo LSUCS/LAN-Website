@@ -28,8 +28,7 @@
     
     echo "Instantiating websocket lobby server...\n";
     LanWebsite_Main::getSettings()->changeSetting('lobby_daemon_online', true);
-    new LobbyServer(LanWebsite_Main::getSettings()->getSetting("lobby_address"), LanWebsite_Main::getSettings()->getSetting("lobby_port"));
-    
+    new LobbyServer(LanWebsite_Main::getSettings()->getSetting("lobby_address"), LanWebsite_Main::getSettings()->getSetting("lobby_port"), LanWebsite_Main::getSettings()->getSetting("lobby_buffer_size"));
     
     
     function sigShutdown() {

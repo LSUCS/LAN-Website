@@ -42,6 +42,9 @@
 		float: left;
 		margin-top: 6px;
 	}
+    #chat #contacts #contacts-online {
+        display: none;
+    }
 	
 #chat .status {
 	font-weight: bold;
@@ -86,6 +89,9 @@
 		right: -7px;
 		margin-top: -2px;
 	}
+    #chat #contact-list .conversation-blink {
+        background-color: #e2e2e2;
+    }
 	
 #chat .chat-avatar {
 	height: 20px;

@@ -46,6 +46,7 @@
 				foreach ($read as $socket) {
 					if ($socket == $this->master) {
 						$client = socket_accept($socket);
+                        socket_set_nonblock($client);
 						if ($client < 0) {
 							$this->stderr("Failed: socket_accept()");
 							continue;
@@ -75,7 +76,6 @@
 											
 										$numByte = @socket_recv($socket,$buffer,$this->maxBufferSize,MSG_PEEK);
 										if ($numByte > 0) {
-									$this->stdout("hi");
 											$numByte = @socket_recv($socket,$buffer,$this->maxBufferSize,0);
 											if ($message = $this->deframe($buffer,$user)) {
 												$this->process($user,$message);
@@ -90,6 +90,7 @@
 						}
 					}
 				}
+                
 			}
 		}
 
@@ -97,12 +98,16 @@
 		abstract protected function connected($user);        // Called after the handshake response is sent to the client.
 		abstract protected function closed($user);           // Called after the connection is closed.
 
+        protected function processCli($line) {
+        // Override this to process command line entries
+        }
+        
 		protected function connecting($user) {
 		// Override to handle a connecting user, after the instance of the User is created, but before
 		// the handshake has completed.
-	  }
+	    }
 	  
-	  protected function send($user,$message) {
+	    protected function send($user,$message) {
 			//$this->stdout("> $message");
 			$message = $this->frame($message,$user);
 			socket_write($user->socket,$message,strlen($message));

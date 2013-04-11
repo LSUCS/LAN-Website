@@ -33,6 +33,11 @@
     width: 230px;
     background: #f6f6f6;
     border-radius: 8px;
+    font-family: reznor;
+    text-align: center;
+    line-height: 400px;
+    font-size: 18px;
+    color: #bbb;
 }
 #connecting {
     background: #f6f6f6;
@@ -80,15 +85,21 @@
         right: 40px;
     }
     #in-lobby .messages {
-        height: 300px;
+        height: 284px;
         border: 1px solid #e8e8e8;
         background: white;
-        width: 600px;
+        width: 584px;
         margin-top: 10px;
         margin-left: 23px;
         border-radius: 3px;
         overflow: auto;
+        padding: 8px;
+        word-break: break-all;
     }
+        #in-lobby .messages .lanwebsite-contact:hover {
+            cursor: pointer;
+            color: #999 !important;
+        }
     #in-lobby .input {
         width: 523px;
         float: left;
@@ -101,6 +112,15 @@
         padding-left: 4px;
         padding-top: 5px;
         padding-right: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #in-lobby .input br {
+        display:none;
+    }
+    #in-lobby .input * {
+        display:inline;
+        white-space:nowrap;
     }
     #in-lobby .send {
         height: 29px;
@@ -147,6 +167,36 @@
             bottom: 0;
             right: 0;
         }
+    #lobby-info  .players ul, #lobby-info  .players li {
+        list-style-type: none;
+    }
+        #lobby-info .players ul {
+            margin-left: 0;
+            margin-top: 5px;
+        }
+        #lobby-info .players li {
+            display: block;
+            line-height: 30px;
+            position: relative;
+            height: 30px;
+            border: 1px solid #e8e8e8;
+            background: white;
+            border-radius: 3px;
+            padding-left: 30px;
+        }
+            #lobby-info .players li:hover {
+                cursor: pointer;
+                background: #eee;
+            }
+        #lobby-info .players li img {
+            max-height: 20px;
+            max-width: 20px;
+            position: absolute;
+            top: 0;
+            left: 4px;
+            margin: auto;
+            bottom: 0;
+        }
 
 
 /* LOBBY LIST */
@@ -173,18 +223,26 @@
     height: 340px;
     overflow: auto;
 }
-    #lobbies .lobby {
+    #lobbies .nolobbies {
+        text-align: center;
+        font-family: tf2;
+        text-shadow: 0px 0px 1px #999;
+        line-height: 60px;
+        color: #333;
+        font-size: 15px;
+    }
+    #lobbies .lobby, #lobbies .nolobbies {
         width: 598px;
         height: 60px;
         background: white;
         border-radius: 3px;
         border: 1px solid #e8e8e8;
         position: relative;
-        cursor: pointer;
         margin-bottom: 15px;
     }
         #lobbies .lobby:hover {
             background: #f8f8f8;
+            cursor: pointer;
         }
         #lobbies .lobby .image {
             height: 46px;
@@ -248,15 +306,17 @@
     border-radius: 8px;
 }
     #global-chat .messages {
-        height: 200px;
+        height: 184px;
         border: 1px solid #e8e8e8;
         background: white;
-        width: 855px;
+        width: 839px;
         margin-top: 10px;
         margin-left: auto;
         margin-right: auto;
         border-radius: 3px;
         overflow: auto;
+        padding: 8px;
+        word-break: break-all;
     }
     #global-chat .input {
         width: 777px;
@@ -270,6 +330,15 @@
         padding-left: 4px;
         padding-top: 5px;
         padding-right: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #global-chat .input br {
+        display:none;
+    }
+    #global-chat .input * {
+        display:inline;
+        white-space:nowrap;
     }
     #global-chat .send {
         height: 29px;

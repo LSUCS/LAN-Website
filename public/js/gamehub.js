@@ -1,5 +1,7 @@
 var searchtimer = null;
 var clickedlobby = false;
+var isFocussed = true;
+
 $(document).ready(function() {
 
     //Editor binds
@@ -69,7 +71,7 @@ $(document).ready(function() {
     }}, ".search-result");
     
     //Scroll bars
-    $("#lobbies, #info-container").mCustomScrollbar({
+    $("#lobbies, #info-container, #in-lobby .messages, #global-chat .messages").mCustomScrollbar({
         scrollButtons: { enable: true },
         theme: "dark"
     });
@@ -104,14 +106,62 @@ $(document).ready(function() {
     $(document).on({ mouseover: function() {
         LobbyClient.fillLobbyInfo(LobbyClient.lobbies[$(this).attr('value')]);
     }}, ".lobby");
-    $(document).on({ mouseleave: function() {
-        if (clickedlobby) {
-            clickedlobby = false;
-        } else {
-            $("#lobby-info").fadeOut(100);
-            $("#lobby-info").attr('value', '');
+    
+    //Lobby message send
+    $(document).on(
+        { keypress:  function(data) {
+                //Catch if enter and cancel default action
+                if (data.which == 13) {
+                    if ($.trim($(this).html()).length > 0) {
+                        LobbyClient.sendLobbyChat($(this).html());
+                    }
+                    data.preventDefault();
+                    $(this).html('');
+                } 
+            }
+        }, "#in-lobby .input");
+    $("#in-lobby .send").click(function() {
+        if ($.trim($("#in-lobby .input").html()).length > 0) {
+            LobbyClient.sendLobbyChat($("#in-lobby .input").html());
         }
-    }}, ".lobby");
+        $("#in-lobby .input").html('');
+    });
+        
+    //Global message send
+    $(document).on(
+        { keypress:  function(data) {
+                //Catch if enter and cancel default action
+                if (data.which == 13) {
+                    if ($.trim($(this).html()).length > 0) {
+                        LobbyClient.sendGlobalChat($(this).html());
+                    }
+                    data.preventDefault();
+                    $(this).html('');
+                } 
+            }
+        }, "#global-chat .input");
+    $("#global-chat.send").click(function() {
+        if ($.trim($("#global-chat .input").html()).length > 0) {
+            LobbyClient.sendGlobalChat($("#global-chat .input").html());
+        }
+        $("#global-chat .input").html('');
+    });
+    
+    //Password overlay hit enter to click
+    $(document).on({ keyup: function(event){
+        if(event.keyCode == 13){
+            $("#overlay .submit-password").click();
+        }
+    }}, "#overlay .enter-password");
+    
+    //Window focus/blur
+    $(window).focus(function() {
+        $("#global-chat .messages").mCustomScrollbar("scrollTo", "bottom");
+        $("#in-lobby .messages").mCustomScrollbar("scrollTo", "bottom");
+        isFocussed = true;
+    }).blur(function() {
+        isFocussed = false;
+    });
     
     LobbyClient.connect();
     
@@ -122,6 +172,8 @@ var LobbyClient = {
     connection: null,
     lobby: null,
     lobbies: {},
+    contact: null,
+    snd: new Audio("/data/beep.mp3"),
 
     connect: function () {
     
@@ -140,9 +192,13 @@ var LobbyClient = {
                 LobbyClient.connection.onclose = function() {
                     console.log("Lobby server connection closed");
                     LobbyClient.connection = null;
+                    LobbyClient.lobby = null;
+                    LobbyClient.lobbies = null;
+                    LobbyClient.contact = null;
                     $("#connecting").slideDown(200);
                     $("#lobby-client").slideUp(200);
                     setTimeout(function() { LobbyClient.connect(); }, 3000);
+                    Overlay.closeOverlay();
                 };
                 
                 LobbyClient.connection.onopen = function() {
@@ -181,12 +237,15 @@ var LobbyClient = {
                 this.lobbies = {};
                 this.lobby = null;
                 
+                this.contact = payload.contact;
+                
                 //Load active lobby?
                 if (payload.activelobby !== false) {
                     this.loadLobby(payload.activelobby);
                 }
                 //If not, load lobby list
                 else {
+                    $(".nolobbies").remove();
                     $("#in-lobby").fadeOut(200);
                     $("#lobby-info").fadeOut(100);
                     $("#lobbies-container").fadeIn(200);
@@ -195,10 +254,19 @@ var LobbyClient = {
                     for (var lobby in payload.lobbies) {
                         this.updateLobbyList(payload.lobbies[lobby]);
                     }
+                    if ($(".lobby").length == 0) {
+                        $("#lobbies .mCSB_container").append('<div class="nolobbies">Nobody has made any lobbies yet, click the button above to create one!</div>');
+                    }
                 
                 }
                 
                 //Load global chat history
+                $("#global-chat .messages .mCSB_container").html('');
+                for (var i = 0; i < payload.globalchat.length; i++) {
+                    if (payload.globalchat[i].notification != null) this.displayGlobalNotification(payload.globalchat[i]);
+                    else this.displayGlobalMessage(payload.globalchat[i]);
+                }
+                $("#global-chat .messages").mCustomScrollbar("scrollTo", "bottom");
                 
                 break;
                 
@@ -227,10 +295,18 @@ var LobbyClient = {
                 
             //Delete lobby
             case 'deletelobby':
+            
+                if ($("#lobby-info").attr('value') == payload.lobbyid) {
+                    $("#lobby-info").fadeOut(100);
+                    $("#lobby-info").attr('value', '');
+                }
                 
                 delete this.lobbies[payload.lobbyid];
                 $("#lobbies .lobby[value='" + payload.lobbyid + "']").remove();
-            
+                if ($(".lobby").length == 0) {
+                    $("#lobbies .mCSB_container").append('<div class="nolobbies">Nobody has made any lobbies yet, click the button above to create one!</div>');
+                }
+                            
                 break;
                 
             //Join lobby command
@@ -262,10 +338,23 @@ var LobbyClient = {
             //Message received for lobby chat
             case 'sendlobbychat':
             
+                this.displayLobbyMessage(payload);
+                this.playAlert();
+            
                 break;
             
             //Message received for global chat
             case 'sendglobalchat':
+            
+                this.displayGlobalMessage(payload);
+            
+                break;
+                
+            //Global notification
+            case 'sendglobalnotification':
+            
+                this.displayGlobalNotification(payload);
+                this.playAlert();
             
                 break;
                 
@@ -276,14 +365,62 @@ var LobbyClient = {
     
     },
     
+    playAlert: function () {
+        if (!isFocussed) snd.play();
+    },
+    
+    displayGlobalNotification: function (notification) {
+    
+        var scroll = false;
+        if ($("#global-chat .messages .mCSB_container").height() + parseInt($("#global-chat .messages .mCSB_container").css('top').replace("px", "")) - $("#global-chat .messages .mCustomScrollBox").height() < 20) {
+            scroll = true
+        }
+    
+        $("#global-chat .messages .mCSB_container").append('<div class="message">' + notification.notification + '</div>');
+        $("#global-chat .messages").mCustomScrollbar("update");
+        if (scroll) {
+            $("#global-chat .messages").mCustomScrollbar("scrollTo", "bottom");
+        }
+    
+    },
+    
+    displayLobbyMessage: function (message) {
+    
+        var scroll = false;
+        if ($("#in-lobby .messages .mCSB_container").height() + parseInt($("#in-lobby .messages .mCSB_container").css('top').replace("px", "")) - $("#in-lobby .messages .mCustomScrollBox").height() < 30) {
+            scroll = true;
+        }
+    
+        $("#in-lobby .messages .mCSB_container").append('<div class="message"><span class="lanwebsite-contact" value="' + message.contact.userid + '" style="color: ' + message.contact.color + '">' + message.contact.name + '</span> - ' + message.message + '</div>');
+        $("#in-lobby .messages").mCustomScrollbar("update");
+        if (scroll) $("#in-lobby .messages").mCustomScrollbar("scrollTo", "bottom");
+        
+    },
+
+    displayGlobalMessage: function (message) {
+    
+        var scroll = false;
+        if ($("#global-chat .messages .mCSB_container").height() + parseInt($("#global-chat .messages .mCSB_container").css('top').replace("px", "")) - $("#global-chat .messages .mCustomScrollBox").height() < 30) {
+            scroll = true
+        }
+    
+        $("#global-chat .messages .mCSB_container").append('<div class="message"><span class="lanwebsite-contact" value="' + message.contact.userid + '" style="color: ' + message.contact.color + '">' + message.contact.name + '</span> - ' + message.message + '</div>');
+        $("#global-chat .messages").mCustomScrollbar("update");
+        if (scroll) {
+            $("#global-chat .messages").mCustomScrollbar("scrollTo", "bottom");
+        }
+        
+    },
+    
     updateLobbyList: function (lobby) {
+        $(".nolobbies").remove();
         //If lobby isn't in list
         if (this.lobbies[lobby.lobbyid] == null) {
             var o = '<div class="lobby" value=' + lobby.lobbyid + '><div class="image"><img src="' + lobby.icon + '" /></div><div class="title">' + lobby.title + '</div><div class="game">' + lobby.game + '</div>';
             if (lobby.locked == 1) o += '<div class="locked"></div>';
             else o += '<div class="locked" style="display: none;"></div>';
             if (lobby.playerlimit == 0) o += '<div class="players">&infin;</div>';
-            else o += '<div class="players">' + lobby.contacts.length + '/' + lobby.playerlimit + '</div>';
+            else o += '<div class="players">' + Object.keys(lobby.contacts).length + '/' + lobby.playerlimit + '</div>';
             o += '</div>';
             $("#lobbies .mCSB_container").append(o);
         }
@@ -296,7 +433,7 @@ var LobbyClient = {
             if (lobby.locked) obj.find(".locked").fadeIn(200);
             else obj.find(".locked").fadeOut(200);
             if (lobby.playerlimit == 0) obj.find(".players").html("&infin;");
-            else obj.find(".players").html(lobby.contacts.length + '/' + lobby.playerlimit);
+            else obj.find(".players").html(Object.keys(lobby.contacts).length + '/' + lobby.playerlimit);
             
             //Check if lobby info pane needs updating
             if ($("#lobby-info").attr('value') == lobby.lobbyid) {
@@ -310,10 +447,16 @@ var LobbyClient = {
         this.lobby = lobby;
         this.fillLobbyInfo(lobby);
         $("#in-lobby .box-title").html(lobby.title);
+        if (lobby.leader.userid == this.contact.userid) $(".edit-lobby").fadeIn(200);
+        else $(".edit-lobby").fadeOut(200);
         if (softupdate == null || softupdate == false) {
             $("#lobbies-container").fadeOut(200);
             $("#in-lobby").fadeIn(200);
-            //TODO: lobby history
+            $("#in-lobby .messages .mCSB_container").html('');
+            for (var i = 0; i < lobby.history.length; i++) {
+                this.displayLobbyMessage(lobby.history[i]);
+            }
+            $("#in-lobby .messages").mCustomScrollbar("scrollTo", "bottom");
         }
     },
     
@@ -327,9 +470,9 @@ var LobbyClient = {
         else $("#lobby-info .locked").fadeOut(100);
         $("#lobby-info .leader").html(lobby.leader.name);
         if (lobby.playerlimit == 0) $("#lobby-info .playerlimit").html("Unlimited");
-        else $("#lobby-info .playerlimit").html(lobby.contacts.length + "/" + lobby.playerlimit);
+        else $("#lobby-info .playerlimit").html(Object.keys(lobby.contacts).length + "/" + lobby.playerlimit);
         $("#lobby-info .players ul").html('');
-        for (var i = 0; i < lobby.contacts.length; i++) $("#lobby-info .players ul").append('<li>' + lobby.contacts[i].name + '</li>');
+        for (var contact in lobby.contacts) $("#lobby-info .players ul").append('<li style="color: ' + lobby.contacts[contact].color + ';" value="' + lobby.contacts[contact].userid + '" class="lanwebsite-contact"><img src="' + lobby.contacts[contact].avatar + '"></span>' + lobby.contacts[contact].name + '</li>');
         
         $("#lobby-info").fadeIn(100);
     },
@@ -462,11 +605,11 @@ var LobbyClient = {
     },
     
     sendLobbyChat: function (message) {
-    
+        LobbyClient.sendLobbyCommand("sendlobbychat", { message: message });
     },
     
     sendGlobalChat: function(message) {
-    
+        LobbyClient.sendLobbyCommand("sendglobalchat", { message: message });
     }
 
 }

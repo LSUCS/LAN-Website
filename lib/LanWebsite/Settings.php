@@ -53,12 +53,15 @@
                                 "committee_rota_url" => array("url", "https://docs.google.com/spreadsheet/pub?key=0Ar_sSX-R25mQdEF4ekVBektsV0o1U0JoOEZuZ3NhUXc&output=html&widget=true", SettingsGroup::CommitteeRota),
                                 "committee_rota_width" => array("int", 700, SettingsGroup::CommitteeRota),
                                 "committee_rota_height" => array("int", 500, SettingsGroup::CommitteeRota),
-								"lobby_address" => array("text", "localhost", SettingsGroup::Chat),
-								"lobby_port" => array("int", 8088, SettingsGroup::Chat),
-								"lobby_history_length" => array("int", 20, SettingsGroup::Chat),
-								"lobby_enabled" => array("bool", false, SettingsGroup::Chat),
-                                "lobby_daemon_online" => array("bool", false, SettingsGroup::Chat),
-								"lobby_url" => array("text", "ws://lan.lsucs.org.uk:8088", SettingsGroup::Chat)
+								"lobby_address" => array("text", "localhost", SettingsGroup::Lobbies),
+								"lobby_port" => array("int", 8088, SettingsGroup::Lobbies),
+								"lobby_history_length" => array("int", 20, SettingsGroup::Lobbies),
+								"lobby_enabled" => array("bool", false, SettingsGroup::Lobbies),
+                                "lobby_daemon_online" => array("bool", false, SettingsGroup::Lobbies),
+								"lobby_url" => array("text", "ws://lan.lsucs.org.uk:8088", SettingsGroup::Lobbies),
+                                "lobby_show_connecting" => array("bool", true, SettingsGroup::Lobbies),
+                                "lobby_message_max_length" => array("int", 500, SettingsGroup::Lobbies),
+                                "lobby_buffer_size" => array("int", 548576, SettingsGroup::Lobbies),
                                 );
     
         public function __construct() {
@@ -157,6 +160,7 @@
         const Chat = "Chat";
         const Presentation = "LAN Presentation";
         const CommitteeRota = "Committee Rota";
+        const Lobbies = "Lobbies";
     }
 
 ?>

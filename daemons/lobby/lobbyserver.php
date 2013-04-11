@@ -2,12 +2,12 @@
 
 	class LobbyServer extends WebSocketServer {
 		
-		protected $maxBufferSize = 1048576;
 		protected $userClass = 'LobbyUser';
         
         private $lobbies = array();
         private $lobbyPasswords = array();
         private $contacts;
+        private $globalHistory = array();
 
 		//////////////////////////
 		// CONNECTION FUNCTIONS //
@@ -42,8 +42,11 @@
                         $return["lobbies"] = $this->getLobbyList();
                     }
                     
+                    //User id
+                    $return["contact"] = $this->getContact($user->data->getUserId());
+                    
                     //Global chat history
-                    $return["globalchat"] = $this->getGlobalChatHistory();
+                    $return["globalchat"] = $this->globalHistory;
                     
 					$this->sendCommand($user, "init", $return);
 					break;
@@ -90,7 +93,8 @@
                     
                     //Create lobby object and save
                     $lobby = new Lobby(null, array($this->getContact($user->data->getUserId())), array(), $payload["title"], $payload["game"], $icon, $playerlimit, $locked, $description, $this->getContact($user->data->getUserId()), $steam);
-                    $lobby = $this->saveLobby($lobby, $password);
+                    $lobby = $this->saveLobby($lobby);
+                    $this->setLobbyPassword($lobby->lobbyid, $password);
                     
                     //Set contact lobby
                     $this->setContactLobby($user->data->getUserId(), $lobby->lobbyid);
@@ -107,7 +111,11 @@
                     
                     //Update lobbies to relevant users
                     $this->sendLobbyUpdate($lobby);
-                
+                    
+                    //Send notification
+                    $notification = new Notification('<span style="color: #333;"><span style="color: red;">>>></span> New lobby: <span style="color: #FFCC66;">' . $lobby->title . '</span> for <span style="color: #FFCC66;">' . $lobby->game . '</span> created by <span class="lanwebsite-contact" style="color: ' . $lobby->leader->color . ';">' . $lobby->leader->name . '</i></span>');
+                    $this->sendGlobalNotification($notification);
+                    
                     break;
                    
                    
@@ -142,6 +150,12 @@
                     if (!isset($payload["steam"]) || $payload["steam"] == 0) $steam = false;
                     else $steam = true;
                     
+                    //Get old lobby object, check leader and playerlimit
+                    $oldLobby = $this->getLobby($payload["lobbyID"]);
+                    $contact = $this->getContact($user->data->getUserId());
+                    if ($contact->userid != $oldLobby->leader->userid) return $this->sendCommand($user, "createlobby", array("error" => "Only leader can edit the lobby"));
+                    if ($playerlimit > 0 && count($oldLobby->contacts) > $playerlimit) return $this->sendCommand($user, "createlobby", array("error" => "Cannot set player limit to less than current players"));
+                    
                     //Check icon
                     $ch = curl_init($icon);
                     curl_setopt($ch, CURLOPT_NOBODY, true);
@@ -151,8 +165,9 @@
                     if ($retcode == 400) $icon = "/images/no-game.png";
                     
                     //Create lobby object and save
-                    $lobby = new Lobby($payload["lobbyID"], array($this->getContact($user->data->getUserId())), array(), $payload["title"], $payload["game"], $icon, $playerlimit, $locked, $description, $this->getContact($user->data->getUserId()), $steam);
-                    $lobby = $this->saveLobby($lobby, $password);
+                    $lobby = new Lobby($payload["lobbyID"], $oldLobby->contacts, $oldLobby->history, $payload["title"], $payload["game"], $icon, $playerlimit, $locked, $description, $contact, $steam);
+                    $lobby = $this->saveLobby($lobby);
+                    $this->setLobbyPassword($lobby->lobbyid, $password);
                     
                     //Reciprocate empty create lobby to signify success
                     $this->sendCommand($user, "createlobby", array());
@@ -171,7 +186,7 @@
                     $error = false;
                     if (!isset($payload["lobbyID"]) || !$this->getLobby($payload["lobbyID"])) $error = "Invalid lobby ID";
                     $lobby = $this->getLobby($payload["lobbyID"]);
-                    if ($lobby->locked == 1 && (!isset($payload["password"]) || sha1($payload["password"]) != $this->lobbyPasswords[$lobby->lobbyid])) $error = "Invalid password";
+                    if ($lobby->locked == 1 && (!isset($payload["password"]) || $payload["password"] != $this->getLobbyPassword($lobby->lobbyid))) $error = "Invalid password";
                     if ($lobby->playerlimit > 0 && count($lobby->contacts) == $lobby->playerlimit) $error = "Lobby is full";
                     $contact = $this->getContact($user->data->getUserId());
                     if ($contact->activelobbyid != null) $error = "Contact already in lobby";
@@ -182,7 +197,7 @@
                     //Update contact and lobby
                     $contact->activelobbyid = $lobby->lobbyid;
                     $lobby->contacts[] = $contact;
-                    $this->saveLobby($lobby, $this->lobbyPasswords[$lobby->lobbyid]);
+                    $this->saveLobby($lobby);
                     $this->setContactLobby($contact->userid, $lobby->lobbyid);
                     
                     //Reciprocate join lobby command to all sockets for user
@@ -249,12 +264,66 @@
 				//SENDLOBBYCHAT - Send message to user's lobby
 				//params - { message: }
                 case "sendlobbychat":
+                
+                    //Check message
+                    if (!isset($payload["message"]) || strlen(trim($payload["message"])) == 0) return $this->error($user, "No message provided");
+                
+                    //Get contact and check for active lobby
+                    $contact = $this->getContact($user->data->getUserId());
+                    if ($contact->activelobbyid == null) return $this->error($user, "Unable to send chat message, user not in lobby");
+                    
+                    $lobby = $this->getLobby($contact->activelobbyid);
+                    
+                    //Form message
+                    $msg = strip_tags(trim($payload["message"]));
+                    if (strlen($msg) > LanWebsite_Main::getSettings()->getSetting("lobby_message_max_length")) $msg = substr($msg, 0, LanWebsite_Main::getSettings()->getSetting("lobby_message_max_length"));
+                    $msg = preg_replace("/([^\w\/])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i", "$1http://$2", $msg);
+                    $msg = preg_replace("/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i","<a target=\"_blank\" href=\"$1\">$1</A>", $msg);
+                    $message = new Message(time(), $contact, $msg);
+                    
+                    //Send message out to sockets in lobby
+                    foreach ($this->users as $u) {
+                        if ($this->getContact($u->data->getUserId())->activelobbyid == $lobby->lobbyid) {
+                            $this->sendCommand($u, "sendlobbychat", $message);
+                        }
+                    }
+                    
+                    //Save the message to the lobby
+                    $max = LanWebsite_Main::getSettings()->getSetting("lobby_history_length");
+                    $lobby->history[] = $message;
+                    if (count($lobby->history) > $max) {
+                        $lobby->history = array_values(array_slice($lobby->history, -1 * $max));
+                    }
+                    $this->saveLobby($lobby);
+                    
                     break;
                     
                     
 				//SENDGLOBALCHAT - Send message to global chat
 				//params - { lobbyID: }
                 case "sendglobalchat":
+                
+                    //Check message
+                    if (!isset($payload["message"]) || strlen(trim($payload["message"])) == 0) return $this->error($user, "No message provided");
+                    
+                    //Get contact
+                    $contact = $this->getContact($user->data->getUserId());
+                   
+                    //Form message
+                    $msg = strip_tags(trim($payload["message"]));
+                    if (strlen($msg) > LanWebsite_Main::getSettings()->getSetting("lobby_message_max_length")) $msg = substr($msg, 0, LanWebsite_Main::getSettings()->getSetting("lobby_message_max_length"));
+                    $msg = preg_replace("/([^\w\/])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i", "$1http://$2", $msg);
+                    $msg = preg_replace("/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i","<a target=\"_blank\" href=\"$1\">$1</A>", $msg);
+                    $message = new Message(time(), $contact, $msg);
+                    
+                    //Send message out to sockets in lobby
+                    foreach ($this->users as $u) {
+                        $this->sendCommand($u, "sendglobalchat", $message);
+                    }
+                    
+                    //Add to queue
+                    $this->addGlobalHistory($message);
+                    
                     break;
                     
 				
@@ -293,8 +362,7 @@
 		 */
 		protected function closed($user) {
 			$this->stdout("Connection " . $user->id . " closed by user");
-		}
-		
+		}		
 		
 		
 		//////////////////////
@@ -323,11 +391,32 @@
 			$this->error($user, $message);
 			$this->disconnect($user->socket);
 		}
+        
+        
+        //////////////////////
+        // GLOBAL FUNCTIONS //
+        //////////////////////
+        /**
+         *  Send global notification
+         */
+        protected function sendGlobalNotification($notification) {
+            $this->addGlobalHistory($notification);
+            foreach ($this->users as $user) {
+                $this->sendCommand($user, "sendglobalnotification", $notification);
+            }
+        }
+        protected function addGlobalHistory($elem) {
+            $max = LanWebsite_Main::getSettings()->getSetting("lobby_history_length");
+            $this->globalHistory[] = $elem;
+            if (count($this->globalHistory) > $max) {
+                $this->globalHistory = array_values(array_slice($this->globalHistory, -1 * $max));
+            }
+        }
 		
 		
 		/////////////////////
 		// LOBBY FUNCTIONS //
-		/////////////////////
+		/////////////////////        
         /**
          *  Send lobby update to all sockets that aren't in a lobby or are in the specified lobby
          */
@@ -379,19 +468,33 @@
         }
         
         /**
+         *  Returns a lobby password
+         */
+        protected function getLobbyPassword($lobbyId) {
+            if (isset($this->lobbyPasswords[$lobbyId])) return $this->lobbyPasswords[$lobbyId];
+            else return null;
+        }
+        
+        /**
          *  Save a lobby object, creates a new entry if it doesn't exist/id is null
          */
-        protected function saveLobby($lobby, $password=null) {
+        protected function saveLobby($lobby) {
             //If new lobby, generate ID
             if ($lobby->lobbyid == null) {
                 $lobby->lobbyid = uniqid('');
             }
             //Store
             $this->lobbies[$lobby->lobbyid] = $lobby;
-            //Store password if applicable
-            if ($password != null) $this->lobbyPasswords[$lobby->lobbyid] = sha1($password);
             
             return $lobby;
+        }
+        
+        /**
+         *  Set the password for a lobby, null or false = no password
+         */
+        protected function setLobbyPassword($lobbyId, $password) {
+            if ($password) $this->lobbyPasswords[$lobbyId] = $password;
+            else $this->lobbyPasswords = array_diff_key($this->lobbyPasswords, array($lobbyId => ""));
         }
         
         /**
@@ -411,7 +514,10 @@
         protected function getContact($userId) {
             if (!isset($this->contacts[$userId])) {
                 $data = LanWebsite_Main::getUserManager()->getUserById($userId);
-                $this->contacts[$userId] = new Contact($userId, $data->getUsername(), $data->getAvatar(), $data->getSteam(), null);
+                $letters = str_split('0123456789ABCDEF');
+                $color = "#";
+                for ($i = 0; $i < 6; $i++) $color .= $letters[rand(0,15)];
+                $this->contacts[$userId] = new Contact($userId, $data->getUsername(), $data->getAvatar(), $data->getSteam(), null, $color);
             }
             return $this->contacts[$userId];
         }
@@ -423,21 +529,17 @@
             $contact = $this->getContact($userId);
             $contact->activelobbyid = $lobbyId;
             $this->contacts[$userId] = $contact;
-        }
-        
-        
-        ///////////////////////////
-		// GLOBAL CHAT FUNCTIONS //
-		///////////////////////////
-        /**
-         *  Gets the global chat history
-         */
-        protected function getGlobalChatHistory() {
-        
-        }
-        
+        }        
 		
 	}
+    
+    class Notification {
+        public $notification;
+        
+        public function __construct($notification=null) {
+            $this->notification = $notification;
+        }
+    }
 	
 	class Message {
 		public $time;
@@ -485,13 +587,15 @@
 		public $avatar;
         public $steam;
         public $activelobbyid;
+        public $color;
 		
-		public function __construct($userid=null, $name=null, $avatar=null, $steam=null, $activelobbyid=null) {
+		public function __construct($userid=null, $name=null, $avatar=null, $steam=null, $activelobbyid=null, $color=null) {
 			$this->userid = $userid;
 			$this->name = $name;
 			$this->avatar = $avatar;
             $this->steam = $steam;
             $this->activelobbyid = $activelobbyid;
+            $this->color = $color;
 		}
         
         public function __toString() {
