@@ -447,7 +447,8 @@
             
             //Ticket mode
             else {
-                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id > 0");
                 while ($row = $res->fetch_assoc()) {
                     if (!isset($contacts[$row["assigned_forum_id"]]) && (($exclude != false && $row["assigned_forum_id"] != $exclude->data->getUserId()) || $exclude == false)) {
                         $contacts[$row["assigned_forum_id"]] = $this->getContactDetails($row["assigned_forum_id"]);

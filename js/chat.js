@@ -203,9 +203,14 @@ var ChatClient = {
     },
     
     displayMessage: function (message) {
-        var convElem = $(".conversation-element[value='" + message.conversationid + "']");
+        var elem = $(".conversation-element[value='" + message.conversationid + "'] .messages");
         this.conversations[message.conversationid].history.push(message);
-        convElem.find('.messages').append('<div>' + message.contact.name + ': ' + message.message + '</div>').scrollTop(convElem.find('.messages')[0].scrollHeight);
+        //Messages blocks
+        if (elem.find(".block").length == 0 || elem.find(".block").last().attr('value') != message.contact.userid) {
+            elem.append('<div class="block" value="' + message.contact.userid + '"><div class="avatar" class="lanwebsite-contact" value="' + message.contact.userid + '"><img src="' + message.contact.avatar + '" /></div><div class="block-messages"></div></div>');
+        }
+        elem.find(".block").last().find(".block-messages").append('<div>' + message.message + '</div>');
+        elem.scrollTop(elem[0].scrollHeight);
     },
     
     adjustConversationHeight: function (conversationId) {
@@ -239,7 +244,14 @@ var ChatClient = {
     },
     
     openConversation: function (conversation, refresh, focus) {
-        if (this.conversations[conversation.conversationid] != null && !refresh) return $(".conversation-element[value='" + conversation.conversationid + "']").find(".input-box").focus();
+        if (this.conversations[conversation.conversationid] != null && !refresh) {
+            var elem = $(".conversation-element[value='" + conversation.conversationid + "']");
+            if (!elem.is(":appeared")) {
+                elem.prependTo("#chat #conversations");
+            }
+            elem.find(".input-box").focus();
+            return;
+        }
         if (refresh) {
             $(".conversation-element[value='" + conversation.conversationid + "']").remove();
             delete this.conversations[conversation.conversationid];
@@ -254,7 +266,7 @@ var ChatClient = {
         }
         if (self.minimised == 0) var visibility = "open";
         else var visibility = "closed";
-        $("#chat #conversations").append('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"><li></li></span>' + contact.details.name + '<span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contentEditable></div></div></div>');
+        $("#chat #conversations").prepend('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"><li></li></span>' + contact.details.name + '<span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contentEditable></div></div></div>');
         this.adjustConversationHeight(conversation.conversationid);
         for (var h in conversation.history) {
             this.displayMessage(conversation.history[h]);
@@ -281,7 +293,8 @@ var ChatClient = {
         
         //Add new?
         if (elem.length == 0) {
-            domain.append('<div style="opacity: 0; height: 0;" class="contact" value="' + contact.userid + '"><span class="chat-avatar"><img src="' + contact.avatar + '" /></span><span class="name">' + contact.name + '</span><span value="' + contact.userid + '" class="status ' + contact.status + '"><li></li></span></div>');
+            domain.append('<div style="opacity: 0; height: 0px;" class="contact" value="' + contact.userid + '"><span class="chat-avatar"><img src="' + contact.avatar + '" /></span><span class="name">' + contact.name + '</span><span value="' + contact.userid + '" class="status ' + contact.status + '"><li></li></span></div>');
+            elem = $("#chat .contact[value='" + contact.userid + "']");
         }
         //Or skip?
         else if (elem.parent().attr('id') == contact.status) {
@@ -296,8 +309,17 @@ var ChatClient = {
         $("#chat").find(".status[value='" + contact.userid + "']").removeClass("offline online").addClass(contact.status);
         
         //Sort
-        domain.find(".contact").sortElements(function(a, b) {
+        /*domain.find(".contact").sortElements(function(a, b) {
             return $(a).find('.name').html() > $(b).find('.name').html() ? 1: -1;
+        });*/
+        domain.find(".contact").each(function() {
+            if ($(this).find('.name').html().toUpperCase() > elem.find('.name').html().toUpperCase()) {
+                elem.insertBefore("#chat .contact[value='" + $(this).attr('value') + "']");
+                return false;
+            } else if ($(this).next() === "undefined" || $(this).next() == null) {
+                elem.insertAfter("#chat .contact[value='" + $(this).attr('value') + "']");
+                return false;
+            }
         });
         
         //Reveal element
