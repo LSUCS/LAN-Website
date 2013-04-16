@@ -1,24 +1,167 @@
-#ad-hoc {
-	text-align: center;
-	margin-bottom: 30px;
+#signup-label {
+    font-family: reznor;
+    font-size: 30px;
+    color: #333;
 }
-
-.game {
-    height: 170px;
+.signup {
+    width: 70%;
+    height: 80px;
+    background: #eee;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: tf2;
+    text-shadow: 0px 0px 1px #666;
+    margin-top: 10px;
 }
-.game img {
-    width: 400px;
-}
-    .game img:hover {
-        margin-top: 1px;
+    .signup:hover {
+        background: #fbfbfb;
+        cursor: pointer;
     }
-    
-#left {
-    float: left;
-    width: 400px;
+    .signup .icon {
+        position: relative;
+        height: 70px;
+        width: 150px;
+        margin-left: 5px;
+        margin-top: 5px;
+        float: left;
+    }
+    .signup .icon img {
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        max-height: 70px;
+        max-width: 150px;
+        border-radius: 3px;
+        border: 1px solid #ccc;
+    }
+    .signup .name {
+        position: absolute;
+        font-size: 28px;
+        left: 190px;
+        top: 10px;
+    }
+    .signup .starts {
+        left: 190px;
+        top: 45px;
+        position: absolute;
+        font-size: 18px;
+        color: #555;
+        text-shadow: 0px 0px 1px #999;
+    }
+    .signup .team {
+        left: 370px;
+        top: 45px;
+        position: absolute;
+        font-size: 18px;
+        color: #555;
+        text-shadow: 0px 0px 1px #999;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 250px;
+    }
+
+
+.day {
+    font-family: reznor;
+    font-size: 30px;
+    color: #333;
+    margin-top: 30px;
 }
 
-#right {
-    float: right;
-    width: 400px;
+.notournaments {
+    width: 100%;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    background: #eee;
+    font-family: tf2;
+    font-size: 30px;
+    text-shadow: 0px 0px 1px #666;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
+
+.tournament {
+    width: 100%;
+    height: 120px;
+    background: #eee;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    position: relative;
+    margin-top: 10px;
+}
+    .tournament:hover {
+        background: #fbfbfb;
+        cursor: pointer;
+    }
+    .tournament .icon {
+        position: relative;
+        height: 100px;
+        width: 214px;
+        margin-left: 10px;
+        margin-top: 10px;
+        float: left;
+    }
+        .tournament .icon img {
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            max-height: 100px;
+            max-width: 214px;
+            border-radius: 3px;
+            border: 1px solid #ccc;
+        }
+    .tournament .name {
+        float: left;
+        max-width: 380px;
+        height: 120px;
+        margin-left: 15px;
+        font-family: tf2;
+        text-shadow: 0px 0px 1px #666;
+        font-size: 38px;
+        line-height: 38px;
+    }
+        .tournament .name p {
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .tournament .name::after {
+            display: inline-block;
+            line-height: 120px;
+            width: 0;
+            content: '\00A0';
+            overflow: hidden;
+            vertical-align: middle;
+        }
+    .tournament .right-container {
+        height: 100%;
+        float: right;
+        width: 265px;
+        white-space: nowrap;
+    }
+        .tournament .right-container:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle
+        }
+        .tournament .right {
+            font-family: tf2;
+            text-shadow: 0px 0px 1px #999;
+            font-size: 20px;
+            color: #555;
+            display: inline-block;
+            vertical-align: middle;
+            overflow: hidden;
+            max-width: 100%;
+            margin-left: -5px;
+        }

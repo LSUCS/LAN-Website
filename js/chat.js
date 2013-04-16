@@ -47,7 +47,14 @@ $(document).ready(function() {
     //Adjust conversation height on window change
     $(window).resize(function() {
         $(".conversation-element").each(function() { ChatClient.adjustConversationHeight($(this).attr('value')); });
+        ChatClient.adjustContactList();
     });
+    
+    //Lanwebsite contact click - no propagation
+    $(document).on({ click: function(e) { e.stopPropagation(); }}, "#chat .conversation-element.conversation-open .status-bar .lanwebsite-contact");
+    
+    //Window focus/defocus
+    $(window).focus(function() { ChatClient.focus = true; }).blur(function() { ChatClient.focus = false; });
 	
 });
 
@@ -58,6 +65,8 @@ var ChatClient = {
     conversations: {},
     snd: new Audio("/data/beep.mp3"),
     blink: true,
+    focus: true,
+    timer: null,
     
     connect: function () {
     
@@ -123,6 +132,7 @@ var ChatClient = {
                 $("#chat #chat-offline").fadeOut(200);
                 $("#chat #chat-online").fadeIn(200);
                 $("#contact-list").show();
+                this.adjustContactList();
                 
                 //Load contacts
                 for (var contact in payload.contacts) {
@@ -142,6 +152,26 @@ var ChatClient = {
                 this.updateContact(payload);
                 break;
                 
+            case 'closeconversation':
+                $(".conversation-element[value='" + payload.conversationid + "']").remove();
+                delete this.conversations[payload.conversationid];
+                break
+                
+            case 'minimiseconversation':
+                var conv = $(".conversation-element[value='" + payload.conversationid + "']");
+                conv.removeClass("conversation-open").addClass("conversation-closed");
+                conv.find(".lanwebsite-contact").removeClass("lanwebsite-contact");
+                this.adjustConversationHeight(payload.conversationid);
+                break;
+                
+            case 'maximiseconversation':
+                var conv = $(".conversation-element[value='" + payload.conversationid + "']");
+                conv.removeClass("conversation-closed").addClass("conversation-open");
+                conv.find(".status-bar .name").addClass("lanwebsite-contact");
+                conv.find(".input-box").focus();
+                this.adjustConversationHeight(payload.conversationid);
+                break;
+                
             case 'openconversation':
                 this.openConversation(payload, false);
                 break;
@@ -152,9 +182,23 @@ var ChatClient = {
                 
             case 'sendmessage':
                 //If not in focus, play alert
-                if (!$(".conversation-element[value='" + payload.conversationid + "'] .input-box").is(":focus")) {
+                if (!$(".conversation-element[value='" + payload.conversationid + "'] .input-box").is(":focus") || !ChatClient.focus) {
                     this.playAlert();
                     this.conversations[payload.conversationid].read = 0;
+                }
+                //If window isn't focussed, blink title
+                if (!ChatClient.focus) {
+                    this.timer = setInterval(
+                        function(data) {
+                            if (ChatClient.focus) {
+                                clearTimeout(ChatClient.timer);
+                                document.title = data.old;
+                            } else if (document.title == data.old) document.title = data.blink;
+                            else document.title = data.old;
+                        },
+                        800,
+                        { old: document.title, blink: payload.contact.name + " sent you a message" }
+                    );
                 }
                 //Otherwise mark as read
                 else {
@@ -175,7 +219,7 @@ var ChatClient = {
         else {
             this.blink = true;
             for (var c in this.conversations) {
-                if (this.conversations[c].read == 0) {
+                if (this.conversations[c].contacts[this.userid].read == 0) {
                     $(".conversation-element[value='" + this.conversations[c].conversationid + "']").addClass("conversation-blink");
                     for (var i in this.conversations[c].contacts) {
                         if (this.conversations[c].contacts[i].userid != this.userid) $("#chat .contact[value='" + this.conversations[c].contacts[i].userid + "']").addClass("conversation-blink");
@@ -185,21 +229,23 @@ var ChatClient = {
         }
     },
     
+    isValidContact: function (userId) {
+        return $("#chat #contact-list .contact[value='" + userId + "']").length > 0;
+    },
+    
     playAlert: function () {
         this.snd.play();
     },
     
     checkReadStatus: function (convId) {
-        if (this.conversations[convId].read == 0) {
+        if (this.conversations[convId].contacts[this.userid].read == 0) {
             this.sendChatCommand("readconversation", { convID: convId });
-            this.conversations[convId].read = 1;
+            this.conversations[convId].contacts[this.userid].read = 1;
         }
     },
     
     closeConversation: function (convId) {
         this.sendChatCommand("closeconversation", { convID: convId });
-        $(".conversation-element[value='" + convId + "']").remove();
-        delete this.conversations[convId];
     },
     
     displayMessage: function (message) {
@@ -207,10 +253,14 @@ var ChatClient = {
         this.conversations[message.conversationid].history.push(message);
         //Messages blocks
         if (elem.find(".block").length == 0 || elem.find(".block").last().attr('value') != message.contact.userid) {
-            elem.append('<div class="block" value="' + message.contact.userid + '"><div class="avatar" class="lanwebsite-contact" value="' + message.contact.userid + '"><img src="' + message.contact.avatar + '" /></div><div class="block-messages"></div></div>');
+            elem.append('<div class="block" value="' + message.contact.userid + '"><div class="avatar lanwebsite-contact" value="' + message.contact.userid + '"><img src="' + message.contact.avatar + '" /></div><div class="block-messages"></div></div>');
         }
         elem.find(".block").last().find(".block-messages").append('<div>' + message.message + '</div>');
         elem.scrollTop(elem[0].scrollHeight);
+    },
+    
+    adjustContactList: function () {
+        $("#chat #contact-list").css('max-height', ($(window).height() - 30) + 'px');
     },
     
     adjustConversationHeight: function (conversationId) {
@@ -220,19 +270,8 @@ var ChatClient = {
     },
     
     toggleConversationVisibility: function (conversationId) {
-        var conv = $(".conversation-element[value='" + conversationId + "']");
-        //Minimise
-        if (conv.hasClass("conversation-open")) {
-            conv.removeClass("conversation-open").addClass("conversation-closed");
-            this.sendChatCommand('minimiseconversation', { convID: conversationId });
-        }
-        //Maximise
-        else {
-            conv.removeClass("conversation-closed").addClass("conversation-open");
-            this.sendChatCommand('maximiseconversation', { convID: conversationId });
-            conv.find(".input-box").focus();
-        }
-        this.adjustConversationHeight(conversationId);
+        if ($(".conversation-element[value='" + conversationId + "']").hasClass("conversation-open")) this.sendChatCommand('minimiseconversation', { convID: conversationId });
+        else this.sendChatCommand('maximiseconversation', { convID: conversationId });
     },
     
     sendMessage: function (convId, message) {
@@ -249,6 +288,7 @@ var ChatClient = {
             if (!elem.is(":appeared")) {
                 elem.prependTo("#chat #conversations");
             }
+            this.handleChatMessage("maximiseconversation:" + JSON.stringify(conversation));
             elem.find(".input-box").focus();
             return;
         }
@@ -266,7 +306,7 @@ var ChatClient = {
         }
         if (self.minimised == 0) var visibility = "open";
         else var visibility = "closed";
-        $("#chat #conversations").prepend('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"><li></li></span>' + contact.details.name + '<span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contentEditable></div></div></div>');
+        $("#chat #conversations").prepend('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"><li></li></span><span class="' + (self.minimised == 0?"lanwebsite-contact":"") + ' name" value="' + contact.userid + '">' + contact.details.name + '</span><span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contentEditable></div></div></div>');
         this.adjustConversationHeight(conversation.conversationid);
         for (var h in conversation.history) {
             this.displayMessage(conversation.history[h]);
@@ -309,9 +349,24 @@ var ChatClient = {
         $("#chat").find(".status[value='" + contact.userid + "']").removeClass("offline online").addClass(contact.status);
         
         //Sort
-        /*domain.find(".contact").sortElements(function(a, b) {
-            return $(a).find('.name').html() > $(b).find('.name').html() ? 1: -1;
-        });*/
+       /* var loopFunc = function(data) {
+            var elem = data.arr.first();
+            var orig = $("#chat .contact[value='" + data.id + "']");
+            if (elem.find('.name').html() == undefined) alert(data.arr.length);
+            if (elem.find('.name').html().toUpperCase() > orig.find('.name').html().toUpperCase()) {
+                orig.insertBefore("#chat .contact[value='" + elem.attr('value') + "']");
+                orig.animate({ height: "30px" }, 100).animate({ opacity: 1 }, 100);
+                return;
+            } else if (elem.next() === "undefined" || elem.next() == null) {
+                orig.insertAfter("#chat .contact[value='" + elem.attr('value') + "']");
+                orig.animate({ height: "30px" }, 100).animate({ opacity: 1 }, 100);
+                return;
+            }
+            data.arr.splice(0, 1);
+            setTimeout(data.loopFunc, 100, data);
+        };
+        
+        loopFunc({ loopFunc: loopFunc, arr: domain.find(".contact"), orig: elem.find('.name'), id: contact.userid });*/
         domain.find(".contact").each(function() {
             if ($(this).find('.name').html().toUpperCase() > elem.find('.name').html().toUpperCase()) {
                 elem.insertBefore("#chat .contact[value='" + $(this).attr('value') + "']");

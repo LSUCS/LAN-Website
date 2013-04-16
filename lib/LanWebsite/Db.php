@@ -6,10 +6,10 @@
 		private $db;
 		
 		public function __construct() {
+            ini_set("mysqli.reconnect", 1);
             $config = LanWebsite_Main::getConfig();
 			$this->db = new mysqli($config['database']["host"], $config['database']["user"], $config['database']["pass"], $config['database']["db"]);
 			if (mysqli_connect_errno()) die("Unable to connect to SQL Database: " . mysqli_connect_error());
-			$this->createTables();
 		}
         
         /**
@@ -27,8 +27,14 @@
 			$sql = array_shift($args);
 			foreach ($args as $key => $value) $args[$key] = $this->clean($value);
 			$res = $this->db->query(vsprintf($sql, $args));
-            if (!$res) die("MySQLi Error: " . mysqli_error($this->db));
-            else return $res;
+            if (!$res) {
+                if (strstr($this->db->error, "MySQL server has gone away")) {
+                    echo "MySQL server timeout, reconnecting\n";
+                    $this->db->ping();
+                    $res = $this->db->query(vsprintf($sql, $args));
+                } else die("MySQLi Error: " . $this->db->error);
+            }
+            return $res;
 		}
         
 		/**
@@ -36,12 +42,6 @@
 		 */
 		public function clean($string) {
 			return $this->db->real_escape_string(trim($string));
-		}
-		
-		/**
-		 * Creates default tables if they don't exist
-		 */
-		private function createTables() {
 		}
 		
 	}

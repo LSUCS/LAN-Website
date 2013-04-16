@@ -28,7 +28,7 @@
     
     echo "Instantiating websocket chat server...\n";
     LanWebsite_Main::getSettings()->changeSetting('chat_daemon_online', true);
-    new ChatServer(LanWebsite_Main::getSettings()->getSetting("chat_address"), LanWebsite_Main::getSettings()->getSetting("chat_port"));
+    new ChatServer(LanWebsite_Main::getSettings()->getSetting("chat_address"), LanWebsite_Main::getSettings()->getSetting("chat_port"), LanWebsite_Main::getSettings()->getSetting("chat_buffer_size"));
     
     
     

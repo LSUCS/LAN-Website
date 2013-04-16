@@ -1,16 +1,55 @@
-<div id="ad-hoc">
-	Looking for some ad-hoc gaming? Check out the <a href="index.php?page=servers">Game Servers</a> page to see what servers we have running on the LAN!
-</div>
+<?
+if (count($DataBag["usertournaments"]) > 0) {
+?>
 
-<div id="left">
-    <div class="game"><a href="index.php?page=tournaments&action=tf2"><img src="/images/tournaments/l4d2.png" /></a></div>
+    <div id="signup-label">My Signups</div>
+    <div id="my-signups">
+        <?
+        foreach ($DataBag["usertournaments"] as $t) { 
+            echo '<div class="signup" value="' . $t["tournament_id"] . '">
+                    <div class="icon"><img src="' . $t["game_icon"] . '"/></div>
+                    <div class="name">' . $t["tournament_name"] . '</div>';
+            if ($t["team_id"] > 0) echo '<div class="team"><b>Team:</b> ' . $t["team"]["team_name"] . '</div>';
+            echo '<div class="starts"><b>Starts:</b> ' . date("g:ia D", $t["start_time"]) . '</div></div>';
+        }
+        ?>
+    </div>
+    
+<?
+}
+if (count($DataBag["tournaments"]) == 0) {
+?>
+    <div class="notournaments">No Tournaments have been created for this LAN yet</div>
+<?
+} else {
+?>
 
-    <div class="game"><a href="index.php?page=tournaments&action=hungergames"><img src="/images/tournaments/hungergames.png" /></a></div>
-</div>
+    <div id="tournaments">
+    
+        <?
+        foreach ($DataBag["tournaments"] as $day => $tournaments) {
+            echo '<div class="day">' . $day . '</div>';
+            foreach ($tournaments as $t) {
+            ?>
+                <div class="tournament" value="<? echo $t["tournament_id"]; ?>">
+                    <div class="icon"><img src="<? echo $t["game_icon"]; ?>" /></div>
+                    <div class="name"><p class="exclude"><? echo $t["tournament_name"]; ?></p></div>
+                    <div class="right-container">
+                        <div class="right">
+                            <div><b>Game:</b> <? echo $t["game"]; ?></div>
+                            <? if ($t["signups"] == 1) echo '<div><b>Signups Close:</b> ' . date('g:ia D', $t["signup_close"]) . '</div>'; ?>
+                            <div><b>Starts:</b> <? echo date('g:ia D', $t["start_time"]); ?></div>
+                            <div><b>Ends:</b> <? echo date('g:ia D', $t["end_time"]); ?></div>
+                        </div>
+                    </div>
+                </div>
+            <?
+            }
+        }
+        ?>
 
-<div id="right">
-    <div class="game"><a href="http://lsucs.org.uk/threads/iron-lan-lan37-get-your-info-here.7446/"><img src="/images/tournaments/ironlan.png" /></a></div>
+    </div>
 
-    <div class="game"><a href="index.php?page=tournaments&action=quiz"><img src="/images/tournaments/quiz.png" /></a></div>
-</div>
-<div style="clear: both;"></div>
+<?
+}
+?>

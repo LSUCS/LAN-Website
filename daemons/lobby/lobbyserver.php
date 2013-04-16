@@ -113,7 +113,7 @@
                     $this->sendLobbyUpdate($lobby);
                     
                     //Send notification
-                    $notification = new Notification('<span style="color: #333;"><span style="color: red;">>>></span> New lobby: <span style="color: #FFCC66;">' . $lobby->title . '</span> for <span style="color: #FFCC66;">' . $lobby->game . '</span> created by <span class="lanwebsite-contact" style="color: ' . $lobby->leader->color . ';">' . $lobby->leader->name . '</i></span>');
+                    $notification = new Notification('<span style="color: #333;"><span style="color: red;">>>></span> New lobby: <span style="color: #FFCC66;">' . $lobby->title . '</span> for <span style="color: #FFCC66;">' . $lobby->game . '</span> created by <span class="lanwebsite-contact" style="color: ' . $lobby->leader->color . ';" value="' . $lobby->leader->userid . '">' . $lobby->leader->name . '</i></span>');
                     $this->sendGlobalNotification($notification);
                     
                     break;

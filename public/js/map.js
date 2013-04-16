@@ -12,11 +12,6 @@ $(document).ready(function() {
     $("#main-hall .occupied-seat, #main-hall .ingame-seat, #d-block-room .occupied-seat, #d-block-room .ingame-seat").live('mouseleave', function() {
         $(this).find('.seat-hover').hide();
     });
-    
-    //Click seat
-    $(".seat").live('click', function() {
-        if ($(this).attr('value').length > 0) window.location = UrlBuilder.buildUrl(false, "profile", null, { member:  $(this).attr('value') });
-    });
 
 });
 
@@ -33,7 +28,7 @@ function loadMap() {
             if (!data) return;
             
             //Clear existing classes
-            $("#main-hall .ingame-seat, #main-hall .occupied-seat").removeClass("occupied-seat ingame-seat");
+            $("#main-hall .ingame-seat, #main-hall .occupied-seat").removeClass("occupied-seat ingame-seat lanwebsite-contact");
             
             //Remove seat hovers
             $(".seat-hover").remove();
@@ -51,13 +46,13 @@ function loadMap() {
                 //Set classes
                 var info = data["data"][i];
                 var seat = $("#" + info.seat);
-                seat.addClass("occupied-seat");
+                seat.addClass("occupied-seat lanwebsite-contact");
                 if (info.ingame == 1) {
                     seat.addClass("ingame-seat");
                     if (info.game_icon) seat.append('<img class="preview-icon" src="' + info.game_icon + '" />');
                 }
                 
-                seat.attr('value', info.username);
+                seat.attr('value', info.user_id);
                 
                 //HOVER BOX
                 var hover = '<div class="hover-container"><div class="seat-hover"><div class="head-box">';

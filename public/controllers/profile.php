@@ -4,7 +4,7 @@
     
         public function getInputFilters($action) {
             switch ($action) {
-                case "loadprofile": return array("name" => "notnull"); break;
+                case "loadprofile": return array("name" => "", "userid" => "int"); break;
             }
         }
     
@@ -21,10 +21,12 @@
             $inputs["name"] = urldecode($inputs["name"]);
             if (strlen($inputs["name"]) > 0) {
                 $user = LanWebsite_Main::getUserManager()->getUserByName($inputs["name"]);
-                if (!$user) die(false);
+            } else if (strlen($inputs["userid"]) > 0) {
+                $user = LanWebsite_Main::getUserManager()->getUserById($inputs["userid"]);
             } else if (LanWebsite_Main::getAuth()->isLoggedIn()) {
                 $user = LanWebsite_Main::getUserManager()->getActiveUser();
             }
+            if (!$user) die(false);
             
             $profile = array();
             
@@ -61,9 +63,11 @@
             }
             
             //Ticket
-            $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s' AND seat != ''", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
-            if ($ticket) $profile["seat"] = $ticket["seat"];
-            else $profile["seat"] = "";
+            $profile["online"] = true;
+            $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
+            if ($ticket && $ticket["seat"] != '') $profile["seat"] = $ticket["seat"];
+            else if ($ticket) $profile["seat"] = "";
+            else $profile["online"] = false;
            
             //Avatar
             if ($steam) $profile["avatar"] = (string)$steam->avatarFull;

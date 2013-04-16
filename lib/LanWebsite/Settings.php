@@ -33,13 +33,9 @@
                                 "lan_ip_addresses" => array("text", "0.0.0.0,0.0.0.0", SettingsGroup::General),
                                 "disable_lan_van" => array("bool", false, SettingsGroup::LanVan),
                                 "map_cron_lock" => array("bool", false, SettingsGroup::Map),
-                                "map_update_url" => array("url", "http://lans.lsucs.org.uk/index.php?page=map&action=process", SettingsGroup::Map),
+                                "map_process_url" => array("url", "http://dev.lan.lsucs.org.uk/map/processseat/?ticket=", SettingsGroup::Map),
                                 "map_browser_update_interval" => array('int', 30, SettingsGroup::Map),
                                 "map_daemon_sleep_period" => array('int', 10, SettingsGroup::Map),
-                                "server_cron_lock" => array("bool", false, SettingsGroup::GameServer),
-                                "server_update_url" => array("url", "http://lans.lsucs.org.uk/index.php?page=servers&action=process", SettingsGroup::GameServer),
-                                "server_browser_update_interval" => array('int', 10, SettingsGroup::GameServer),
-                                "server_daemon_sleep_period" => array('int', 5, SettingsGroup::GameServer),
 								"chat_address" => array("text", "localhost", SettingsGroup::Chat),
 								"chat_port" => array("int", 8081, SettingsGroup::Chat),
 								"chat_history_length" => array("int", 10, SettingsGroup::Chat),
@@ -47,6 +43,8 @@
                                 "chat_daemon_online" => array("bool", false, SettingsGroup::Chat),
 								"chat_url" => array("text", "ws://lan.lsucs.org.uk:8087", SettingsGroup::Chat),
                                 "require_ticket_for_chat" => array("bool", false, SettingsGroup::Chat),
+                                "chat_message_max_length" => array("int", 500, SettingsGroup::Chat),
+                                "chat_buffer_size" => array("int", 548576, SettingsGroup::Chat),
                                 "lsucs_auth_url" => array("url", "http://auth.lsucs.org.uk/", SettingsGroup::Auth),
                                 "presentation_url" => array("url", "https://docs.google.com/presentation/embed?id=1xSQaCi9f6lRTms75rQqLbYCPX88z6JegMQkTBNYAths&start=true&loop=true&delayms=15000", SettingsGroup::Presentation),
                                 "presentation_refresh_interval" => array("int", 60000, SettingsGroup::Presentation),
@@ -110,8 +108,9 @@
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) return false;
                     break;
                 case "url":
+                    if (parse_url($value, PHP_URL_SCHEME) == '') return false;
                 case "ip":
-                    if (!filter_var($value, FILTER_VALIDATE_URL) || !filter_var($value, FILTER_VALIDATE_IP)) return false;
+                    if (!filter_var($value, FILTER_VALIDATE_IP)) return false;
                     break;
                 case "text":
                 case "pass":

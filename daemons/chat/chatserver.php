@@ -61,7 +61,11 @@
                     if (!$in) return $this->error($user, "User not part of conversation");
         
                     //Create and save message object
-                    $message = new Message(time(), $conv->conversationid, $user->data->getUserId(), $this->getContactDetails($user->data->getUserId()), $payload['message']);
+                    $msg = strip_tags(trim($payload["message"]));
+                    if (strlen($msg) > LanWebsite_Main::getSettings()->getSetting("chat_message_max_length")) $msg = substr($msg, 0, LanWebsite_Main::getSettings()->getSetting("chat_message_max_length"));
+                    $msg = preg_replace("/([^\w\/])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i", "$1http://$2", $msg);
+                    $msg = preg_replace("/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i","<a target=\"_blank\" href=\"$1\">$1</A>", $msg);
+                    $message = new Message(time(), $conv->conversationid, $user->data->getUserId(), $this->getContactDetails($user->data->getUserId()), $msg);
                     $this->saveMessage($message);
                     
                     //Loop contacts, updating read status and messaging them if need be
@@ -70,19 +74,15 @@
                         //Mark as unread
                         if ($contact->userid == $user->data->getUserId()) $contact->read = 1;
                         else $contact->read = 0;
-                                                
-                        //Check for online users for contact
-                        foreach ($this->users as $chatuser) {
-                            if ($chatuser->data->getUserId() == $contact->userid) {
-                                if ($contact->open == 0) {
-                                    $contact->minimised = 0;
-                                    $this->saveConversationContact($contact);
-                                    $this->sendCommand($chatuser, "openconversation", $this->getConversation($conv->conversationid));
-                                } else {
-                                    $this->sendCommand($chatuser, "sendmessage", $message);
-                                }
-                                break;
-                            }
+                        
+                        //Send out
+                        if ($contact->open == 0) {
+                            $contact->minimised = 0;
+                            $contact->open = 1;
+                            $this->saveConversationContact($contact);
+                            $this->sendAllUsersCommand($contact->userid, "openconversation", $this->getConversation($conv->conversationid));
+                        } else {
+                            $this->sendAllUsersCommand($contact->userid, "sendmessage", $message);
                         }
                         
                         //Update contact
@@ -100,12 +100,22 @@
 				
 					//Validate user id
 					if (!isset($payload["userID"]) || $payload["userID"] == $user->data->getUserId() || !$this->getContactDetails($payload["userID"])) return $this->error($user, "Invalid user id for conversation");
+                    
+                    //Ticket mode
+                    if (LanWebsite_Main::getSettings()->getSetting("require_ticket_for_chat") == 1) {
+                        //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                        $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id = '%s'", $payload["userID"]);
+                        if (!$res) return $this->error($user, "Cannot open conversation, recipient has no ticket");
+                    }
 				
 					//Check if a conversation already exists between these two users and return it if it does
                     foreach ($this->getConversations($user->data->getUserId()) as $conv) {
                         foreach ($conv->contacts as $contact) {
                             if ($contact->userid == $payload["userID"]) {
-                                $this->sendCommand($user, "openconversation", $conv);
+                                $c = $this->getConversationContact($user->data->getUserId(), $conv->conversationid);
+                                $c->open = 1;
+                                $this->saveConversationContact($c);
+                                $this->sendAllUsersCommand($user->data->getUserId(), "openconversation", $this->getConversation($conv->conversationid));
                                 return;
                             }
                         }
@@ -118,7 +128,7 @@
                     $conv = $this->saveConversation($conv);
                     
 					//Reciprocate open conversation
-					$this->sendCommand($user, "openconversation", $conv);
+					$this->sendAllUsersCommand($user->data->getUserId(), "openconversation", $conv);
 					
 					break;
 					
@@ -140,6 +150,9 @@
                     $contact->open = 0;
                     $this->saveConversationContact($contact);
                     
+                    //Reciprocate
+                    $this->sendAllUsersCommand($user->data->getUserId(), "closeconversation", $conv);
+                    
 					break;
 					
 				//MINIMISECONVERSATION - Marks a conversation as minimised for the user
@@ -156,9 +169,12 @@
                     $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
                     if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
-                    //Mark as closed
+                    //Mark as minimised
                     $contact->minimised = 1;
                     $this->saveConversationContact($contact);
+                    
+                    //Reciprocate
+                    $this->sendAllUsersCommand($user->data->getUserId(), "minimiseconversation", $conv);
                     
 					break;
                     
@@ -176,9 +192,12 @@
                     $contact = $this->getConversationContact($user->data->getUserId(), $payload["convID"]);
                     if (!$contact) return $this->error($user, "User is not part of conversation, cannot close");
                     
-                    //Mark as closed
+                    //Mark as maximised
                     $contact->minimised = 0;
                     $this->saveConversationContact($contact);
+                    
+                    //Reciprocate
+                    $this->sendAllUsersCommand($user->data->getUserId(), "maximiseconversation", $conv);
                     
 					break;
                     
@@ -230,6 +249,13 @@
 			$user->data = LanWebsite_Main::getUserManager()->getActiveUser();
 			
 			$this->stdout("Authorised connection " . $user->data->getUserId() . " for " . $user->data->getUsername());
+            
+            //Ticket mode
+            if (LanWebsite_Main::getSettings()->getSetting("require_ticket_for_chat") == 1) {
+                //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id = '%s'", $user->data->getUserId());
+                if (!$res) return $this->error($user, "Must have lan ticket to use chat");
+            }
 			
 			//Update presence to other sockets, excluding current user
             $this->getContactDetails($user->data->getUserId());
@@ -248,6 +274,11 @@
 		 */
 		protected function closed($user) {
 			$this->stdout("Connection " . $user->id . " closed by user");
+            
+            //Check if other sockets exist for user
+            foreach ($this->users as $u) {
+                if ($u->id != $user->id && $u->data->getUserId() == $user->data->getUserId()) return;
+            }
             
 			//Update presence to other sockets, excluding current user
             $this->setContactStatus($user->data->getUserId(), "offline");
@@ -269,6 +300,18 @@
 		protected function sendCommand($user, $command, $payload) {
 			$this->stdout("SEND - " . $command . " - TO - "  . $user->id);
 			$this->send($user, $command . ":" . json_encode($payload));
+		}
+        
+		/**
+		 * Sends a command to all sockets for inputted user id
+		 */
+		protected function sendAllUsersCommand($userid, $command, $payload) {
+            foreach ($this->users as $user) {
+                if ($user->data->getUserId() == $userid) {
+                    $this->stdout("SEND - " . $command . " - TO - "  . $user->id);
+                    $this->send($user, $command . ":" . json_encode($payload));
+                }
+            }
 		}
 		
 		/**

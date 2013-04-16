@@ -37,6 +37,9 @@ $(document).ready(function() {
     //Overlay
     Overlay.initialiseOverlay();
     
+    //Contact popups
+    LanContact.initialize();
+    
     //Parse page vars
     var q = window.location.search.substring(1);
     var vars = q.split("&");
@@ -82,6 +85,72 @@ function makeError(obj) {
     obj.addClass('ui-widget');
     obj.html('<div class="ui-state-error ui-corner-all"><p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><strong>Alert:</strong> ' + text + '</p></div>');
 }
+
+//LAN contact popups
+var LanContact = {
+    
+    userid: null,
+
+    initialize: function () {
+        $(document).on({ click: function() { LanContact.openPopup($(this).attr('value')); }}, ".lanwebsite-contact");
+        $(window).resize(function() { LanContact.adjustPopup(); });
+        $(document).scroll(function() { LanContact.adjustPopup(); });
+        $(document).on({ click: function() { LanContact.closePopup(); }}, "#lancontact-popup .close");
+        $(document).on({ click: function() { ChatClient.initiateConversation($(this).attr('value')); }}, "#lancontact-popup .openchat");
+    },
+    
+    openPopup: function (userId) {
+        if ($("#lancontact-popup").length > 0) this.closePopup();
+        this.userid = userId;
+        $("body").append('<div id="lancontact-popup" style="opacity: 0;"><div class="close"></div><div class="loading"></div></div>');
+        this.adjustPopup();
+        $("#lancontact-popup").animate({ opacity: 1 }, 500);
+        $.post(
+            UrlBuilder.buildUrl(false, "profile", "loadprofile"),
+            { userid: userId },
+            function (data) {
+                if ($("#lancontact-popup").length == 0 || LanContact.userid != data.user_id) return;
+                if (data == null) return LanContact.closePopup();
+                $("#lancontact-popup .loading").remove();
+                
+                if (data.ingame == 1) var c = "ingame";
+                else if (data.online == 1) var c = "online";
+                else var c = 'offline';
+                
+                var hover = '<div class="head-box ' + c + '">';
+                hover += '<div class="avatar"><img src="' + data.avatar + '" /></div>';
+                hover += '<div class="main-info">' + (data.name == ""?data.username:data.name) + '<br />';
+                if (data.ingame == 1) hover += 'In Game<br />' + data.game;
+                else if (data.online == 1) hover += 'At LAN';
+                else hover += 'Offline';
+                hover += '</div></div>';
+                if (data.seat != null) hover += '<div class="seat-number">Seat: <a href="' + UrlBuilder.buildUrl(false, "map") + "#" + data.seat + '">' + data.seat + '</a></div>';
+                if (data.steam != "") hover += '<div class="steam-name">Steam Name: <a href="http://steamcommunity.com/id/' + data.steam + '/">' + data.steam + '</a></div>';
+                if (data.favourite != "") hover += '<div class="favourite"><h3>Favourite Games</h3>' + data.favourite + '</div>';
+                if (data.mostplayed != "") hover += '<div class="mostplayed"><h3>Recently Played Games</h3>' + data.mostplayed + '</div>';
+                if (ChatClient.isValidContact(data.user_id)) hover += '<button class="openchat" value="' + data.user_id + '">Send Message</button>';
+                $("#lancontact-popup").append(hover);
+                $("#lancontact-popup .openchat").button();
+                
+                LanContact.adjustPopup();
+            },
+            'json');
+    },
+    
+    closePopup: function () {
+        this.userid = null;
+        $("#lancontact-popup").fadeOut(100).remove();
+    },
+    
+    adjustPopup: function () {
+        var elem = $("#lancontact-popup");
+        if (elem.length > 0) {
+            elem.css('margin-top', - (elem.height()/2 + 15));
+            elem.css('margin-left', - (elem.width()/2 + 10));
+        }
+    }
+
+};
 
 //Countdown object
 var Countdown = {

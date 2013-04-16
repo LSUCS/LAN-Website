@@ -121,6 +121,7 @@
 		protected function disconnect($socket,$triggerClosed=true) {
 			$foundUser = null;
 			$foundSocket = null;
+            $disconnectedUser = null;
 			foreach ($this->users as $key => $user) {
 				if ($user->socket == $socket) {
 					$foundUser = $key;
@@ -142,7 +143,7 @@
 				unset($this->sockets[$foundSocket]);
 				$this->sockets = array_values($this->sockets);
 			}
-			if ($triggerClosed) {
+			if ($triggerClosed && $disconnectedUser != null) {
 				$this->closed($disconnectedUser);
 			}
 		}
