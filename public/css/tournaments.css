@@ -96,7 +96,7 @@
     position: relative;
     margin-top: 10px;
 }
-    .tournament:hover {
+    a .tournament:hover {
         background: #fbfbfb;
         cursor: pointer;
     }

@@ -91,6 +91,12 @@
                         
                     }
                     
+                foreach ($conv->contacts as $contact) {
+                    if ($contact->userid != $user->data->getUserId()) $d = $contact->userid;
+                }  
+                Logger::log("chatmessage", json_encode(array("sender" => $user->data->getUserId(), "to" => $d, "message" => $message->message)));
+                Logger::store();
+                    
 					break;
 					
 				//OPENCONVERSATION - Opens a conversation with a user
@@ -103,8 +109,8 @@
                     
                     //Ticket mode
                     if (LanWebsite_Main::getSettings()->getSetting("require_ticket_for_chat") == 1) {
-                        //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
-                        $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id = '%s'", $payload["userID"]);
+                        $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                        //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id = '%s'", $payload["userID"]);
                         if (!$res) return $this->error($user, "Cannot open conversation, recipient has no ticket");
                     }
 				
@@ -490,8 +496,8 @@
             
             //Ticket mode
             else {
-                //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
-                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id > 0");
+                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND activated = 1 AND assigned_forum_id > 0", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+                //$res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE activated = 1 AND assigned_forum_id > 0");
                 while ($row = $res->fetch_assoc()) {
                     if (!isset($contacts[$row["assigned_forum_id"]]) && (($exclude != false && $row["assigned_forum_id"] != $exclude->data->getUserId()) || $exclude == false)) {
                         $contacts[$row["assigned_forum_id"]] = $this->getContactDetails($row["assigned_forum_id"]);

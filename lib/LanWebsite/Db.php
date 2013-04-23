@@ -6,11 +6,14 @@
 		private $db;
 		
 		public function __construct() {
-            ini_set("mysqli.reconnect", 1);
+            $this->connect();
+        }
+        
+        private function connect() {
             $config = LanWebsite_Main::getConfig();
 			$this->db = new mysqli($config['database']["host"], $config['database']["user"], $config['database']["pass"], $config['database']["db"]);
 			if (mysqli_connect_errno()) die("Unable to connect to SQL Database: " . mysqli_connect_error());
-		}
+        }
         
         /**
          *  Returns database link
@@ -26,14 +29,16 @@
 			$args = func_get_args();
 			$sql = array_shift($args);
 			foreach ($args as $key => $value) $args[$key] = $this->clean($value);
-			$res = $this->db->query(vsprintf($sql, $args));
+            $query = vsprintf($sql, $args);
+			$res = $this->db->query($query);
             if (!$res) {
                 if (strstr($this->db->error, "MySQL server has gone away")) {
                     echo "MySQL server timeout, reconnecting\n";
-                    $this->db->ping();
-                    $res = $this->db->query(vsprintf($sql, $args));
+                    $this->connect();
+                    $res = $this->db->query($query);
                 } else die("MySQLi Error: " . $this->db->error);
             }
+        Logger::log("mysql", $query);
             return $res;
 		}
         

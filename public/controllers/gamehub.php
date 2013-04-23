@@ -12,9 +12,23 @@
             LanWebsite_Main::getAuth()->requireLogin();
             $tmpl = LanWebsite_Main::getTemplateManager();
             $tmpl->setSubTitle("Game Hub");
+            $tmpl->addTemplate("gamehub-popnotice");
             $tmpl->addTemplate("gamehub");
             $tmpl->enablePlugin("scrollbar");
             $tmpl->enablePlugin('spinner');
+            $tmpl->output();
+        }
+        
+        public function get_Popout() {
+            LanWebsite_Main::getAuth()->requireLogin();
+            $tmpl = LanWebsite_Main::getTemplateManager();
+            $tmpl->setSubTitle("Game Hub");
+            $tmpl->disableMainTemplate();
+            $tmpl->addTemplate("gamehub");
+            $tmpl->addTemplate("gamehub-popout");
+            $tmpl->enablePlugin("scrollbar");
+            $tmpl->enablePlugin('spinner');
+            $tmpl->enablePlugin('main');
             $tmpl->output();
         }
         

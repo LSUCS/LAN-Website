@@ -10,6 +10,9 @@
 	display: none;
     pointer-events: none;
 }
+x:-o-prefocus, #chat {
+  display: none;
+}
 
 #chat .chatbar-element {
 	float: right;
@@ -48,11 +51,15 @@
 	
 #chat .status {
 	font-weight: bold;
-	color: #999;
+	background-image: url(/images/offline.png);
+    background-size: 12px;
+    height: 12px;
+    width: 12px;
 	font-size: 28px;
+    z-index: 2000;
 }
 	#chat .status.online {
-		color: #04cdff;
+		background-image: url(/images/online.png);
 	}
 	
 #chat #contact-list {
@@ -75,6 +82,7 @@
 		line-height: 30px;
 		padding-left: 30px;
 		cursor: pointer;
+        position: relative;
 	}
 	#chat #contact-list .contact:hover {
 		background-color: #fff;
@@ -86,8 +94,8 @@
 	}
 	#chat #contact-list .status {
 		position: absolute;
-        left: 92%;
-		margin-top: -2px;
+        right: 10px;
+        bottom: 10px;
 	}
     #chat #contact-list .conversation-blink {
         background-color: #e2e2e2;
@@ -194,10 +202,8 @@
         }
         #chat .conversation-element .status-bar .status {
             position: absolute;
-            width: 10px;
-            height: 10px;
             left: 10px;
-            bottom: 22px;
+            bottom: 9px;
         }
         #chat .conversation-element .status-bar .close {
             position: absolute;
@@ -227,12 +233,14 @@
 		background: #fff;
         width: 238px;
         padding: 6px;
+        cursor: pointer;
     }
         #chat .conversation-element .input .input-box {
             background: #fff;
             max-height: 100px;
             font-size: 12px;
             overflow: hidden;
+            min-height: 16px;
         }
         #chat .conversation-element.conversation-closed .input {
             display: none;

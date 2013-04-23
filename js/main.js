@@ -6,11 +6,11 @@ $(document).ready(function() {
 
 	//User dropdown
 	$("#userbox").mouseenter(function() {
-		$("#userdropdown").slideDown(200);
+		$("#userdropdown").stop().slideDown(200);
 	});
     $("#userbox").mouseleave(function(e) {
         setTimeout(function() { if (!dropdown_entered) {
-            $("#userdropdown").slideUp(200);
+            $("#userdropdown").stop().slideUp(200);
         }}, 50);
         
     });
@@ -18,18 +18,18 @@ $(document).ready(function() {
         dropdown_entered = true;
     });
     $("#userdropdown").mouseleave(function() {
-        $("#userdropdown").slideUp(200);
+        $("#userdropdown").stop().slideUp(200);
         dropdown_entered = false;
     });
     
     //Date countdown
-    $.get(UrlBuilder.buildUrl(true, 'account', 'date'),
+    $.get(UrlBuilder.buildUrl(false, 'account', 'date'),
           function (data) {
             Countdown.start(data);
           });
           
     //Buttons
-    $("button").button();
+    $("button").each(function() { $(this).button(); });
     
     //Error boxes
     $(".error-box").each(function() { makeError($(this)); });

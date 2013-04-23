@@ -1,0 +1,55 @@
+<?
+if (count($DataBag["usertournaments"]) > 0) {
+?>
+
+    <div id="signup-label">My Signups</div>
+    <div id="my-signups">
+        <?
+        foreach ($DataBag["usertournaments"] as $t) { 
+            echo '<div class="signup" value="' . $t["tournament_id"] . '">
+                    <div class="icon"><img src="' . $t["game_icon"] . '"/></div>
+                    <div class="name">' . $t["tournament_name"] . '</div>';
+            if ($t["team_id"] > 0) echo '<div class="team"><b>Team:</b> ' . $t["team"]["team_name"] . '</div>';
+            echo '<div class="starts"><b>Starts:</b> ' . date("g:ia D", $t["start_time"]) . '</div></div>';
+        }
+        ?>
+    </div>
+    
+<?
+}
+if (count($DataBag["tournaments"]) == 0) {
+?>
+    <div class="notournaments">No Tournaments have been created for this LAN yet</div>
+<?
+} else {
+?>
+
+    <div id="tournaments">
+    
+        <?
+        foreach ($DataBag["tournaments"] as $day => $tournaments) {
+            echo '<div class="day">' . $day . '</div>';
+            foreach ($tournaments as $t) {
+            ?>
+                <div class="tournament" value="<? echo $t["tournament_id"]; ?>">
+                    <div class="icon"><img src="<? echo $t["game_icon"]; ?>" /></div>
+                    <div class="name"><p class="exclude"><? echo $t["tournament_name"]; ?></p></div>
+                    <div class="right-container">
+                        <div class="right">
+                            <div><b>Game:</b> <? echo $t["game"]; ?></div>
+                            <? if ($t["signups"] == 1) echo '<div><b>Signups Close:</b> ' . date('g:ia D', $t["signup_close"]) . '</div>'; ?>
+                            <div><b>Starts:</b> <? echo date('g:ia D', $t["start_time"]); ?></div>
+                            <div><b>Ends:</b> <? echo date('g:ia D', $t["end_time"]); ?></div>
+                        </div>
+                    </div>
+                </div>
+            <?
+            }
+        }
+        ?>
+
+    </div>
+
+<?
+}
+?>

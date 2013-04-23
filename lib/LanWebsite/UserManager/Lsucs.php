@@ -60,6 +60,7 @@
         }
         
         public function getLsucsAuthResponse($method, $params) {
+    Logger::log("authquery", $method);
 			//Prepare fields
             $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
             $fields = array_merge($fields, $params);
@@ -78,7 +79,7 @@
         }
         
         public function checkFriendsOfLsucs($userID) {
-            $this->getLsucsAuthResponse("checkfol", array("userid" => $userID));
+            //$this->getLsucsAuthResponse("checkfol", array("userid" => $userID));
         }
         
         private function getLanData($userid) {

@@ -31,6 +31,7 @@
         $sleep = LanWebsite_Main::getSettings()->getSetting("map_daemon_sleep_period");
     
         echo "WOKEN UP: Processing...\n";
+    Logger::log("mapprocess", "");
     
         //Start time
         $mtime = explode(" ",microtime());

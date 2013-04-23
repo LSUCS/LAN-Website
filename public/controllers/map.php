@@ -108,6 +108,13 @@
                 if (count($games) > 0) $seat["mostplayed"] = "<ul>" . implode("", $games) . "</ul>";
             }
             
+        //LOGGING
+        $cache = LanWebsite_Main::getDb()->query("SELECT * FROM map_cache WHERE user_id = '%s' AND seat = '%s'", $user->getUserId(), $seat["seat"])->fetch_assoc();
+        if ($cache && $cache["game"] != $seat["game"]) {
+            if ($cache["game"] != "") Logger::log("stopgame", json_encode(array("game" => $cache["game"], "userid" => $seat["user_id"])));
+            if ($seat["game"] != "") Logger::log("startgame", json_encode(array("game" => $seat["game"], "userid" => $seat["user_id"])));
+        }
+            
             echo json_encode($seat);
             
         }

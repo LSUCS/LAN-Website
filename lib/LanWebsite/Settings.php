@@ -2,7 +2,7 @@
 
     class LanWebsite_Settings {
     
-        //TODO: groups, cache
+        private $cache = array();
         
         private $defaults = array(
                                 "lan_start_date" => array("date", "2012-10-26 20:00:00", SettingsGroup::Lan),
@@ -61,26 +61,39 @@
                                 "lobby_message_max_length" => array("int", 500, SettingsGroup::Lobbies),
                                 "lobby_buffer_size" => array("int", 548576, SettingsGroup::Lobbies),
                                 );
-    
-        public function __construct() {
-            $this->checkDefaults();
-        }
         
         public function getSetting($setting) {
+            
+            //If invalid, return false and delete
             if (!$this->settingIsReal($setting)) {
                 $this->deleteSetting($setting);
                 return false;
             }
-            $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
-            $arr = $res->fetch_array();
-            return $arr[1];
+            
+            //If not cached, load from db
+            if (!isset($this->cache[$setting])) {
+                $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
+                
+                //If no result, load default
+                if (mysqli_num_rows($res) < 1) {
+                    LanWebsite_Main::getDb()->query("INSERT INTO `settings` (setting_name, setting_value) VALUES ('%s', '%s')", $setting, $this->defaults[$setting][1]);
+                    $this->cache[$setting] = $this->defaults[$setting][1];
+                } 
+                //Otherwise use DB value
+                else {
+                    $arr = $res->fetch_array();
+                    $this->cache[$setting] = $arr[1];
+                }
+            }
+            
+            return $this->cache[$setting];
         }
         
         public function getSettings() {
-            $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings`");
             $arr = array();
-            while ($row = $res->fetch_assoc()) {
-                if (!$this->settingIsReal($row["setting_name"])) continue $this->deleteSetting($row["setting_name"]);
+            foreach ($this->defaults as $setting => $properties) {
+                $row["setting_value"] = $this->getSetting($setting);
+                $row["setting_name"] = $setting;
                 $row["setting_group"] = $this->defaults[$row["setting_name"]][2];
                 $row["setting_default"] = $this->defaults[$row["setting_name"]][1];
                 $row["setting_type"] = $this->defaults[$row["setting_name"]][0];
@@ -118,7 +131,10 @@
             }
             
             //Update value
-            if (LanWebsite_Main::getDb()->query("UPDATE `settings` SET setting_value='%s' WHERE setting_name = '%s'", $value, $setting)) return true;
+            if (LanWebsite_Main::getDb()->query("UPDATE `settings` SET setting_value='%s' WHERE setting_name = '%s'", $value, $setting)) {
+                $this->cache[$setting] = $value;
+                return true;
+            }
             return false;
             
         }
@@ -129,18 +145,6 @@
         
         private function deleteSetting($setting) {
             LanWebsite_Main::getDb()->query("DELETE FROM `settings` WHERE setting_name = '%s'", $setting);
-        }
-        private function settingIsStored($setting) {
-            $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
-            if (mysqli_num_rows($res) > 0) return true;
-            return false;
-        }
-        private function checkDefaults() {
-            foreach ($this->defaults as $setting => $properties) {
-                if (!$this->settingIsStored($setting)) {
-                    LanWebsite_Main::getDb()->query("INSERT INTO `settings` (setting_name, setting_value) VALUES ('%s', '%s')", $setting, $properties[1]);
-                }
-            }
         }
     
     }

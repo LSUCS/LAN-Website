@@ -38,6 +38,7 @@ $(document).ready(function() {
     //Conversation focus
     $(document).on({ click: function() { $(this).parent().find(".input-box").focus(); }}, ".conversation-element .messages");
     $(document).on({ focus: function() { ChatClient.checkReadStatus($(this).parent().attr('value')); }}, ".conversation-element .input");
+    $(document).on({ click: function() { if (!$(this).find(".input-box").is(":focus")) $(this).find(".input-box").focus() }}, ".conversation-element .input");
     
     //Conversation blinking
     setInterval(function() {
@@ -161,6 +162,7 @@ var ChatClient = {
                 var conv = $(".conversation-element[value='" + payload.conversationid + "']");
                 conv.removeClass("conversation-open").addClass("conversation-closed");
                 conv.find(".lanwebsite-contact").removeClass("lanwebsite-contact");
+                this.checkReadStatus(payload.conversationid);
                 this.adjustConversationHeight(payload.conversationid);
                 break;
                 
@@ -169,6 +171,7 @@ var ChatClient = {
                 conv.removeClass("conversation-closed").addClass("conversation-open");
                 conv.find(".status-bar .name").addClass("lanwebsite-contact");
                 conv.find(".input-box").focus();
+                this.checkReadStatus(payload.conversationid);
                 this.adjustConversationHeight(payload.conversationid);
                 break;
                 
@@ -182,7 +185,7 @@ var ChatClient = {
                 
             case 'sendmessage':
                 //If not in focus, play alert
-                if (!$(".conversation-element[value='" + payload.conversationid + "'] .input-box").is(":focus") || !ChatClient.focus) {
+                if ((!$(".conversation-element[value='" + payload.conversationid + "'] .input-box").is(":focus") || !ChatClient.focus) && payload.contact.userid != this.userid) {
                     this.playAlert();
                     this.conversations[payload.conversationid].read = 0;
                 }
@@ -306,7 +309,7 @@ var ChatClient = {
         }
         if (self.minimised == 0) var visibility = "open";
         else var visibility = "closed";
-        $("#chat #conversations").prepend('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"><li></li></span><span class="' + (self.minimised == 0?"lanwebsite-contact":"") + ' name" value="' + contact.userid + '">' + contact.details.name + '</span><span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contentEditable></div></div></div>');
+        $("#chat #conversations").prepend('<div class="conversation-element conversation-' + visibility + '" value="' + conversation.conversationid + '"><div class="status-bar"><span value="' + contact.userid + '" class="status ' + contact.details.status + '"></span><span class="' + (self.minimised == 0?"lanwebsite-contact":"") + ' name" value="' + contact.userid + '">' + contact.details.name + '</span><span class="close"></span></div><div class="messages"></div><div class="input"><div class="input-box" contenteditable="true"></div></div></div>');
         this.adjustConversationHeight(conversation.conversationid);
         for (var h in conversation.history) {
             this.displayMessage(conversation.history[h]);
@@ -333,7 +336,7 @@ var ChatClient = {
         
         //Add new?
         if (elem.length == 0) {
-            domain.append('<div style="opacity: 0; height: 0px;" class="contact" value="' + contact.userid + '"><span class="chat-avatar"><img src="' + contact.avatar + '" /></span><span class="name">' + contact.name + '</span><span value="' + contact.userid + '" class="status ' + contact.status + '"><li></li></span></div>');
+            domain.append('<div style="opacity: 0; height: 0px;" class="contact" value="' + contact.userid + '"><span class="chat-avatar"><img src="' + contact.avatar + '" /></span><span class="name">' + contact.name + '</span><span value="' + contact.userid + '" class="status ' + contact.status + '"></span></div>');
             elem = $("#chat .contact[value='" + contact.userid + "']");
         }
         //Or skip?

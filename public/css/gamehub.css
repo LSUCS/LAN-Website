@@ -3,6 +3,7 @@
     height: 400px;
     margin-bottom: 20px;
     position: relative;
+    width: 900px;
 }
 #lobbies-container, #in-lobby {
     float: left;
@@ -114,6 +115,7 @@
         padding-right: 5px;
         overflow: hidden;
         white-space: nowrap;
+        cursor: pointer;
     }
     #in-lobby .input br {
         display:none;
@@ -300,7 +302,7 @@
         
 /* GLOBAL CHAT */
 #global-chat {
-    width: 100%;
+    width: 900px;
     height: 300px;
     background: #f6f6f6;
     border-radius: 8px;
@@ -332,6 +334,7 @@
         padding-right: 5px;
         overflow: hidden;
         white-space: nowrap;
+        cursor: pointer;
     }
     #global-chat .input br {
         display:none;

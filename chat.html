@@ -1,0 +1,38 @@
+<html>
+    <head>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script src="/js/date.js"></script>
+        <script src="/js/main.js?2424"></script>
+        <script src="/js/chat.js"></script>
+        <link rel="stylesheet" href="/css/main.css" />
+        <link rel="stylesheet" href="/css/chat.css" />
+        <style>
+            body {
+                background: non transparent;
+                pointer-events: none;
+                z-index: 20000;
+            }
+            #contact-list, .conversation-element {
+                pointer-events: auto;
+                z-index: 20000;
+            }
+        </style>
+    </head>
+    
+    <body>
+    
+        <!-- CHAT LOL -->
+        <div id="chat">
+            <div id="contacts" class="chatbar-element">
+                <div id="chat-offline">Chat Service Offline</div>
+                <div id="chat-online"><img src="/images/user.png" /><span id="contact-count"></span> contacts available</div>
+            </div>
+            <div id="contact-list">
+                <div id="online"></div>
+                <div id="offline"></div>
+            </div>
+            <div id="conversations"></div>
+        </div>
+        
+    </body>
+</html>
