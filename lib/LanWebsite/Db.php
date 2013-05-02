@@ -38,7 +38,6 @@
                     $res = $this->db->query($query);
                 } else die("MySQLi Error: " . $this->db->error);
             }
-        Logger::log("mysql", $query);
             return $res;
 		}
         

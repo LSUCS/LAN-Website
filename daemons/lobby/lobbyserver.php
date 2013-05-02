@@ -116,9 +116,6 @@
                     $notification = new Notification('<span style="color: #333;"><span style="color: red;">>>></span> New lobby: <span style="color: #FFCC66;">' . $lobby->title . '</span> for <span style="color: #FFCC66;">' . $lobby->game . '</span> created by <span class="lanwebsite-contact" style="color: ' . $lobby->leader->color . ';" value="' . $lobby->leader->userid . '">' . $lobby->leader->name . '</i></span>');
                     $this->sendGlobalNotification($notification);
                     
-                Logger::log("createlobby", json_encode(array("userid" => $user->data->getUserId(), "lobby" => $lobby->title, "game" => $payload["game"], "locked" => $locked)));
-                Logger::store();
-                    
                     break;
                    
                    
@@ -212,9 +209,6 @@
                     
                     //Update lobby to relevant users
                     $this->sendLobbyUpdate($lobby);
-                    
-                Logger::log("joinlobby", json_encode(array("userid" => $user->data->getUserId(), "lobby" => $lobby->title, "game" => $lobby->game, "locked" => $lobby->locked, "playercount" => count($lobby->contacts))));
-                Logger::store();
                 
                     break;
                     
@@ -302,9 +296,6 @@
                     }
                     $this->saveLobby($lobby);
                     
-                Logger::log("lobbychat", json_encode(array("userid" => $user->data->getUserId(), "lobby" => $lobby->title, "message" => $message->message)));
-                Logger::store();
-                    
                     break;
                     
                     
@@ -332,9 +323,6 @@
                     
                     //Add to queue
                     $this->addGlobalHistory($message);
-                    
-                Logger::log("globalchat", json_encode(array("userid" => $user->data->getUserId(), "message" => $message->message)));
-                Logger::store();
                     
                     break;
                     

@@ -91,12 +91,6 @@
                         
                     }
                     
-                foreach ($conv->contacts as $contact) {
-                    if ($contact->userid != $user->data->getUserId()) $d = $contact->userid;
-                }  
-                Logger::log("chatmessage", json_encode(array("sender" => $user->data->getUserId(), "to" => $d, "message" => $message->message)));
-                Logger::store();
-                    
 					break;
 					
 				//OPENCONVERSATION - Opens a conversation with a user

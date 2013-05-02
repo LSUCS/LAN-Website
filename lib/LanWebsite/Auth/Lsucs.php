@@ -31,7 +31,6 @@
 		}
 		
 		public function login($username, $password) {
-Logger::log("login", $username);
 			//Validate
 			$valid = $this->validateCredentials($username, $password);
 			if (!$valid) return false;

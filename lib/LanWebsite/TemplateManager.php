@@ -15,7 +15,7 @@
         private $scripts = array();
         
         private $plugins = array(
-                                "jquery" => array( "scripts" => array( "/js/jquery.min.js", "/js/jquery.foreach.js" ), "styles" => array(), "include" => true ),
+                                "jquery" => array( "scripts" => array( "/js/jquery.min.js" ), "styles" => array(), "include" => true ),
                                 "jquery-ui" => array( "scripts" => array( "/js/jquery-ui.custom.min.js" ), "styles" => array( "/css/jquery-ui/jquery-ui.custom.css" ), "include" => true ),
                                 "cleditor" => array( "scripts" => array( "/js/jquery.cleditor.min.js" ), "styles" => array( "/css/jquery.cleditor.css" ), "include" => false ),
                                 "datatables" => array( "scripts" => array( "/js/jquery.dataTables.min.js", "/js/TableTools.min.js", "/js/ZeroClipboard.js" ), "styles" => array( "/css/jquery.dataTables_themeroller.css", "/css/TableTools_JUI.css" ), "include" => false ),
