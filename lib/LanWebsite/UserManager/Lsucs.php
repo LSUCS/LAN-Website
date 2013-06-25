@@ -60,20 +60,26 @@
         }
         
         public function getLsucsAuthResponse($method, $params) {
-			//Prepare fields
-            $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
-            $fields = array_merge($fields, $params);
-            foreach($fields as $key=>$value) $fields[$key] = $key.'='.$value; 
-			
-			//Prepare cURL
-            $ch = curl_init();
-            curl_setopt($ch,CURLOPT_URL, rtrim(LanWebsite_Main::getSettings()->getSetting("lsucs_auth_url"), "/") . '/' . $method );
-            curl_setopt($ch,CURLOPT_POST, 2);
-            curl_setopt($ch,CURLOPT_POSTFIELDS, implode("&", $fields));
-            curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+            //Check cache
+            $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
+            if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
             
-            //Decode response and return
-            $result = json_decode(curl_exec($ch), true);
+                //Prepare fields
+                $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
+                $fields = array_merge($fields, $params);
+                foreach($fields as $key=>$value) $fields[$key] = $key.'='.$value; 
+                
+                //Prepare cURL
+                $ch = curl_init();
+                curl_setopt($ch,CURLOPT_URL, rtrim(LanWebsite_Main::getSettings()->getSetting("lsucs_auth_url"), "/") . '/' . $method );
+                curl_setopt($ch,CURLOPT_POST, 2);
+                curl_setopt($ch,CURLOPT_POSTFIELDS, implode("&", $fields));
+                curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+                
+                //Decode response and store
+                $result = json_decode(curl_exec($ch), true);
+                LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
+            }
             return $result;
         }
         

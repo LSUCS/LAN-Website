@@ -67,7 +67,7 @@
                     if (isset($_SERVER["REQUEST_URI"])) {
                         $url = $_SERVER["REQUEST_URI"];
                     } else $url = "";
-                    self::query("INSERT INTO `logger_sessions` (url, start_time) VALUES ('%s', '%s')", $url, self::$start_time);
+                    self::query("INSERT INTO `logger_sessions` (url, lan_number, start_time) VALUES ('%s', '%s', '%s')", $url, LanWebsite_Main::getSettings()->getSetting("lan_number"), self::$start_time);
                     self::$sessid = self::$db->insert_id;
                 }
                 

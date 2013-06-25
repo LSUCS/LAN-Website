@@ -46,7 +46,7 @@
             $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE ticket_id = '%s'", $inputs["ticket_id"])->fetch_assoc();
             
             //Check seat
-            $seats = explode("\n", file_get_contents("/data/seats.txt"));
+            $seats = explode("\n", file_get_contents("data/seats.txt"));
             if ($inputs["seat"] != "" && !in_array($inputs["seat"], $seats)) $this->errorJSON("Invalid seat");
             
             //Unset seat

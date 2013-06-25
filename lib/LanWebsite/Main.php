@@ -18,7 +18,7 @@
          */
 		public static function initialize() {
         
-            include '/home/soc_lsucs/dev.lan.lsucs.org.uk/htdocs/logger.php';
+            include '/home/soc_lsucs/lan.lsucs.org.uk/htdocs/logger.php';
 		
             //Initiation check
             if (self::$init == true) return false;

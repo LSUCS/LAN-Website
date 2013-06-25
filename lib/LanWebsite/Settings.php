@@ -121,7 +121,8 @@
                     if (!filter_var($value, FILTER_VALIDATE_EMAIL)) return false;
                     break;
                 case "url":
-                    if (parse_url($value, PHP_URL_SCHEME) == '') return false;
+                    if (filter_var($value, FILTER_VALIDATE_URL) === false) return false;
+                    break;
                 case "ip":
                     if (!filter_var($value, FILTER_VALIDATE_IP)) return false;
                     break;

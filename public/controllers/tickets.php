@@ -125,7 +125,7 @@
         public function post_Ipn() {
         
             //Instantiate the IPN listener
-            require_once '/lib/ipnlistener.php';
+            require_once 'lib/ipnlistener.php';
             $listener = new IpnListener();
 
             //Tell the IPN listener to use the PayPal test sandbox
@@ -256,7 +256,7 @@
                     if (isset($result["error"])) {
                         $errmsg = "Unable to issue receipt: " . $result["error"] . "\n";
                     } else if (!isset($result["success"])) {
-                        $errmsg = "Unable to issue receipt: " . $result . "\n";
+                        $errmsg = "Unable to issue receipt: " . print_r($result, true) . "\n";
                     }
                 }
                 
@@ -297,7 +297,7 @@
         }
         
         private function error_log($message) {
-            file_put_contents("/.error.log", $message . "\n", FILE_APPEND);
+            file_put_contents(".error.log", $message . "\n", FILE_APPEND);
         }
     
     }

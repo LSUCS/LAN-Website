@@ -18,7 +18,7 @@
         <div id="navbar-container">
             <div id="navbar">
                 <ul>
-                    <li class="nav-left nav-logo"><a href="http://lsucs.org.uk">dev<b>cs</b></a></li>
+                    <li class="nav-left nav-logo"><a href="http://lsucs.org.uk">lsu<b>cs</b></a></li>
                     <li class="nav-left nav-divider"></li>
                     <li class="nav-left"><a href="<? echo LanWebsite_Main::buildUrl(false); ?>">Home</a></li>
                     <li class="nav-left info"><a href="<? echo LanWebsite_Main::buildUrl(false, "info"); ?>">Essential Info</a></li>
@@ -183,6 +183,7 @@
             <li><a href="<? echo LanWebsite_Main::buildUrl(false, "tournaments"); ?>"><img src="/images/accessbar/game.png">Tournaments</a></li>
             <li><a href="<? echo LanWebsite_Main::buildUrl(false, "whatson"); ?>"><img src="/images/accessbar/timetable.png">Timetable</a></li>
             <li><a href="<? echo LanWebsite_Main::buildUrl(false, "orderfood"); ?>"><img src="/images/accessbar/pizza.png">Food</a></li>
+            <li><a href="<? echo LanWebsite_Main::buildUrl(false, "stats"); ?>"><img src="/images/accessbar/stats.png">Stats</a></li>
         </ul>
         
         <? if (defined("LANWEBSITE_ADMIN") && LANWEBSITE_ADMIN == true) { ?>

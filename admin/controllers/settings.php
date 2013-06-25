@@ -24,20 +24,15 @@
             $tmpl->output();
         }
         
-        public function get_Hello() {
-            echo 'HAI';
-            print_r($_GET);
-        }
-        
         public function post_Savesettings($inputs) {
             $settings = json_decode($inputs["settings"], true);
             if (count($settings) == 0) echo false;
+            $errors = array();
             foreach ($settings as $setting => $value) {
-                echo $setting . " " . $value . "\n";
-                if (!LanWebsite_Main::getSettings()->settingIsReal($setting)) echo false;
-                if (!LanWebsite_Main::getSettings()->changeSetting($setting, $value)) echo false;
+                if (!LanWebsite_Main::getSettings()->settingIsReal($setting)) $errors[$setting];
+                if (!LanWebsite_Main::getSettings()->changeSetting($setting, $value)) $errors[$setting];
             }
-            echo true;
+            echo json_encode($errors);
         }
     
     }

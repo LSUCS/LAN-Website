@@ -28,7 +28,8 @@
                                 "date" => array( "scripts" => array( "/js/date.js" ), "styles" => array(), "include" => true ),
                                 "main" => array( "scripts" => array( "/js/main.js" ), "styles" => array( "/css/main.css" ), "include" => true ),
                                 "chat" => array( "scripts" => array( "/js/chat.js", "/js/jquery.appear.js" ), "styles" => array( "/css/chat.css" ), "include" => true ),
-                                "twitter" => array( "scripts" => array( "//platform.twitter.com/widget.js" ), "styles" => array(), "include" => false)
+                                "twitter" => array( "scripts" => array( "//platform.twitter.com/widget.js" ), "styles" => array(), "include" => false),
+                                "jqplot" => array( "scripts" => array( "/js/jquery.jqplot.min.js", "/js/jqplot-plugins/jqplot.barRenderer.min.js", "/js/jqplot-plugins/jqplot.categoryAxisRenderer.min.js", "/js/jqplot-plugins/jqplot.pointLabels.min.js", "/js/jqplot-plugins/jqplot.canvasTextRenderer.min.js", "/js/jqplot-plugins/jqplot.canvasAxisLabelRenderer.min.js" ), "styles" => array( "/css/jquery.jqplot.css" ), "include" => false)
                                 );
                                 
         public function setBaseDir($dir) {

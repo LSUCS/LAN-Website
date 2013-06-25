@@ -108,12 +108,26 @@
                 if (count($games) > 0) $seat["mostplayed"] = "<ul>" . implode("", $games) . "</ul>";
             }
             
-        //LOGGING
-        $cache = LanWebsite_Main::getDb()->query("SELECT * FROM map_cache WHERE user_id = '%s' AND seat = '%s'", $user->getUserId(), $seat["seat"])->fetch_assoc();
-        if ($cache && $cache["game"] != $seat["game"]) {
-            if ($cache["game"] != "") Logger::log("stopgame", json_encode(array("game" => $cache["game"], "userid" => $seat["user_id"])));
-            if ($seat["game"] != "") Logger::log("startgame", json_encode(array("game" => $seat["game"], "userid" => $seat["user_id"])));
-        }
+            //LOGGING
+            //not currently in game and no previous game = nothing
+            //not currently in game and previous game = stop
+            //currently in game and not in previous game = start
+            //currently in game and in previous different game = start + stop
+            //currently in game and in previous same game = nothing
+            $cache = LanWebsite_Main::getDb()->query("SELECT * FROM map_cache WHERE user_id = '%s' AND seat = '%s'", $user->getUserId(), $seat["seat"])->fetch_assoc();
+            $start = false;
+            $stop = false;
+            if ($seat["game"] == "" && ($cache && $cache["game"] != "")) $stop = true;
+            if ($seat["game"] != "" && ($cache && $cache["game"] == "")) $start = true;
+            if ($seat["game"] != "" && ($cache && $cache["game"] != $seat["game"] && $cache["game"] != null)) {
+                $start = true;
+                $stop = true;
+            }
+            if ($stop) Logger::log("stopgame", json_encode(array("game" => $cache["game"], "userid" => $seat["user_id"])));
+            if ($start && $steam && $steam->privacyState == "public" && $steam->onlineState == "in-game") Logger::log("startgame", json_encode(array("game" => $seat["game"], "userid" => $seat["user_id"])));
+            
+
+            
             
             echo json_encode($seat);
             

@@ -4,10 +4,10 @@
         
         public function getInputFilters($action) {
             switch ($action) {
-                case "updategameservers" => array("data" => "notnull"); break;
-                case "lanauth" => array("username" => "notnull", "password" => "notnull", "seat" => "notnull"); break;
-                case "deletetickets" => array("purchases" => "notnull"); break;
-                case "issuetickets" => array("purchases" => "notnull", "lan" => array("notnull", "int"), "member_tickets" => "notnull", "non_member_tickets" => "notnull", "forum_name" => "notnull", "email" => array("email", "notnull"), "name" => "notnull"); break;
+                case "updategameservers": return array("data" => "notnull"); break;
+                case "lanauth": return array("username" => "notnull", "password" => "notnull", "seat" => "notnull"); break;
+                case "deletetickets": return array("purchases" => "notnull"); break;
+                case "issuetickets": return array("purchases" => "notnull", "lan" => array("notnull", "int"), "member_tickets" => "notnull", "non_member_tickets" => "notnull", "forum_name" => "notnull", "email" => array("email", "notnull"), "name" => "notnull"); break;
             }
         }
     
@@ -58,7 +58,7 @@
             if ($ticket["activated"] == 0) $this->errorJSON("Your ticket has not been activated. Go to the front desk");
             
             //Check seat
-            $seats = explode("\n", file_get_contents("/data/seats.txt"));
+            $seats = explode("\n", file_get_contents("data/seats.txt"));
             if ($inputs["seat"] == "" || !in_array($inputs["seat"], $seats)) $this->errorJSON("Invalid seat");
             $occupied = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE seat = '%s' AND lan_number = '%s'", $inputs["seat"], $lan)->fetch_assoc();
             if ($occupied && $occupied["assigned_forum_id"] != $user->getUserId()) $this->errorJSON("That seat is already occupied");
@@ -90,7 +90,7 @@
             
         }
         
-        public function actionIssuetickets() {
+        public function post_Issuetickets($inputs) {
         
             $this->authenticate();
         

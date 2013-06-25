@@ -441,6 +441,7 @@ var LobbyClient = {
             }  
         }
         this.lobbies[lobby.lobbyid] = lobby;
+        $("#lobbies").mCustomScrollbar("update");
     },
     
     loadLobby: function (lobby, softupdate) {
@@ -458,6 +459,7 @@ var LobbyClient = {
             }
             $("#in-lobby .messages").mCustomScrollbar("scrollTo", "bottom");
         }
+        $("#info-container").mCustomScrollbar("update");
     },
     
     fillLobbyInfo: function (lobby) {
@@ -466,8 +468,8 @@ var LobbyClient = {
         $("#lobby-info .image img").attr('src', lobby.icon);
         $("#lobby-info .game").html(lobby.game);
         $("#lobby-info .description").html(lobby.description);
-        if (lobby.locked == 1) $("#lobby-info .locked").fadeIn(100);
-        else $("#lobby-info .locked").fadeOut(100);
+        if (lobby.locked == 1) $("#lobby-info .locked").show();
+        else $("#lobby-info .locked").hide();
         $("#lobby-info .leader").html(lobby.leader.name);
         if (lobby.playerlimit == 0) $("#lobby-info .playerlimit").html("Unlimited");
         else $("#lobby-info .playerlimit").html(Object.keys(lobby.contacts).length + "/" + lobby.playerlimit);

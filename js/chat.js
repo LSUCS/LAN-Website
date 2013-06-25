@@ -132,7 +132,7 @@ var ChatClient = {
                 $("#chat .contact").remove();
                 $("#chat #chat-offline").fadeOut(200);
                 $("#chat #chat-online").fadeIn(200);
-                $("#contact-list").show();
+                //$("#contact-list").show();
                 this.adjustContactList();
                 
                 //Load contacts

@@ -255,7 +255,7 @@ body {
         background-image: url('../images/head-bg.png');
 		position: relative;
 		border: 1px solid #ddd;
-		border-radius: 3px;
+		border-radius: 3px 3px 0px 0px;
 	}
 		#title {
 			float: left;
@@ -629,7 +629,7 @@ body {
 /* SUB TABS */
 .subtabs {
 	position: relative;
-	margin: 10px 0 0 0;
+	margin: 0px 0 0 0;
 	font-size: 12px;
 	font-weight: bold;
 	background-color: #EAEAEA;
@@ -639,7 +639,8 @@ body {
 	background-repeat: repeat-x;
 	border: 1px solid #EAEAEA;
 	border-bottom-color: #CACACA;
-	border-radius: 3px;
+	border-radius: 0 0 3px 3px;
+    border-top: 0;
 }
 	.subtabs li {
 		list-style-type: none;
@@ -660,6 +661,12 @@ body {
 		border-left: 1px solid #FCFCFC;
 		border-left-color: rgba(255, 255, 255, 0.7);
 	}
+        .subtabs li:first-child a {
+            border-left: 0px;
+        }
+        .subtabs li:last-child a {
+            border-right: 0px;
+        }
 		.subtabs li a:hover {
 			color: #f1642b;
 			background-color: #EAEAEA;
@@ -674,6 +681,9 @@ body {
 	width: 960px;
 	margin-left: auto;
 	margin-right: auto;
+    margin-top: 10px;
+    border-radius: 3px;
+    border-top: 1px solid #EAEAEA;
 }
 
 .lantabs {

@@ -357,6 +357,7 @@
     padding-left: 10px;
     padding-top: 10px;
     color: #666;
+    text-transform: lowercase;
 }
 
 /* EDITOR */
