@@ -22,6 +22,9 @@
 </div>
 <div style="clear: both;"></div>
 
+<?php
+    if ($DataBag["nonmember_exists"]) {
+?>
 <h1>non-member tickets</h1>
 <p>
     Non-Member tickets are open to anyone - you do not need to have any affiliation to LSUCS to attend our LAN parties. Members may still purchase non-member tickets for other people.
@@ -47,8 +50,14 @@
     </div>
 </div>
 <div style="clear: both;"></div>
+<?php
+    }
+?>
 <div id="checkout-container">
-    <?php if ($DataBag["nonmember_available"] || ($DataBag["member_available"] && $DataBag["is_member"])) echo '<hr /><button class="checkout-button">Checkout</button>'; ?>
+<?php
+    if (($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"]))
+        echo '<hr /><button class="checkout-button">Checkout</button>';
+?>
 </div>
 
 <div id="checkout">

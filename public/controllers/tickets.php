@@ -13,16 +13,22 @@
         public function get_Index() {
                         
             //Prepare data
+            
+            //User
             $data["is_member"] = LanWebsite_Main::getUserManager()->getActiveUser()->isMember();
             $data["is_signed_in"] = LanWebsite_Main::getAuth()->isLoggedIn();
+            //Member Tickets
             $data["member_sold_out"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_sold_out");
             $data["member_available"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_available");
+            $data["member_price"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_price");
+            $data["member_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("member_ticket_available_date")));
+            //Non-Member Tickets
+            $data["nonmember_exists"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_exists");
             $data["nonmember_sold_out"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_sold_out");
             $data["nonmember_available"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_available");
-            $data["member_price"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_price");
             $data["nonmember_price"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price");
-            $data["member_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("member_ticket_available_date")));
             $data["nonmember_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_available_date")));
+            //Monies
             $data["paypal_email"] = LanWebsite_Main::getSettings()->getSetting("paypal_email");
             $data["paypal_return_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_return_url");
             $data["paypal_ipn_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_ipn_url");
