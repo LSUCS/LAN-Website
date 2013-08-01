@@ -7,7 +7,7 @@
     If this isn't done beforehand, it will need to be done on the door at the LAN.
 </p>
 <div class="outer-price-container">
-    <div class="price-container">
+    <div class="price-container" <?php if($DataBag["member_deposit"]) echo "style='left:-20%;'"; ?>>
         <div class="price" id="member-price" value="<?php echo money_format('%i', $DataBag["member_price"]); ?>">Price: <span>£<?php echo money_format('%i', $DataBag["member_price"]); ?></span></div>
         <?php 
             if ($DataBag["member_sold_out"]) echo '<div class="soldout">Sold out</div>';
@@ -19,16 +19,25 @@
             else echo '<div class="unavailable">Only available to<br />LSUCS members</div>';
         ?>
     </div>
+    <?php
+    if($DataBag["member_deposit"]) {
+        echo '<div style="margin-bottom: 10px; font-weight: bold; position: relative; left:-50%; float: left; clear: both; width: 100%; text-align: center; line-height: 20px;">
+                This LAN is free for all members. The price shown is a deposit for your seat.<br />
+                The cost for this ticket will be refunded to you upon attending the LAN.</div>';
+    }
+    
+    ?>
 </div>
+
 <div style="clear: both;"></div>
 
-<?php
-    if ($DataBag["nonmember_exists"]) {
-?>
 <h1>non-member tickets</h1>
 <p>
     Non-Member tickets are open to anyone - you do not need to have any affiliation to LSUCS to attend our LAN parties. Members may still purchase non-member tickets for other people.
 </p>
+<?php
+    if ($DataBag["nonmember_exists"]) {
+?>
 <p>
     If you purchase more than one ticket (or if you are a member and have purchased non-member ticket(s) for others) you can allocate spares to the accounts of other people. This can be done through your <a href="index.php?page=account">Account Details</a>.
     If this isn't done beforehand, it will need to be done on the door at the LAN.
@@ -49,10 +58,12 @@
         ?>
     </div>
 </div>
-<div style="clear: both;"></div>
 <?php
+    } else {
+    	echo '<div class="price" style="width: 100%; text-align: center;">Sorry, Non-Member tickets are not available for this event.</div>';
     }
 ?>
+<div style="clear: both;"></div>
 <div id="checkout-container">
 <?php
     if (($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"]))

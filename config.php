@@ -13,7 +13,7 @@
     $config['database']["host"] = "localhost";
     $config['database']["user"] = "lanwebsite";
     $config['database']["pass"] = $password;
-    $config['database']["db"]   = "dev-lanwebsite";
+    $config['database']["db"]   = "lanwebsite";
     
     /**
      * Default Controller location

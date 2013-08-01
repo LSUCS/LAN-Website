@@ -13,6 +13,7 @@
             "member_ticket_available_date" => array("date", "2012-10-01 00:00:00", SettingsGroup::Tickets),
             "member_ticket_sold_out" => array("bool", false, SettingsGroup::Tickets),
             "member_ticket_price" => array("int", 10, SettingsGroup::Tickets),
+            "member_ticket_deposit" => array("bool", false, SettingsGroup::Tickets),
             "nonmember_ticket_exists" => array("bool", true, SettingsGroup::Tickets),
             "nonmember_ticket_available" => array("bool", true, SettingsGroup::Tickets),
             "nonmember_ticket_available_date" => array("date", "2012-10-17 00:00:00", SettingsGroup::Tickets),

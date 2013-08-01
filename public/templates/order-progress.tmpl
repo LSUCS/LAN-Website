@@ -1,4 +1,4 @@
-<input type="hidden" id="pending_id" value="<?php echo $DataBag["pending_id"]; ?>" />
+<input type="hidden" id="pending_id" value="<?=$DataBag["pending_id"]?>" />
 <div id="loading">
     <img src="/images/loading.gif" /><br />
     Checking order progress...
@@ -6,7 +6,7 @@
 
 <div id="complete">
     Your order has been processed and tickets have been added to your account.
-    Please see your <a href="index.php?page=account">Account Details</a> for information on your tickets
+    Please see your <a href="<?=LanWebsite_Main::buildUrl(false, "account")?>">Account Details</a> for information on your tickets
 </div>
 
 <div id="failed">

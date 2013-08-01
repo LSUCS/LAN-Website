@@ -22,6 +22,7 @@
             $data["member_available"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_available");
             $data["member_price"] = LanWebsite_Main::getSettings()->getSetting("member_ticket_price");
             $data["member_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("member_ticket_available_date")));
+            $data["member_deposit"] = LanWebsite_main::getSettings()->getSetting("member_ticket_deposit");
             //Non-Member Tickets
             $data["nonmember_exists"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_exists");
             $data["nonmember_sold_out"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_sold_out");
