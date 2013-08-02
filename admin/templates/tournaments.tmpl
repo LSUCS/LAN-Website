@@ -1,0 +1,55 @@
+
+<h1>Current Tournaments</h1>
+<div id="entry-table">
+    <div id="table-head">
+        <span class="id">ID</span>
+        <span class="game">Game</span>
+        <span class="team-size">Team Size</span>
+        <span class="type">Tournament Type</span>
+        <span class="signups">Signups</span>
+        <span class="visible">Visible</span>
+    </div>
+    <div id="table-body">
+    </div>
+</div>
+
+<hr />
+
+<h1>Create Tournament</h1>
+<div id="add-tournament">
+    <div class="row-name">
+        <label for="new-game">Name:</label>
+        <select id="new-game">
+<?php
+    foreach(LanWebsite_Tournaments::getGames() as $gameID=>$game) {
+        echo "\t\t\t<option value='$gameID'>$game</option>\n";
+    }
+?>
+        </select>
+    </div>
+    <div class="row-size">
+        <label for="new-team-size">Team Size:</label>
+        <input id="new-team-size" type="number" min="1" max="6" />
+    </div>
+    <div class="row-type">
+        <label for="new-type">Tournament Type:</label>
+        <select id="new-type">
+<?php
+    foreach(LanWebsite_Tournaments::getTypes() as $typeID=>$type) {
+        echo "\t\t\t<option value='$typeID'>$type</option>\n";
+    }
+?>
+        </select>
+    </div>
+    <div class="row-signup">
+        <label for="new-signups">Signups Open?</label>
+        <input type="checkbox" id="new-signups" />
+    </div>
+    <div class="row-visible">
+        <label for="new-visible">Visible?</label>
+        <input type="checkbox" id="new-visible" />
+    </div>
+    <div class="row-submit">
+        <button id="new-submit">Submit</button>
+    </div>
+</div>
