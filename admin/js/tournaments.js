@@ -35,7 +35,7 @@ function loadEntries() {
                     $("#table-body").append(string);
                 }
             } else {
-                $("#table-body").append('<div class="no-entries odd end-entry">No entries found</div>');
+                $("#table-body").append('<div class="no-entries odd end-entry">No tournaments found</div>');
             }
         },
         'json');
@@ -44,9 +44,9 @@ function loadEntries() {
 function submitNew() {
     Overlay.loadingOverlay();
     $.post(
-        UrlBuilder.buildUrl(true, 'blog', 'add'), {
+        UrlBuilder.buildUrl(true, 'tournaments', 'add'), {
             name: $("#new-name").val(),
-            teamsize: $("#new-size").val(),
+            teamsize: $("#new-team-size").val(),
             type: $("#new-type").val(),
             signups: $("#new-signups").val(),
             visible: $("#new-visible").val(),
@@ -56,7 +56,7 @@ function submitNew() {
                 Overlay.openOverlay(true, data.error);
                 return;
             }
-            Overlay.openOverlay(false, "Entry added", 1000);
+            Overlay.openOverlay(false, "Tournament added", 1000);
             loadEntries();
             clearForm();
         },
@@ -64,5 +64,5 @@ function submitNew() {
 }
 
 function clearForm() {
-    $("#add-tournament input").val('');
+    //$("#add-tournament input").val('');
 }

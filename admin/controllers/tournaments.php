@@ -3,7 +3,7 @@
     class Tournaments_Controller extends LanWebsite_Controller {
         public function getInputFilters($action) {
             switch ($action) {
-                case "add": return array("game" => "int", "team-size" => "int", "type" => "int", "signups" => "bool", "visible" => "bool"); break;
+                case "add": return array("game" => "int", "teamsize" => "int", "type" => "int", "signups" => "bool", "visible" => "bool"); break;
             }
         }
         
@@ -15,13 +15,14 @@
         }
         
         public function get_Getentries() {
-            $res = LanWebsite_Main::getDb()->query("SELECT id, game, team_size, type, signups, visible FROM `tournaments`
-                WHERE lan = '%s' ORDER BY date DESC", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+            $res = LanWebsite_Main::getDb()->query("SELECT id, game, team_size, type, signups, visible FROM `tournament_tournaments`
+                WHERE lan = '%s' ORDER BY game ASC", LanWebsite_Main::getSettings()->getSetting("lan_number"));
             $tournaments = array();
             while($row = $res->fetch_assoc()) {
                 $row['type'] = LanWebsite_Tournaments::getType($row['type']);
+                $tournaments[] = $row;
             }
-            echo json_encode($blog);
+            echo json_encode($tournaments);
         }
         
         public function post_Add($inputs) {
@@ -38,7 +39,7 @@
             if($inputs["teamsize"] > 6 || $inputs["teamsize"] < 1) $this->errorJson("Invalid Team Size: " . $inputs["teamsize"]);
             
             //Let's insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `tournaments` (game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["game"], $inputs["teamsize"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `tournament_tournaments` (game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["game"], $inputs["teamsize"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
             echo true;
         }
     }

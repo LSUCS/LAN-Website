@@ -58,7 +58,7 @@
                             break;
                             
                         case 'int':
-                            if (!filter_var($value, FILTER_VALIDATE_INT)) $invalid[] = 'int';
+                            if (filter_var($value, FILTER_VALIDATE_INT) == false) $invalid[] = 'int';
                             break;
                             
                         case 'bool':
