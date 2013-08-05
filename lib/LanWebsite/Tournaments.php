@@ -1,14 +1,14 @@
 <?php
 
 class LanWebsite_Tournaments {
-    private $types = array(
+    private static $types = array(
         0 => 'Single Elimination',
         1 => 'Double Elimination',
         2 => 'Round Robin',
         3 => 'High Score'
     );
     
-    private $games = array( 
+    private static $games = array( 
         0 => 'Counter Strike: Source',
         1 => 'Team Fortress 2',
         2 => 'Left 4 Dead 2',
@@ -23,17 +23,17 @@ class LanWebsite_Tournaments {
     );
     
     public static function getType($typeID) {
-        return $this->types[$typeID];
+        return self::$types[$typeID];
     }
     public static function getTypes() {
-        return $this->types;
+        return self::$types;
     }
     
     public static function getGame($gameID) {
-        return $this->games[$gameID];
+        return self::$games[$gameID];
     }
     public static function getGames() {
-        return $this->games;
+        return self::$games;
     }
     
 }

@@ -46,7 +46,7 @@ function submitNew() {
     $.post(
         UrlBuilder.buildUrl(true, 'blog', 'add'), {
             name: $("#new-name").val(),
-            team-size: $("#new-size").val(),
+            teamsize: $("#new-size").val(),
             type: $("#new-type").val(),
             signups: $("#new-signups").val(),
             visible: $("#new-visible").val(),

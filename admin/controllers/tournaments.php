@@ -3,7 +3,7 @@
     class Tournaments_Controller extends LanWebsite_Controller {
         public function getInputFilters($action) {
             switch ($action) {
-                case "add": return array("game" => "int", "team-size" => "int", "type" => "int", "signups" => "bool", "visible" => bool); break;
+                case "add": return array("game" => "int", "team-size" => "int", "type" => "int", "signups" => "bool", "visible" => "bool"); break;
             }
         }
         
@@ -27,16 +27,18 @@
         public function post_Add($inputs) {
             //Validate
             if ($this->isInvalid("game")) $this->errorJSON("You must supply a game!");
-            if ($this->isInvalid("team-size")) $this->errorJSON("You must a team size!");
+            if ($this->isInvalid("teamsize")) $this->errorJSON("You must a team size!");
             if ($this->isInvalid("type")) $this->errorJSON("You must supply a tournament type!");
             if ($this->isInvalid("signups")) $this->errorJSON("You must supply a value for open signups!");
             if ($this->isInvalid("visible")) $this->errorJSON("You must supply a value for visible!");
             
-            if(!in_array($inputs["game"], array_keys(LanWebsite_Tournaments::getGames()))) $this->errorJson("Invalid Game");
-            if(!in_array($inputs["type"], array_keys(LanWebsite_Tournaments::getTypes()))) $this->errorJson("Invalid Type");
+            if(!in_array($inputs["game"], array_keys(LanWebsite_Tournaments::getGames()))) $this->errorJson("Invalid Game: " . $inputs["game"]);
+            if(!in_array($inputs["type"], array_keys(LanWebsite_Tournaments::getTypes()))) $this->errorJson("Invalid Type: " . $inputs["type"]);
+            
+            if($inputs["teamsize"] > 6 || $inputs["teamsize"] < 1) $this->errorJson("Invalid Team Size: " . $inputs["teamsize"]);
             
             //Let's insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `tournaments` (game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["game"], $inputs["team-size"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `tournaments` (game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["game"], $inputs["teamsize"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
             echo true;
         }
     }
