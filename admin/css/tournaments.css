@@ -1,8 +1,19 @@
 #add-tournament {
-    width: 300px;
+    width: 400px;
 }
     #add-tournament label {
+        display: inline-block;
+        width: 150px;
+    }
+    
+    #add-tournament select {
+        display: inline-block;
         width: 200px;
+    }
+    
+    #add-tournament input {
+        display: inline-block;
+        width: 50px;
     }
     
 #entry-table {
@@ -28,24 +39,27 @@
     }
     
     #entry-table .id {
-        width: 80px;
+        width: 40px;
     }
     #entry-table .game {
-        width: 260px;
+        width: 220px;
     }
     #entry-table .type {
-        width: 220px;
+        width: 190px;
     }
     #entry-table .team-size {
         width: 80px;
     }
     #entry-table .signups {
-        width: 80px
+        width: 70px;
     }
     #entry-table .visible {
-        width: 80px
+        width: 70px;
     }
-    #entry-table #table-head .title {
+    #entry-table .current-signups {
+        width: 120px;
+    }
+    #entry-table #table-head .current-signups {
         border-right: 0;
     }
     
@@ -77,3 +91,12 @@
         height: 30px;
         line-height: 30px;
     }
+    
+#buttons {
+    display: block;
+    font-size: 14px;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}

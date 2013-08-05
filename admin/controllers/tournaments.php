@@ -16,7 +16,7 @@
         private function checkExists($ID, $JSON, $ret = false) {
             $eMsg = "This tournament does not exist!";
             
-            $t = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'", $inputs["tournament_id"]);
+            $t = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'", $ID);
             if(!$t->num_rows) {
                 if($JSON) $this->errorJSON($eMsg);
                 else $this->error($eMsg);
@@ -44,6 +44,7 @@
             $tournaments = array();
             while($row = $res->fetch_assoc()) {
                 $row['type'] = LanWebsite_Tournaments::getType($row['type']);
+                $row['game'] = LanWebsite_Tournaments::getGame($row['game']);
                 $tournaments[] = $row;
             }
             echo json_encode($tournaments);
@@ -63,7 +64,7 @@
             if($inputs["teamsize"] > 6 || $inputs["teamsize"] < 1) $this->errorJson("Invalid Team Size: " . $inputs["teamsize"]);
             
             //Let's insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `tournament_tournaments` (lan, game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $inputs["game"], $inputs["teamsize"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `tournament_tournaments` (lan, game, team_size, type, signups, visible) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $inputs["game"], $inputs["teamsize"], $inputs["type"], $inputs["signups"], $inputs["visible"]);
             echo true;
         }
         

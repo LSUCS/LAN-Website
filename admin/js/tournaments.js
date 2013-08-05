@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     //Bind click
-    $("#new-submit").click(function() {
+    $("#new-submit").live("click", function() {
         tournaments.submitNew();
     });
     
@@ -9,7 +9,7 @@ $(document).ready(function() {
     tournaments.loadEntries();
     
     //Entry click
-    $(".entry-row").click(function() {
+    $(".entry-row").live("click", function() {
         tournaments.clickRow(this);
     });
     
@@ -18,19 +18,20 @@ $(document).ready(function() {
     $("#delete-tournament, #empty-signups, #view-signups").button('disable');
 
         //Delete button
-    $("#delete-tournament").click(function() {
+    $("#delete-tournament").live("click", function() {
         tournaments.deleteButton();
     });
     
         //Empty button
-    $("empty-signups").click(function() {
+    $("#empty-signups").live("click", function() {
         tournaments.emptyButton();
-    })
+    });
     
         //View button
-    $("view-signups").click(function() {
+    $("#view-signups").live("click", function() {
         tournaments.viewButton();
-    })
+    });
+});
 
 var tournaments = {
     selectedID: null,
@@ -46,11 +47,11 @@ var tournaments = {
                         var row = data[i];
                         var string = '<div class="entry-row ' + (i % 2?'odd':'even') + ' ' + (i == data.length -1 ? 'end-entry':'') + '">';
                         string += '<span class="id">' + row.id + '</span>';
-                        string += '<span class="name">' + row.name + '</span>';
+                        string += '<span class="game">' + row.game + '</span>';
                         string += '<span class="type">' + row.type + '</span>';
                         string += '<span class="team-size">' + row.team_size + '</span>';
-                        string += '<span class="signups-enabled"><input type="checkbox" class="signup-checkbox" ' + (row.signups_enabled) ? 'checked="checked"' : '' + ' /></span>';
-                        string += '<span class="visible"><input type="checkbox" class="visible-checkbox" ' + (row.visible) ? 'checked="checked"' : '' + ' /></span>';
+                        string += '<span class="signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups_enabled) ? 'checked="checked"' : '') + ' /></span>';
+                        string += '<span class="visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="current-signups">' + row.current_signups + '</span>';
                         string += '</div>';
                         $("#table-body").append(string);
@@ -119,7 +120,7 @@ var tournaments = {
                 },
                 'json');
         });
-    }
+    },
     
     emptyButton: function() {
         if(!this.selectedID) return;
@@ -147,7 +148,7 @@ var tournaments = {
                 },
                 'json');
         });
-    }
+    },
     
     viewButton: function() {
         if(!this.selectedID) return;
