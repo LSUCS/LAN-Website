@@ -22,6 +22,10 @@ class LanWebsite_Tournaments {
         10 => 'FIFA'
     );
     
+    public static function getIcon($gameID) {
+        return '';
+    }
+    
     public static function getType($typeID) {
         return self::$types[$typeID];
     }

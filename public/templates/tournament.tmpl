@@ -53,11 +53,12 @@ if($DataBag["tournament"]["signups"] == 1) {
 
 <div id="tournament-buttons">
 <?php
-    if(!$DataBag["signup"]) {
-        if($DataBag["signup"]["team_id"] < 1) echo '<button id="create-team">Create Team</button>';
+    if(!$DataBag["signed-up"]) {
+        if($DataBag["signups"]["team_id"] < 1) echo '<button id="create-team">Create Team</button>';
         echo '<button id="join-solo">Join Solo</button>';
+    } else {
+        echo '<button id="leave-tournament">Leave Tournament</button>';
     }
-    if($DataBag["signup"]) echo '<button id="leave-tournament">Leave Tournament</button>';
 ?>
 </div>
 
@@ -83,7 +84,7 @@ if ($DataBag["tournament"]["team_size"] > 1) {
         <div id="teams">
             <div id="team-list">
 <?
-    foreach($DataBag["signups_list"] as $team) {
+    foreach($DataBag["signup_list"] as $team) {
 ?>
                 <a href="<?=LanWebsite_Main::buildUrl(false, "tournaments", "team", array("teamid" => $team["team_id"]))?>">
                     <div class="team">
@@ -101,7 +102,7 @@ if ($DataBag["tournament"]["team_size"] > 1) {
 } else { ?>
         <div id="signups">
 <?php
-    foreach($DataBag["signups_list"] as $signupUser) {
+    foreach($DataBag["signup_list"] as $signupUser) {
         $user = LanWebsite_Main::getUserManager()->getUserById($signupUser['user_id']);
         if(!$user) continue;
 ?>

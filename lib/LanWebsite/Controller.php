@@ -107,6 +107,8 @@
         }
         
         public function error($message) {
+            //There is no assigned parent. Clearly the structure has changed rendering this broken, and I'm too tired to fix it
+            die($message);
             $this->parent->template->outputTemplate(array("content" => '<div class="error-box">' . $message . '</div>'));
             die();
         }

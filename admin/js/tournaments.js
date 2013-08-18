@@ -31,6 +31,9 @@ $(document).ready(function() {
     $("#view-signups").live("click", function() {
         tournaments.viewButton();
     });
+    
+    //Date/Time pickers
+    $('.time-picker').timepicker();
 });
 
 var tournaments = {
@@ -48,8 +51,13 @@ var tournaments = {
                         var string = '<div class="entry-row ' + (i % 2?'odd':'even') + ' ' + (i == data.length -1 ? 'end-entry':'') + '">';
                         string += '<span class="id">' + row.id + '</span>';
                         string += '<span class="game">' + row.game + '</span>';
+                        string += '<span class="name">' + row.name + '</span>';
                         string += '<span class="team-size">' + row.team_size + '</span>';
                         string += '<span class="type">' + row.type + '</span>';
+                        string += '<span class="description">' + row.description + '</span>';
+                        string += '<span class="start">' + row.start_time + '</span>';
+                        string += '<span class="end">' + row.end_time + '</span>';
+                        string += '<span class="end">' + row.signup_end + '</span>';
                         string += '<span class="signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="current-signups">' + row.current_signups + '</span>';
@@ -68,8 +76,13 @@ var tournaments = {
         $.post(
             UrlBuilder.buildUrl(true, 'tournaments', 'add'), {
                 game: $("#new-game").val(),
+                name: $("#new-name").val(),
                 teamsize: $("#new-team-size").val(),
                 type: $("#new-type").val(),
+                description: $("#new-description").val(),
+                start: $("#new-start").val(),
+                end: $("#new-end").val(),
+                signup-end: $("#new-signups-end").val(),
                 signups: $("#new-signups").prop('checked'),
                 visible: $("#new-visible").prop('checked'),
             },

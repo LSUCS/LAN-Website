@@ -23,8 +23,8 @@
 
 <h1>Create Tournament</h1>
 <div id="add-tournament">
-    <div class="row-name">
-        <label for="new-game">Name:</label>
+    <div class="row-game">
+        <label for="new-game">Game:</label>
         <select id="new-game">
 <?php
     foreach(LanWebsite_Tournaments::getGames() as $gameID=>$game) {
@@ -32,6 +32,10 @@
     }
 ?>
         </select>
+    </div>
+    <div class="row-name">
+        <label for="new-name">Name:</label>
+        <input id="new-name" type="text" />
     </div>
     <div class="row-size">
         <label for="new-team-size">Team Size:</label>
@@ -46,6 +50,22 @@
     }
 ?>
         </select>
+    </div>
+    <div class="row-description">
+        <label for="new-description">Description<br />(map info, game modes etc):</label>
+        <textarea id="new-description"></textarea>
+    </div>
+    <div class="row-start">
+        <label for="new-start">Start Time:</label>
+        <input id="new-start" class="time-picker" type="text" />
+    </div>
+    <div class="row-end">
+        <label for="new-end">End Time:</label>
+        <input id="new-end" class="time-picker" type="text" />
+    </div>
+    <div class="row-signups-end">
+        <label for="new-signups-end">Signups Close:</label>
+        <input id="new-signups-end" class="time-picker" type="text" />
     </div>
     <div class="row-signup">
         <label for="new-signups">Signups Open?</label>
