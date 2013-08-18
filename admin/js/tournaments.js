@@ -48,9 +48,9 @@ var tournaments = {
                         var string = '<div class="entry-row ' + (i % 2?'odd':'even') + ' ' + (i == data.length -1 ? 'end-entry':'') + '">';
                         string += '<span class="id">' + row.id + '</span>';
                         string += '<span class="game">' + row.game + '</span>';
-                        string += '<span class="type">' + row.type + '</span>';
                         string += '<span class="team-size">' + row.team_size + '</span>';
-                        string += '<span class="signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups_enabled) ? 'checked="checked"' : '') + ' /></span>';
+                        string += '<span class="type">' + row.type + '</span>';
+                        string += '<span class="signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="current-signups">' + row.current_signups + '</span>';
                         string += '</div>';
@@ -67,11 +67,11 @@ var tournaments = {
         Overlay.loadingOverlay();
         $.post(
             UrlBuilder.buildUrl(true, 'tournaments', 'add'), {
-                name: $("#new-name").val(),
+                game: $("#new-game").val(),
                 teamsize: $("#new-team-size").val(),
                 type: $("#new-type").val(),
-                signups: $("#new-signups").val(),
-                visible: $("#new-visible").val(),
+                signups: $("#new-signups").prop('checked'),
+                visible: $("#new-visible").prop('checked'),
             },
             function (data) {
                 if (data != null && data.error) {

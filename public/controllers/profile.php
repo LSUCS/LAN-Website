@@ -17,7 +17,7 @@
         
         public function post_Loadprofile($inputs) {
         
-            //Decide whether we are sbowing client-requested profile or not
+            //Decide whether we are showing client-requested profile or not
             $inputs["name"] = urldecode($inputs["name"]);
             if (strlen($inputs["name"]) > 0) {
                 $user = LanWebsite_Main::getUserManager()->getUserByName($inputs["name"]);

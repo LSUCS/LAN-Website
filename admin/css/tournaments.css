@@ -51,9 +51,11 @@
         width: 80px;
     }
     #entry-table .signups {
+        margin-top: 8px;
         width: 70px;
     }
     #entry-table .visible {
+        margin-top: 8px;
         width: 70px;
     }
     #entry-table .current-signups {
