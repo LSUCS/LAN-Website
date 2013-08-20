@@ -1,6 +1,10 @@
 <?php
 
-class LanWebsite_Tournaments {
+class Tournament_Main {
+    //Array of all tournament objects
+    //Handled by this class to prevent multiple instances of same tournament
+    private $tournaments = array();
+    
     private static $types = array(
         0 => 'Single Elimination',
         1 => 'Double Elimination',
@@ -40,4 +44,15 @@ class LanWebsite_Tournaments {
         return self::$games;
     }
     
+    public static function tournament($id) {
+        if(array_key_exists($id, $this->tournaments)) return $this->tournaments[$id];
+        $this->tournaments[$id] = new Tournament_Tournament($id);
+        return $this->tournaments[$id];
+    }
+    
+    public static function team($id) {
+        if(array_key_exists($id, $this->teams)) return $this->teams[$id];
+        $this->teams[$id] = new Tournament_Team($id);
+        return $this->teams[$id];
+    }
 }

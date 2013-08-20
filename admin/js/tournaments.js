@@ -57,7 +57,7 @@ var tournaments = {
                         string += '<span class="description">' + row.description + '</span>';
                         string += '<span class="start">' + row.start_time + '</span>';
                         string += '<span class="end">' + row.end_time + '</span>';
-                        string += '<span class="end">' + row.signup_end + '</span>';
+                        string += '<span class="signup-end">' + row.signup_end + '</span>';
                         string += '<span class="signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span>';
                         string += '<span class="current-signups">' + row.current_signups + '</span>';
@@ -82,7 +82,7 @@ var tournaments = {
                 description: $("#new-description").val(),
                 start: $("#new-start").val(),
                 end: $("#new-end").val(),
-                signup-end: $("#new-signups-end").val(),
+                signup_end: $("#new-signups-end").val(),
                 signups: $("#new-signups").prop('checked'),
                 visible: $("#new-visible").prop('checked'),
             },

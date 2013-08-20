@@ -6,6 +6,9 @@
         <span class="game">Game</span>
         <span class="team-size">Team Size</span>
         <span class="type">Tournament Type</span>
+        <span class="start">Start Time</span>
+        <span class="end">End Time</span>
+        <span class="signup-end">Signups Close</span>
         <span class="signups">Signups?</span>
         <span class="visible">Visible?</span>
         <span class="current-signups">Current Signups</span>
@@ -27,7 +30,7 @@
         <label for="new-game">Game:</label>
         <select id="new-game">
 <?php
-    foreach(LanWebsite_Tournaments::getGames() as $gameID=>$game) {
+    foreach(Tournament_Tournaments::getGames() as $gameID=>$game) {
         echo "\t\t\t<option value='$gameID'>$game</option>\n";
     }
 ?>
@@ -45,7 +48,7 @@
         <label for="new-type">Tournament Type:</label>
         <select id="new-type">
 <?php
-    foreach(LanWebsite_Tournaments::getTypes() as $typeID=>$type) {
+    foreach(Tournament_Tournaments::getTypes() as $typeID=>$type) {
         echo "\t\t\t<option value='$typeID'>$type</option>\n";
     }
 ?>

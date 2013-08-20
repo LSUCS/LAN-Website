@@ -1,45 +1,45 @@
 <div class="return"><span></span><a href="<?=LanWebsite_Main::buildUrl(false, "tournaments")?>">Return to tournaments</a></div>
 
 <div class="tournament-header">
-    <div class="tournament-logo"><img src="<?=LanWebsite_Tournaments::getIcon($DataBag["tournament"]["game"])?>" /></div>
-    <div class="title"><?=$DataBag["tournament"]["name"]?></div>
+    <div class="tournament-logo"><img src="<?=$DataBag["tournament"]->getIcon()?>" /></div>
+    <div class="title"><?=$DataBag["tournament"]->getName()?></div>
 </div>
 
 <div id="info-container">
     <div id="tournament-info">
         <div class="info-element">
             <div class="info-left">Game:</div>
-            <div class="info-right"><?=LanWebsite_Tournaments::getGame($DataBag["tournament"]["game"])?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getGame()?></div>
         </div>
         <div class="info-element">
             <div class="info-left">Team Size:</div>
-            <div class="info-right"><?=$DataBag["tournament"]["team_size"]?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getTeamSize()?></div>
         </div>
 <?php
 if ($DataBag["tournament"]["signups"] == 1) {
 ?>
         <div class="info-element">
             <div class="info-left">Signups close:</div>
-            <div class="info-right"><?=date('g:ia D', $DataBag["tournament"]["signup_close"])?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getSignupClose()?></div>
         </div>
 <?php
 }
 ?>
         <div class="info-element">
             <div class="info-left">Starts:</div>
-            <div class="info-right"><?=date('g:ia D', $DataBag["tournament"]["start_time"])?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getStart()?></div>
         </div>
         <div class="info-element">
             <div class="info-left">Ends:</div>
-            <div class="info-right"><?=date('g:ia D', $DataBag["tournament"]["end_time"])?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getEnd()?></div>
         </div>
         <div class="info-element">
             <div class="info-left">Format:</div>
-            <div class="info-right"><?=LanWebsite_Tournaments::getType($DataBag["tournament"]["type"])?></div>
+            <div class="info-right"><?=$DataBag["tournament"]->getType()?></div>
         </div>
         <div class="info-element">
             <div class="info-left">Description:</div>
-            <div class="info-right description"><?=$DataBag["tournament"]["description"]?></div>
+            <div class="info-right description"><?=$DataBag["tournament"]->getDescription()?></div>
         </div>
     </div>
 </div>
@@ -47,13 +47,13 @@ if ($DataBag["tournament"]["signups"] == 1) {
 <div style="clear: both;"></div>
 
 <?php
-if($DataBag["tournament"]["signups"] == 1) {
+if($DataBag["tournament"]->signupsOpen()) {
 ?>
 
 
 <div id="tournament-buttons">
 <?php
-    if(!$DataBag["signed-up"]) {
+    if(!$DataBag["tournament"]->isSignedUp()) {
         if($DataBag["signups"]["team_id"] < 1) echo '<button id="create-team">Create Team</button>';
         echo '<button id="join-solo">Join Solo</button>';
     } else {
@@ -70,7 +70,7 @@ if($DataBag["tournament"]["signups"] == 1) {
 
     <ul>
 <?php 
-        if($DataBag["tournament"]["team_size"] > 1) { echo '<li><a href="#teams">Teams</a></li>'; }
+        if($DataBag["tournament"]->getTeamSize() > 1) { echo '<li><a href="#teams">Teams</a></li>'; }
         else { echo '<li><a href="#signups">Signups</a></li>'; }
         
         if(count($DataBag["brackets"])) { echo '<li><a href="#tabs-2">Bracket</a></li>'; }
@@ -79,7 +79,7 @@ if($DataBag["tournament"]["signups"] == 1) {
     </ul>
     
 <?php 
-if ($DataBag["tournament"]["team_size"] > 1) {
+if ($DataBag["tournament"]->getTeamSize() > 1) {
 ?>
         <div id="teams">
             <div id="team-list">
