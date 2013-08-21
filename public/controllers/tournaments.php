@@ -12,15 +12,15 @@
             $db = LanWebsite_Main::getDb();
             
             //Get all tournaments
-            $res = $db->query("SELECT ID FROM `tournament_tournaments` WHERE lan = '%s' ORDER BY start_time ASC", LanWebsite_Main::getSettings()->getSetting("lan_number"));
+            $res = $db->query("SELECT id FROM `tournament_tournaments` WHERE lan = '%s' ORDER BY start_time ASC", LanWebsite_Main::getSettings()->getSetting("lan_number"));
             
             $tournaments = array();
             while($row = $res->fetch_assoc()) {
-                $tournaments[$row['id']] = Tournament_Main::t($row['id']);
+                $tournaments[$row['id']] = Tournament_Main::tournament($row['id']);
             }
             
             //Get info about tournaments that the user has signed up to
-            $res = $db->query("SELECT tournament_id, team_id FROM `tournament_signups WHERE user_id = '%s'", LanWebsite_Main::getAuth()->getActiveUserId());
+            $res = $db->query("SELECT tournament_id, team_id FROM `tournament_signups` WHERE user_id = '%s'", LanWebsite_Main::getAuth()->getActiveUserId());
             $userTournaments = array();
             while($row = $res->fetch_assoc()) {
                 $row['tournament'] = Tournament_Main::t($row['tournament_id']);

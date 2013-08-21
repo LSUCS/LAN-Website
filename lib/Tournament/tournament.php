@@ -1,6 +1,9 @@
 <?php
 
-class Tournament_Tournament implements JsonSerializable{
+//phpinfo();
+//die;
+
+class Tournament_Tournament {//implements jsonSerializable{
     public $ID = null;
     private $type;
     private $game;
@@ -16,7 +19,7 @@ class Tournament_Tournament implements JsonSerializable{
     
     function __construct($ID) {
         if(!LanWebsite_Cache::get('tournament', 'team_' . $ID, $r)) {
-            $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'". $ID)->fecth_assoc();
+            $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'", $ID)->fetch_assoc();
             if(!$r) return false;
             
             LanWebsite_Cache::set('tournament', 'team_' . $ID, $r);
@@ -30,7 +33,7 @@ class Tournament_Tournament implements JsonSerializable{
         $this->team_size = (int) $r['team_size'];
         $this->signups_open = (bool) $r['signups'];
         $this->visible = (bool) $r['visible'];
-        $this->signups_close = (int) $r['signups_close'];
+        $this->signups_close = (int) $r['signup_close'];
         $this->start_time = (int) $r['start_time'];
         $this->end_time = (int) $r['end_time'];
         $this->description = (string) $r['description'];
@@ -61,12 +64,12 @@ class Tournament_Tournament implements JsonSerializable{
     //Getter Functions
     public function getType() {
         if(is_null($this->ID)) return false;
-        return Tournaments_Main::getType($this->type);
+        return Tournament_Main::getType($this->type);
     }
     
     public function getGame() {
         if(is_null($this->ID)) return false;
-        return Tournaments_Main::getGame($this->game);
+        return Tournament_Main::getGame($this->game);
     }
     
     public function getName() {
@@ -77,6 +80,11 @@ class Tournament_Tournament implements JsonSerializable{
     public function getLan() {
         if(is_null($this->ID)) return false;
         return $this->lan;
+    }
+    
+    public function getIcon() {
+        if(is_null($this->ID)) return false;
+        return '';
     }
     
     public function getTeamSize() {
@@ -102,6 +110,11 @@ class Tournament_Tournament implements JsonSerializable{
     public function getStart($formatDate = true) {
         if(is_null($this->ID)) return false;
         return ($formatDate) ? $this->niceDate($this->start_time) : $this->start_time;
+    }
+    
+    public function getDay() {
+        if(is_null($this->ID)) return false;
+        return date('l', $this->start_time);
     }
 
     public function getEnd($formatDate = true) {

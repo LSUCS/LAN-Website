@@ -38,7 +38,7 @@
             while(list($ID) = $res->fetch_assoc()) {
                 $tournaments[] = Tournaments_Main::tournament($ID);
             }
-            echo json_encode($tournaments);
+            echo json_encode($tournaments->jsonSerialize());
         }
         
         public function post_Add($inputs) {
