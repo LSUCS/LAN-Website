@@ -5,15 +5,20 @@ if(count($DataBag["usertournaments"])) {
 
     <div id="signup-label">My Signups</div>
     <div id="my-signups">
-        <?
+<?
         foreach($DataBag["usertournaments"] as $t) {
-            echo '<div class="signup" value="' . $t["tournament"]->getId() . '">
-                    <div class="icon"><img src="' . $t["tournament"]->getIcon() . '"/></div>
-                    <div class="name">' . $t["tournament"]->getName() . '</div>';
-            if (isset($t["team"])) echo '<div class="team"><b>Team:</b> ' . $t["team"]->getName() . '</div>';
-            echo '<div class="starts"><b>Starts:</b> ' . $t["tournament"]->getStart() . '</div></div>';
+?>
+        <div class="signup">
+            <span class="id" style="display: none"><?=$t["tournament"]->getId()?></span>
+            <div class="icon">
+                <img src="<?=$t["tournament"]->getIcon()?>"/>
+            </div>
+            <div class="name"><?=$t["tournament"]->getName()?></div>';
+            <?=(isset($t["team"])) ? '<div class="team"><b>Team:</b> ' . $t["team"]->getName() . '</div>' : ''?>
+            <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div></div>';
+<?
         }
-        ?>
+?>
     </div>
     
 <?
@@ -31,18 +36,20 @@ if(!count($DataBag["tournaments"])) {
         foreach ($DataBag["tournaments"] as $t) {
         ?>
             <div class="day"><?=$t->getDay()?></div>
-            <div class="tournament" value="<?=$t->ID?>">
-                <div class="icon"><img src="<?=$t->getIcon()?>" /></div>
-                <div class="name"><p class="exclude"><?=$t->getName()?></p></div>
-                <div class="right-container">
-                    <div class="right">
-                        <div><b>Game:</b> <?=$t->getGame()?></div>
-                        <? if ($t->signupsOpen()) echo '<div><b>Signups Close:</b> ' . $t->getSignupClose() . '</div>'; ?>
-                        <div><b>Starts:</b> <?=$t->getStart()?></div>
-                        <div><b>Ends:</b> <?=$t->getEnd()?></div>
+            <a href="<?=LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$t->ID))?>">
+                <div class="tournament" value="<?=$t->ID?>">
+                    <div class="icon"><img src="<?=$t->getIcon()?>" /></div>
+                    <div class="name"><p class="exclude"><?=$t->getName()?></p></div>
+                    <div class="right-container">
+                        <div class="right">
+                            <div><b>Game:</b> <?=$t->getGame()?></div>
+                            <? if ($t->signupsOpen()) echo '<div><b>Signups Close:</b> ' . $t->getSignupClose() . '</div>'; ?>
+                            <div><b>Starts:</b> <?=$t->getStart()?></div>
+                            <div><b>Ends:</b> <?=$t->getEnd()?></div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         <?
         }
         ?>

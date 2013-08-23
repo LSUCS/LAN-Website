@@ -1,8 +1,5 @@
 <?php
 
-//phpinfo();
-//die;
-
 class Tournament_Tournament {//implements jsonSerializable{
     public $ID = null;
     private $type;
@@ -18,11 +15,11 @@ class Tournament_Tournament {//implements jsonSerializable{
     private $description;
     
     function __construct($ID) {
-        if(!LanWebsite_Cache::get('tournament', 'team_' . $ID, $r)) {
+        if(!LanWebsite_Cache::get('tournament', 'tournament_' . $ID, $r)) {
             $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'", $ID)->fetch_assoc();
             if(!$r) return false;
             
-            LanWebsite_Cache::set('tournament', 'team_' . $ID, $r);
+            LanWebsite_Cache::set('tournament', 'tournament_' . $ID, $r);
         }
         
         $this->ID = (int) $ID;
@@ -141,7 +138,7 @@ class Tournament_Tournament {//implements jsonSerializable{
     public function getSignups() {
         $signups_list = array();
         if($this->getTeamSize() > 1) {
-            $signups = LabWebsite_Main::getDb()->query("SELECT team_id, COUNT(user_id) AS players FROM `tournament_signups` WHERE tournament_id = '%s' GROUP BY team_id", $this->ID);
+            $signups = LanWebsite_Main::getDb()->query("SELECT team_id, COUNT(user_id) AS players FROM `tournament_signups` WHERE tournament_id = '%s' GROUP BY team_id", $this->ID);
             while($Row = $signups->fetch_assoc()) {
 			    $signups_list[$Row['user_id']] = array('team' => new Tournament_Team($Row['team_id']), 'players' => $Row['players']);
             }

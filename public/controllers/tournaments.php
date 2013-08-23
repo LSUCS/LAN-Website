@@ -57,10 +57,11 @@
             if(!$tournament->isVisibleToUser()) $this->error(403);
             
             $signups_list = $tournament->getSignups();
+            $userTeams = Tournament_Main::getUserTeams();
 
             $tmpl = LanWebsite_Main::getTemplateManager();
-            $tmpl->setSubTitle($tournament['name']);
-            $tmpl->addTemplate('tournament', array('tournament'=>$tournament, 'signup_list'=>$signups_list, 'brackets' => 0, 'matches' => 0));
+            $tmpl->setSubTitle($tournament->getName());
+            $tmpl->addTemplate('tournament', array('tournament'=>$tournament, 'user_teams' => $userTeams, 'signup_list'=>$signups_list, 'brackets' => 0, 'matches' => 0));
             $tmpl->output();
         }
     }
