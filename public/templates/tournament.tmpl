@@ -55,7 +55,25 @@ if($DataBag["tournament"]->signupsOpen()) {
 <?php
     if(!$DataBag["tournament"]->isSignedUp()) {
         if($DataBag["tournament"]->getTeamSize() > 1) echo '<button id="create-team">Create Team</button>';
-        if(count($DataBag["user_teams"])) echo '<button id="join-team">Join With Team</button>';
+        //If the user is a member of any teams, give them to javascript and show button for joining
+        if(count($DataBag["user_teams"])) {
+            echo '<script> var userTeams = [';
+            foreach($DataBag['user_teams'] as $team) {
+                echo "{'id':'" . $team->ID . "', 'name':'" . $team->getName() . "'},";
+            }
+?>
+            ]</script>
+            <button id="join-team">Join With Team</button>
+            <div id="join-team-form" title="Create new user">
+                <form>
+                <fieldset>
+                    <select id="join-teams">
+                    </select>
+                </fieldset>
+                </form>
+            </div>
+<?php
+        }
         echo '<button id="join-solo">Join Solo</button>';
     } else {
         echo '<button id="leave-tournament">Leave Tournament</button>';

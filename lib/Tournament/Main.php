@@ -48,7 +48,7 @@ class Tournament_Main {
     }
     
     public static function tournament($id) {
-        if(array_key_exists($id, self::tournaments)) return self::$tournaments[$id];
+        if(array_key_exists($id, self::$tournaments)) return self::$tournaments[$id];
         self::$tournaments[$id] = new Tournament_Tournament($id);
         return self::$tournaments[$id];
     }
@@ -57,5 +57,27 @@ class Tournament_Main {
         if(array_key_exists($id, self::$teams)) return self::$teams[$id];
         self::$teams[$id] = new Tournament_Team($id);
         return self::$teams[$id];
+    }
+    
+    public static function getUserTeams($userid = null) {
+        if(is_null($userid)) $userid = LanWebsite::getAuth()->getActiveUserId();
+        
+        //Get an array of user's teams
+        if(!LanWebsite_Cache::get('tournament', 'user_teams_' . $userid, $teams)) {
+            $teams = array();
+            $r = LanWebsite_Main::getDb()->query("SELECT team_id FROM `tournament_teams_members` WHERE user_id = '%s'", $userid);
+            while($row = $r->fetch_assoc()) {
+                $teams[] = $row['team_id'];
+            }
+            LanWebsite_Cache::set('tournament', 'user_teams_' . $userid, $teams);
+        }
+        
+        //Turn that array into team models
+        $teamObjects = array();
+        foreach($teams as $teamID) {
+            $teamObjects[$teamID] = self::team($teamID);
+        }
+        
+        return $teamObjects;
     }
 }
