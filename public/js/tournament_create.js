@@ -1,14 +1,15 @@
 $(document).ready(function() {
     //Save details button
-    $("#create-team").click(function() {
+    $("#create-team-button").click(function() {
         createTeam();
     });
+});
 
-function saveGameDetails() {
+function createTeam() {
     Overlay.loadingOverlay();
     $.post(
-        UrlBuilder.buildUrl(false, "tournament", "createteam"),
-        { name: $("#team-name").val(), icon: $("#team-icon").val(), description: $("#team-description") },
+        UrlBuilder.buildUrl(false, "tournaments", "createteam"),
+        { name: $("#team-name").val(), icon: $("#team-icon").val(), description: $("#team-description").val() },
         function (data) {
             if (data != null) {
                 if(data.error) {
@@ -16,7 +17,8 @@ function saveGameDetails() {
                     return;
                 }
                 Overlay.openOverlay(false, "Team Created, Redirecting", 1000);
-                window.setTimeout("document.location = '" + UrlBuilder.buildUrl(false, "tournament", "viewteam", {id: data.id}) + "';", 500);
+                window.setTimeout("document.location = '" + UrlBuilder.buildUrl(false, "tournaments", "viewteam", {id: data.id}) + "';", 500);
+            }
         },
         'json');
 }

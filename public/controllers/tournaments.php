@@ -4,7 +4,7 @@
         public function getInputFilters($action) {
             switch ($action) {
                 case "view": return array("id" => array('notnull', 'int'));
-                case "create": return array("name" => "notnull");
+                case "createteam": return array("name" => "notnull", "icon" => "url", "description" => "string");
             }
         }
         
@@ -76,14 +76,15 @@
         public function post_Createteam($inputs) {
             if($this->isInvalid('name')) $this->errorJson("Invalid Name");
             
-            if(strlen($inputs["name"]) > 200 || strlen($inputs["name"] < 3)) $this->errorJson("Invalid Name");
+            if(strlen($inputs["name"]) > 200 || strlen($inputs["name"]) < 3) $this->errorJson("Invalid Name" . strlen($inputs["name"]));
             
             $db = LanWebsite_Main::getDb();
+            
             $r = $db->query("SELECT * FROM tournament_teams WHERE Name LIKE '%s'", $inputs["name"]);
-            if($r->num_rows) $this->errorJson("A team with this name already exists!");
+            if($r->num_rows) $this->errorJson("A team with this name already exists!" . $r->num_rows);
             
             $r = $db->query("INSERT INTO tournament_teams (Name, Icon, Description) VALUES ('%s', '%s', '%s')", $inputs["name"], $inputs["icon"], $inputs["description"]);
-            echo json_encode(array('id'=>$db->insert_id));
+            echo json_encode(array('id'=>$db->getLink()->insert_id));
         }
     }
 
