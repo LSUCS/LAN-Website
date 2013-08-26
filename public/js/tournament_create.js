@@ -7,7 +7,7 @@ $(document).ready(function() {
 function saveGameDetails() {
     Overlay.loadingOverlay();
     $.post(
-        UrlBuilder.buildUrl(false, "tournament", "create"),
+        UrlBuilder.buildUrl(false, "tournament", "createteam"),
         { name: $("#team-name").val(), icon: $("#team-icon").val(), description: $("#team-description") },
         function (data) {
             if (data != null) {

@@ -73,7 +73,7 @@
             $tmpl->output();
         }
         
-        public function post_Create($inputs) {
+        public function post_Createteam($inputs) {
             if($this->isInvalid('name')) $this->errorJson("Invalid Name");
             
             if(strlen($inputs["name"]) > 200 || strlen($inputs["name"] < 3)) $this->errorJson("Invalid Name");
