@@ -60,7 +60,7 @@ class Tournament_Main {
     }
     
     public static function getUserTeams($userid = null) {
-        if(is_null($userid)) $userid = LanWebsite::getAuth()->getActiveUserId();
+        if(is_null($userid)) $userid = LanWebsite_Main::getAuth()->getActiveUserId();
         
         //Get an array of user's teams
         if(!LanWebsite_Cache::get('tournament', 'user_teams_' . $userid, $teams)) {

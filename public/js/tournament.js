@@ -29,7 +29,7 @@ $(document).ready(function() {
             Cancel: function() {
                 $( this ).dialog( "close" );
             }
-        }
+        },
         close: function() {
             tournaments.clearJoinForm();
         }
@@ -37,7 +37,8 @@ $(document).ready(function() {
 });
 
 var tournaments = {
-    joinTeam = function() {
+    joinTeam: function() {
+        if(typeof(window.userTeams == null)) return;
         var options = "";
         for(var x in userTeams) {
             options += "<option value='" + userTeams[x].id + "'>" + userTeams[x].name + "</option>";
@@ -46,7 +47,7 @@ var tournaments = {
         $('#join-team-form').dialog('open');
     },
     
-    joinClick = function() {
+    joinClick: function() {
         var selectedTeam = $('#join-teams').val();
         $.post(
             UrlBuilder.buildUrl(false, "tournaments", "joinasteam"),
@@ -63,11 +64,11 @@ var tournaments = {
             'json');
     },
     
-    clearJoinForm = function () {
+    clearJoinForm: function () {
         $('#join-teams').html('');
     },
     
-    joinSolo = function() {
+    joinSolo: function() {
         
     }
 }

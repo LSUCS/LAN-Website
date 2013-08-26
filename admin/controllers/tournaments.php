@@ -6,9 +6,9 @@
                 case "add":
                     return array(
                         "game" => "int",
-                        //"name" => "string",
+                        "name" => "notnull",
                         "teamsize" => "int",
-                        //"description" => "string",
+                        "description" => "notnull",
                         "start" => "int",
                         "end" => "int",
                         "signups-close" => "int",
