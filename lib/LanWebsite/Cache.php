@@ -10,6 +10,10 @@ class LanWebsite_Cache {
         self::$server = new Memcached();
         self::$server->addServer('127.0.0.1', 11211);
         self::$init = true;
+        
+        if(isset($_GET['clearcache']) && $_GET['clearcache']) {
+            self::$server->flush();
+        }
     }
     
     public static function set($group, $elem, $value, $exp=0) {
