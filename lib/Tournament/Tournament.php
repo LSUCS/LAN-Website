@@ -10,9 +10,13 @@ class Tournament_Tournament {//implements jsonSerializable{
     private $signups_open;
     private $visible;
     private $signups_close;
+    public $started;
     private $start_time;
     private $end_time;
     private $description;
+    
+    private $matches = null;
+    private $signups = null;
     
     function __construct($ID) {
         if(!LanWebsite_Cache::get('tournament', 'tournament_' . $ID, $r)) {
@@ -22,34 +26,34 @@ class Tournament_Tournament {//implements jsonSerializable{
             LanWebsite_Cache::set('tournament', 'tournament_' . $ID, $r);
         }
         
-        $this->ID = (int) $ID;
-        $this->type = (int) $r['type'];
-        $this->game = (int) $r['game'];
-        $this->name = (string) $r['name'];
-        $this->lan = (float) $r['lan'];
-        $this->team_size = (int) $r['team_size'];
-        $this->signups_open = (bool) $r['signups'];
-        $this->visible = (bool) $r['visible'];
-        $this->signups_close = (int) $r['signup_close'];
-        $this->start_time = (int) $r['start_time'];
-        $this->end_time = (int) $r['end_time'];
-        $this->description = (string) $r['description'];
+        $this->ID =             (int) $ID;
+        $this->type =           (int) $r['type'];
+        $this->game =           (int) $r['game'];
+        $this->name =           (string) $r['name'];
+        $this->lan =            (float) $r['lan'];
+        $this->team_size =      (int) $r['team_size'];
+        $this->signups_open =   (bool) $r['signups'];
+        $this->visible =        (bool) $r['visible'];
+        $this->signups_close =  (int) $r['signup_close'];
+        $this->start_time =     (int) $r['start_time'];
+        $this->end_time =       (int) $r['end_time'];
+        $this->description =    (string) $r['description'];
     }
     
     function jsonSerialize() {
         return array(
-            'id' => $this->ID,
-            'type' => $this->type,
-            'game' => $this->game,
-            'name' => $this->name,
-            'lan' => $this->lan,
-            'team_size' => $this->team_size,
-            'signups' => $this->signups_open,
-            'visible' => $this->visible,
-            'signups_close' => $this->signups_close,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
-            'description' => $this->description
+            'id' =>             $this->ID,
+            'type' =>           $this->type,
+            'game' =>           $this->game,
+            'name' =>           $this->name,
+            'lan' =>            $this->lan,
+            'team_size' =>      $this->team_size,
+            'signups' =>        $this->signups_open,
+            'visible' =>        $this->visible,
+            'signups_close' =>  $this->signups_close,
+            'start_time' =>     $this->start_time,
+            'end_time' =>       $this->end_time,
+            'description' =>    $this->description
         );
     }
     
@@ -129,30 +133,54 @@ class Tournament_Tournament {//implements jsonSerializable{
         return $this->description;
     }
     
+    public function getMatches($useCache = true) {
+        if(is_null($this->ID)) return false;
+        if(!$this->started) return false;
+        if(is_null($this->matches) || !$useCache) $this->updateMatches($useCache);
+        return $this->matches;
+    }
+    
+    public function getSignups($useCache = true) {
+        if(is_null($this->ID)) return false;
+        if(is_null($this->signups) || !$useCache) $this->updateSignups($useCache);
+        return $this->signups;
+    }
+    
+    public function getStructure() {
+        if(!$this->started) return false;
+        //Get the type
+        $type = Tournament_Main::getType($this->type);
+        //Turn it into nice class format. E.g Round Robin to Roundrobin
+        $type = ucfirst(strtolower(str_replace(' ','',$type)));
+        $type = 'Tournament_' . $type;
+        return new $type;
+    }
+    
     //Methods
     public function isSignedUp($user = false) {
         if(!$user) $user = LanWebsite_Main::getAuth()->getActiveUserId();
         return (bool) LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'", $this->ID, $user)->num_rows;
     }
     
-    public function getSignups() {
-        $signups_list = array();
+    public function updateSignups($useCache) {
+        $this->signups = array();
         if($this->getTeamSize() > 1) {
             $signups = LanWebsite_Main::getDb()->query("SELECT team_id, COUNT(user_id) AS players FROM `tournament_signups` WHERE tournament_id = '%s' GROUP BY team_id", $this->ID);
             while($Row = $signups->fetch_assoc()) {
-			    $signups_list[$Row['user_id']] = array('team' => new Tournament_Team($Row['team_id']), 'players' => $Row['players']);
+			    $this->signups[$Row['user_id']] = array('team' => new Tournament_Team($Row['team_id']), 'players' => $Row['players']);
             }
         } else {
             $signups = $db->query("SELECT user_id FROM `tournament_signups` WHERE tournament_id = '%s'", $this->ID);
             while($Row = $signups->fetch_assoc()) {
-			    $signups_list[$Row['user_id']] = LanWebsite_Main::getAuth()->getUserById($Row['user_id']);
+			    $this->signups[$Row['user_id']] = LanWebsite_Main::getAuth()->getUserById($Row['user_id']);
             }
         }
-        return $signups_list;
+        return $this->signups;
     }
     
     public function emptySignups() {
         LanWebsite_Main::getDb()->query("DELETE FROM `tournament_signups` WHERE tournament_id = '%s'", $this->ID);
+        $this->signups = array();
         return true;
     }
     
@@ -160,5 +188,22 @@ class Tournament_Tournament {//implements jsonSerializable{
         $this->emptySignups();
         LanWebsite_Main::getDb()->query("DELETE FROM `tournament_tournaments` WHERE id = '%s'", $this->ID);
         return true;
+    }
+    
+    private function updateMatches($useCache) {
+        if(!$this->started) return false;
+        if($useCache) {
+            LanWebsite_Cache::get("tournament", "matches_" . $this->ID, $this->matches);
+        } else {
+            $this->matches = false;
+        }
+        
+        if(!$this->matches) {
+            $r = LanWebsite_Main::getDb()->query("SELECT ID FROM `tournament_matches` WHERE tournament_id = '%s'", $this->ID);
+            $this->matches = array();
+            while($row = $r->fetch_assoc()) {
+                $this->matches[$row['id']] = new Tournament_Match($row);
+            }
+        }
     }
 }

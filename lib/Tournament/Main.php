@@ -8,6 +8,10 @@ class Tournament_Main {
     //Same for tournaments
     private static $teams = array();
     
+    //And for Matches
+    private static $matches = array();
+    
+    
     private static $types = array(
         0 => 'Single Elimination',
         1 => 'Double Elimination',
@@ -16,17 +20,17 @@ class Tournament_Main {
     );
     
     private static $games = array( 
-        0 => 'Counter Strike: Source',
-        1 => 'Team Fortress 2',
-        2 => 'Left 4 Dead 2',
-        3 => 'Chivalry',
-        4 => 'MineCraft - Hunger Games',
-        5 => 'Counter Strike: Global Offensive',
-        6 => 'League of Legends',
-        7 => 'DoTA 2',
-        8 => 'Starcraft 2',
-        9 => 'Smite',
-        10 => 'FIFA'
+        0 =>    'Counter Strike: Source',
+        1 =>    'Team Fortress 2',
+        2 =>    'Left 4 Dead 2',
+        3 =>    'Chivalry',
+        4 =>    'MineCraft - Hunger Games',
+        5 =>    'Counter Strike: Global Offensive',
+        6 =>    'League of Legends',
+        7 =>    'DoTA 2',
+        8 =>    'Starcraft 2',
+        9 =>    'Smite',
+        10 =>   'FIFA'
     );
     
     public static function getIcon($gameID) {
@@ -59,6 +63,12 @@ class Tournament_Main {
         return self::$teams[$id];
     }
     
+    public static function match($id) {
+        if(array_key_exists($id, self::$matches)) return self::$match[$id];
+        self::$matches[$id] = new Tournament_Match($id);
+        return self::$matches[$id];
+    }
+    
     public static function getUserTeams($userid = null) {
         if(is_null($userid)) $userid = LanWebsite_Main::getAuth()->getActiveUserId();
         
@@ -79,5 +89,32 @@ class Tournament_Main {
         }
         
         return $teamObjects;
+    }
+    
+    public static function getPlayerLink($player) {
+        if($player instanceOf LanWebsite_User) {
+            $link = LanWebsite_Main::buildUrl(false, 'profile', null, array('member'=>$player->getUsername()));
+            $link = "<a href='" . $link . "'>" . $player->getUsername() . "</a>";
+        } else {
+            $link = LanWebsite_Main::buildUrl(false, 'tournaments', 'viewteam', array('id'=>$player->ID));
+            $link = "<a href='" . $link . "'>" . $player->getName() . "</a>";
+        }
+        return $link;
+    }
+    
+    public static function getPlayerId($player) {
+        if($player instanceOf LanWebsite_User) {
+            return $player->getUserId();
+        } else {
+            return $player->ID;
+        }
+    }
+    
+    public static function getPlayerName($player) {
+        if($player instanceOf LanWebsite_User) {
+            return $player->getUsername();
+        } else {
+            return $player->getName();
+        }
     }
 }

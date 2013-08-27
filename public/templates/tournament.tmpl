@@ -121,9 +121,7 @@ if ($DataBag["tournament"]->getTeamSize() > 1) {
 } else { ?>
         <div id="signups">
 <?php
-    foreach($DataBag["signup_list"] as $signupUser) {
-        $user = LanWebsite_Main::getUserManager()->getUserById($signupUser['user_id']);
-        if(!$user) continue;
+    foreach($DataBag["signup_list"] as $user) {
 ?>
             <a href="<?=LanWebsite_Main::buildUrl(false, "profile", null, array('userid'=>$user->getUserId()))?>">
                 <div class="user">
@@ -137,18 +135,32 @@ if ($DataBag["tournament"]->getTeamSize() > 1) {
 <?php
 }
     
-if(count($DataBag["brackets"]) > 0) {
+if($DataBag["bracket"]) {
 ?>
         <div id="tabs-2">
-            herp
+            <? $DataBag["bracket"]->display(); ?>
         </div>
 <?php
 }
-    
-if(count($DataBag["matches"]) > 0) {
+
+if($DataBag["matches"]) {
 ?>
     <div id="tabs-3">
-        merp
+        <div class="matches">
+<?php
+    foreach($DataBag["matches"] as $match) {
+?>
+            <div class="match <?=($match->getPlayed()) ? 'played' : ''?>" id="match-<?=$match->ID?>">
+                <div class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=LanWebsite_Main::getPlayerLink($match->getPlayer1())?></div>
+                <div class="score1"><?=($match->getPlayed()) ? $match->getScore1() : '-'?></div>
+                <div class="vs">V</div>
+                <div class="score2"><?=($match->getPlayed()) ? $match->getScore2() : '-'?></div>
+                <div class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=LanWebsite_Main::getPlayerLink($match->getPlayer2())?></div>
+            </div>
+        </div>
+<?php
+    }
+?>
     </div>
 <?php
 }

@@ -13,16 +13,16 @@ class Tournament_Team {//implements jsonSerializable{
             LanWebsite_Cache::set('tournament', 'team_' . $ID, $r);
         }
         
-        $this->ID = (int) $ID;
-        $this->name = (string) $r['name'];
+        $this->ID =     (int) $ID;
+        $this->name =   (string) $r['name'];
         $this->members = $this->loadMembers();
     }
     
     function jsonSerialize() {
         return array(
-            'id' => $this->ID,
-            'name' => $this->name,
-            'members' => $this->members
+            'id' =>         $this->ID,
+            'name' =>       $this->name,
+            'members' =>    $this->members
         );
     }
     
