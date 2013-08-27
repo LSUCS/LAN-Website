@@ -38,6 +38,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         $this->start_time =     (int) $r['start_time'];
         $this->end_time =       (int) $r['end_time'];
         $this->description =    (string) $r['description'];
+        $this->started =        (bool) $r['started'];
     }
     
     function jsonSerialize() {

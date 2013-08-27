@@ -92,8 +92,8 @@ if($DataBag["tournament"]->signupsOpen()) {
         if($DataBag["tournament"]->getTeamSize() > 1) { echo '<li><a href="#teams">Teams</a></li>'; }
         else { echo '<li><a href="#signups">Signups</a></li>'; }
         
-        if(count($DataBag["brackets"])) { echo '<li><a href="#tabs-2">Bracket</a></li>'; }
-        if(count($DataBag["matches"])) { echo '<li><a href="#tabs-3">Matches</a></li>'; }
+        if($DataBag["brackets"]) { echo '<li><a href="#tabs-2">Bracket</a></li>'; }
+        if($DataBag["matches"]) { echo '<li><a href="#tabs-3">Matches</a></li>'; }
 ?>
     </ul>
     
