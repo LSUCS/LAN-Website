@@ -69,6 +69,17 @@ var tournaments = {
     },
     
     joinSolo: function() {
-        
+        $.post(
+        UrlBuilder.buildUrl(false, "tournaments", "joinsolo"),
+        {},
+        function(data) {
+            if(data != null && data.error) {
+                Overlay.openOverlay(true, data.error);
+                return;
+            }
+            Overlay.openOverlay(false, 'Joined successfully', 1000);
+            window.setTimeout("location.reload()", 500);
+        },
+        'json');
     }
 }

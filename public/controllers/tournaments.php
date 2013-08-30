@@ -5,6 +5,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         switch ($action) {
             case "view": return array("id" => array('notnull', 'int'));
             case "createteam": return array("name" => "notnull", "icon" => "url", "description" => "string");
+            case "joinsolo": return array("tournament_id" => array('notnull', 'int'));
         }
     }
     
@@ -91,6 +92,27 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         $r = $db->query("INSERT INTO tournament_teams (Name, Icon, Description) VALUES ('%s', '%s', '%s')", $inputs["name"], $inputs["icon"], $inputs["description"]);
         echo json_encode(array('id'=>$db->getLink()->insert_id));
+    }
+    
+    public function post_Joinsolo($inputs) {
+        if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $r = $db->query("SELECT visible, signups, started FROM `tournament_tournaments` WHERE id = '%s'", $inputs["tournament_id"]);
+        if(!$r->num_rows) $this->errorJson("Invalid Tournament (404)");
+        
+        $r = $r->fetch_assoc();
+        if(!$r["visible"]) $this->errorJson(403);
+        if(!$r["signups"]) $this->errorJson("Signups are closed for this tournament");
+        if($r["started"]) $this->errorJson("This tournament has already started!");
+        
+        $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
+            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId())->fetch_assoc();
+        if($r->num_rows) $this->errorJson("You have already signed up to this tournament!");
+        
+        $r = $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
+            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
     }
 }
 
