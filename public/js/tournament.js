@@ -71,7 +71,7 @@ var tournaments = {
     joinSolo: function() {
         $.post(
         UrlBuilder.buildUrl(false, "tournaments", "joinsolo"),
-        {},
+        {tournament_id: $('#tournament-id').html() },
         function(data) {
             if(data != null && data.error) {
                 Overlay.openOverlay(true, data.error);

@@ -17,6 +17,7 @@ class Tournament_Tournament {//implements jsonSerializable{
     
     private $matches = null;
     private $signups = null;
+    private $signupList = null;
     
     function __construct($ID) {
         if(!LanWebsite_Cache::get('tournament', 'tournament_' . $ID, $r)) {
@@ -141,10 +142,31 @@ class Tournament_Tournament {//implements jsonSerializable{
         return $this->matches;
     }
     
-    public function getSignups($useCache = true) {
+
+    /**
+     * Tournament_Tournament::getSignups()
+     * Returns a list if team or member objects that are signed up to a tournament
+     * Used when working with tournament structure and back end processing/calculations
+     * @return array of User or Team objects
+     */
+    public function getSignups() {
         if(is_null($this->ID)) return false;
-        if(is_null($this->signups) || !$useCache) $this->updateSignups($useCache);
+        if(is_null($this->signups)) $this->updateSignups();
         return $this->signups;
+    }
+    
+    
+    /**
+     * Tournament_Tournament::getSigupList()
+     * Gets a list of all users signed up, and their teams if they are part of one.
+     * This differs from the above function as it always contains as many users as are signed up to a tournament, regardless of teams 
+     * @param bool $useCache
+     * @return void
+     */
+    public function getSignupList($useCache = true) {
+        if(is_null($this->ID)) return false;
+        if(is_null($this->signupList) || $useCache) $this->updateSignupList($useCache);
+        return $this->signupList;
     }
     
     public function getStructure() {
@@ -163,7 +185,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         return (bool) LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'", $this->ID, $user)->num_rows;
     }
     
-    public function updateSignups($useCache) {
+    private function updateSignups() {
         $this->signups = array();
         if($this->getTeamSize() > 1) {
             $signups = LanWebsite_Main::getDb()->query("SELECT team_id, COUNT(user_id) AS players FROM `tournament_signups` WHERE tournament_id = '%s' GROUP BY team_id", $this->ID);
@@ -176,7 +198,24 @@ class Tournament_Tournament {//implements jsonSerializable{
 			    $this->signups[$Row['user_id']] = LanWebsite_Main::getAuth()->getUserById($Row['user_id']);
             }
         }
-        return $this->signups;
+    }
+    
+    private function updateSignupList($useCache) {
+        if($useCache) {
+            LanWebsite_Cache::get("tournament", "signuplist_" . $this->ID, $this->signupList);
+        } else {
+            $this->signupList = false;
+        }
+        
+        if(!$this->signupList) {
+            $this->signupList = array();
+            $r = LanWebsite_Main::getDb()->query("SELECT user_id, team_id FROM `tournament_signups` WHERE tournament_id = '%s' ORDER BY team_id ASC", $this->ID);
+            while($Row = $r->fetch_assoc()) {
+                $this->signupList[$Row['user_id']] = array('user'=>LanWebsite_Main::getAuth()->getUserById($Row['user_id']));
+                if($Row['team_id'] !== 0) $this->signupList[$Row['user_id']]['team'] = Tournament_Main::team($Row['team_id']);
+            }
+            LanWebsite_Cache::set("tournament", "signuplist_" . $this->ID, $this->signupList);
+        }
     }
     
     public function emptySignups() {

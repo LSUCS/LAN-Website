@@ -3,6 +3,7 @@
 <div class="tournament-header">
     <div class="tournament-logo"><img src="<?=$DataBag["tournament"]->getIcon()?>" /></div>
     <div class="title"><?=$DataBag["tournament"]->getName()?></div>
+    <div style="display: none;" id="tournament-id"><?=$DataBag["tournament"]->ID?></div>
 </div>
 
 <div id="info-container">
@@ -97,21 +98,50 @@ if($DataBag["tournament"]->signupsOpen()) {
 ?>
     </ul>
     
-<?php 
+<?php
+$counter = 0; 
 if ($DataBag["tournament"]->getTeamSize() > 1) {
 ?>
         <div id="teams">
+            <div class="header">
+                <span class="signup-number"></span>
+                <span class="team-name">Team Name</span>
+                <span class="user-name">Username</span>
+            </div>
             <div id="team-list">
 <?
-    foreach($DataBag["signup_list"] as $team) {
+    $lastTeam = null;
+    foreach($DataBag["signup_list"] as $info) {
+        $counter++;
+        if(isset($info['team'])) $team = $info['team'];
+        $user = $info['user'];
+        
+        if(isset($team)) {
+            //Only show the team name if it was different to the last one
+            if($team->ID !== $lastTeam) {
+                $lastTeam = $team->ID;
+                $teamName = $team->getName();
+                $link = true;
+            } else {
+                $teamName = '';
+                $link = false;
+            }
+        } else {
+            $teamName = '(unassigned)';
+            $link = false;
+        }
 ?>
-                <a href="<?=LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID))?>">
-                    <div class="team">
-                        <span class="team-name"><?=$team->getName()?></span>
-                        <span class="team-leader">Captain: <?=$team->getCaptain()?></span>
-                        <span class="playercount"><?=$team->getNumPlayers()?>/<?=$DataBag["tournament"]->getTeamSize()?></span>
-                    </div>
-                </a>
+                <div class="team">
+                    <span class="signup-number"><?=$counter?></span>
+                    <span class="team-name">
+<?php
+        if($link) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID)) . '">';
+        echo $teamName;
+        if($link) echo "</a>";
+?>                        
+                    </span>
+                    <span class="user-name"><?=$user->getUsername()?></span>
+                </div>
 <?php
     }
 ?>
@@ -120,14 +150,22 @@ if ($DataBag["tournament"]->getTeamSize() > 1) {
 <?php 
 } else { ?>
         <div id="signups">
+            <div class="header">
+                <span class="signup-number"></span>
+                <span class="user-name">Username</span>
+            </div>
 <?php
-    foreach($DataBag["signup_list"] as $user) {
+    foreach($DataBag["signup_list"] as $info) {
+        $counter++;
+        $user = $info['user'];
 ?>
-            <a href="<?=LanWebsite_Main::buildUrl(false, "profile", null, array('userid'=>$user->getUserId()))?>">
-                <div class="user">
-                    <span class="user-name"><?=$user->getFullName()?></span>
-                </div>
-            </a>
+
+            <div class="user">
+                <span class="signup-number"><?=$counter?></span>
+                <span class="user-name">
+                    <a href="<?=LanWebsite_Main::buildUrl(false, "profile", null, array('userid'=>$user->getUserId()))?>"><?=$user->getUsername()?></a>
+                </span>
+            </div>
 <?php
     }
 ?>

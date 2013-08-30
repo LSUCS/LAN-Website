@@ -58,7 +58,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         if(!$tournament) $this->error(404);
         if(!$tournament->isVisibleToUser()) $this->error(403);
         
-        $signups_list = $tournament->getSignups();
+        $signups_list = $tournament->getSignupList();
         $userTeams = Tournament_Main::getUserTeams();
         if($tournament->started) {
             $matches = $tournament->getMatches();
@@ -108,7 +108,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         if($r["started"]) $this->errorJson("This tournament has already started!");
         
         $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
-            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId())->fetch_assoc();
+            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
         if($r->num_rows) $this->errorJson("You have already signed up to this tournament!");
         
         $r = $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
