@@ -6,6 +6,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             case "view": return array("id" => array('notnull', 'int'));
             case "createteam": return array("name" => "notnull", "icon" => "url", "description" => "string");
             case "joinsolo": return array("tournament_id" => array('notnull', 'int'));
+            case "leave": return array("tournament_id" => array('notnull', 'int'));
         }
     }
     
@@ -25,7 +26,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         $res = $db->query("SELECT tournament_id, team_id FROM `tournament_signups` WHERE user_id = '%s'", LanWebsite_Main::getAuth()->getActiveUserId());
         $userTournaments = array();
         while($row = $res->fetch_assoc()) {
-            $row['tournament'] = Tournament_Main::t($row['tournament_id']);
+            $row['tournament'] = Tournament_Main::tournament($row['tournament_id']);
             
             //The tournament has been deleted, but the signups haven't. This shouldn't happen, but clean up the db.
             if(!$row['tournament']) {
@@ -111,7 +112,28 @@ class Tournaments_Controller extends LanWebsite_Controller {
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
         if($r->num_rows) $this->errorJson("You have already signed up to this tournament!");
         
-        $r = $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
+        $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
+            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+    }
+    
+    public function post_Leave($inputs) {
+        if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $t = $db->query("SELECT visible, signups, started FROM `tournament_tournaments` WHERE id = '%s'", $inputs["tournament_id"]);
+        if(!$t->num_rows) $this->errorJson("Invalid Tournament (404)");
+        
+        $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
+            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+        if(!$r->num_rows) $this->errorJson("You are not signed up to this tournament!");
+        
+        $t = $t->fetch_assoc();
+        if(!$t["visible"]) $this->errorJson(403);
+        if(!$t["signups"]) $this->errorJson("Signups are closed for this tournament, so you cannot leave at this time.");
+        if($t["started"]) $this->errorJson("This tournament has already started! Please contact a Committee member if you cannot compete.");
+        
+        $db->query("DELETE FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
     }
 }

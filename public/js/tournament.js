@@ -17,6 +17,10 @@ $(document).ready(function() {
         tournaments.joinTeam();
     });
     
+    $('#leave-tournament').live('click', function() {
+        tournaments.leave();
+    });
+    
     $('#join-team-form').dialog({
         autoOpen: false,
         height: 200,
@@ -70,16 +74,31 @@ var tournaments = {
     
     joinSolo: function() {
         $.post(
-        UrlBuilder.buildUrl(false, "tournaments", "joinsolo"),
-        {tournament_id: $('#tournament-id').html() },
-        function(data) {
-            if(data != null && data.error) {
-                Overlay.openOverlay(true, data.error);
-                return;
-            }
-            Overlay.openOverlay(false, 'Joined successfully', 1000);
-            window.setTimeout("location.reload()", 500);
-        },
-        'json');
+            UrlBuilder.buildUrl(false, "tournaments", "joinsolo"),
+            {tournament_id: $('#tournament-id').html() },
+            function(data) {
+                if(data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, 'Joined successfully', 1000);
+                window.setTimeout("location.reload()", 500);
+            },
+            'json');
+    },
+    
+    leave: function() {
+        $.post(
+            UrlBuilder.buildUrl(false, "tournaments", "leave"),
+            {tournament_id: $('#tournament-id').html() },
+            function(data) {
+                if(data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, 'You have left this tournament', 1000);
+                window.setTimeout("location.reload()", 500);
+            },
+            'json');
     }
 }
