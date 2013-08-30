@@ -9,13 +9,13 @@ if(count($DataBag["usertournaments"])) {
         foreach($DataBag["usertournaments"] as $t) {
 ?>
         <div class="signup">
-            <span class="id" style="display: none"><?=$t["tournament"]->getId()?></span>
+            <span class="id" style="display: none"><?=$t["tournament"]->ID?></span>
             <div class="icon">
                 <img src="<?=$t["tournament"]->getIcon()?>"/>
             </div>
-            <div class="name"><?=$t["tournament"]->getName()?></div>';
+            <div class="name"><?=$t["tournament"]->getName()?></div>
             <?=(isset($t["team"])) ? '<div class="team"><b>Team:</b> ' . $t["team"]->getName() . '</div>' : ''?>
-            <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div></div>';
+            <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div></div>
 <?
         }
 ?>

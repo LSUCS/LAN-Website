@@ -34,7 +34,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             }
             
             //If the signup was part of a team
-            if($row['team_id'] !== 0) {
+            if($row['team_id'] !== '0') {
                 $team = Tournament_Main::team($row['team_id']);
                 if(!$team) continue;
 
