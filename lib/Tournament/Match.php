@@ -80,4 +80,9 @@ class Tournament_Match {
         if(is_null($this->ID)) return false;
         return $this->teams_bool;
     }
+    
+    public function getRound() {
+        if(is_null($this->ID)) return false;
+        return $this->round;
+    }
 }

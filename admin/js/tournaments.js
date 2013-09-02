@@ -38,6 +38,7 @@ $(document).ready(function() {
         tournaments.viewButton();
     });
     */
+    $('.button').button();
 
 });
 
@@ -55,26 +56,31 @@ var tournaments = {
                         var row = data.tournaments[i];
                         
                         var link = UrlBuilder.buildUrl(false, 'tournaments', 'view', {'id':row.id});
-                        link = '<a href="' + link + '">' + row.game_name + '</a>';
+                        link = '<a href="' + link + '">' + row.name + '</a>';
                         
                         var string = '<div id="tournament-' + row.id + '">';
-                        string = '<h2 class="tournament-name">' + row.name + '</h2>';
+                        string = '<h2 class="tournament-name">' + link + '</h2>';
                         string += '<div class="tournament-table">';
                         string += '<div class="row"><span class="field id">ID</span><span class="value id">' + row.id + '</span></div>';
-                        string += '<div class="row"><span class="field game">Game</span><span class="value game">' + link + '</span></div>';
+                        string += '<div class="row"><span class="field game">Game</span><span class="value game">' + row.game_name + '</span></div>';
                         string += '<div class="row"><span class="field team-size">Team Size</span><span class="value team-size">' + row.team_size + '</span></div>';
                         string += '<div class="row"><span class="field type">Tournament Type</span><span class="value type">' + row.type_name + '</span></div>';
-                        string += '<div class="row"><span class="field start">Start Time</span><span class="value start">' + row.start_time + '</span></div>';
-                        string += '<div class="row"><span class="field end">End Time</span><span class="value end">' + row.end_time + '</span></div>';
-                        string += '<div class="row"><span class="field signup-end">Signups Close</span><span class="value signup-end">' + row.signup_end + '</span></div>';
+                        string += '<div class="row"><span class="field start">Start Time</span><span class="value start">' + row.start_time_nice + '</span></div>';
+                        string += '<div class="row"><span class="field end">End Time</span><span class="value end">' + row.end_time_nice + '</span></div>';
+                        string += '<div class="row"><span class="field signup-end">Signups Close</span><span class="value signup-end">' + row.signups_close_nice + '</span></div>';
                         string += '<div class="row"><span class="field signups">Signups?</span><span class="value signups"><input type="checkbox" class="signup-checkbox" ' + ((row.signups) ? 'checked="checked"' : '') + ' /></span></div>';
                         string += '<div class="row"><span class="field visible">Visible?</span><span class="value visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span></div>';
                         string += '<div class="row"><span class="field current-signups">Current Signups</span><span class="value current-signups">' + row.current_signups + '</span></div>';
                         string += '<div class="row"><span class="field description">Description</span><span class="value description">' + row.description + '</span></div>';
                         string += '<div class="row buttons">';
-                        string += '<button class="ui-button delete-tournament" onclick="tournaments.deleteButton(' + row.id + ')">Delete Tournament</button>';
-                        string += '<button class="ui-button empty-signups" onclick="tournaments.emptyButton(' + row.id + ')">Empty Signups</button>';
-                        string += '<button class="ui-button view-signups" onclick="tournaments.viewButton(' + row.id + ')">View Signups</button>';
+                        if(row.started) {
+                            string += '<button class="view-matches button" onclick="tournaments.matchesButton(' + row.id + ')">Matches</button>';
+                        } else {
+                            string += '<button class="delete-tournament button" onclick="tournaments.deleteButton(' + row.id + ')">Delete Tournament</button>';
+                            string += '<button class="empty-signups button" onclick="tournaments.emptyButton(' + row.id + ')">Empty Signups</button>';
+                            string += '<button class="start-tournament button" onclick="tournaments.startButton(' + row.id + ')">Start Tournament</button>';
+                        }
+                        string += '<button class="view-signups button" onclick="tournaments.viewButton(' + row.id + ')">View Signups</button>';
                         string += '</div>';
                         string += '</div>';
                         string += '</div>';
@@ -183,5 +189,25 @@ var tournaments = {
     viewButton: function(selectedID) {
         if(!selectedID) return;
         window.location = UrlBuilder.buildUrl(true, 'tournaments', 'view', {id:selectedID});
+    },
+    
+    matchesButton: function(selectedID) {
+        if(!selectedID) return;
+        window.location = UrlBuilder.buildUrl(true, 'tournaments', 'matches', {id:selectedID});
+    },
+    
+    startButton: function(selectedID) {
+        if(!selectedID) return;
+        $.post(
+            UrlBuilder.buildUrl(true, 'tournaments', 'start'),
+            { tournament_id: selectedID },
+            function (data) {
+                if (data != null && data.error) {
+                    Overlay.openOverlay(true, data.error);
+                    return;
+                }
+                Overlay.openOverlay(false, "Tournament started", 1000);
+            },
+            'json');
     }
 }

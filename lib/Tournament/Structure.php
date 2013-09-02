@@ -3,6 +3,7 @@
 abstract class Tournament_Structure extends Tournament_Tournament {
     public abstract function createMatches();
     public abstract function display();
+    public abstract function displayMatches();
     
     private function createMatch($player1, $player2, $round) {
         if($player1 == 'ghost' || $player2 == 'ghost') return;

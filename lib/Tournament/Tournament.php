@@ -45,20 +45,25 @@ class Tournament_Tournament {//implements jsonSerializable{
     
     function jsonSerialize() {
         return array(
-            'id' =>             $this->ID,
-            'type' =>           $this->type,
-            'type_name' =>      Tournament_Main::getType($this->type),
-            'game' =>           $this->game,
-            'game_name' =>      Tournament_Main::getGame($this->game), 
-            'name' =>           $this->name,
-            'lan' =>            $this->lan,
-            'team_size' =>      $this->team_size,
-            'signups' =>        $this->signups_open,
-            'visible' =>        $this->visible,
-            'signups_close' =>  $this->signups_close,
-            'start_time' =>     $this->start_time,
-            'end_time' =>       $this->end_time,
-            'description' =>    $this->description
+            'id' =>                 $this->ID,
+            'type' =>               $this->type,
+            'type_name' =>          $this->getType(),
+            'game' =>               $this->game,
+            'game_name' =>          $this->getGame(), 
+            'name' =>               $this->getName(),
+            'lan' =>                $this->getLan(),
+            'team_size' =>          $this->getTeamSize(),
+            'signups' =>            $this->signupsOpen(),
+            'visible' =>            $this->isVisible(),
+            'signups_close' =>      $this->signups_close,
+            'signups_close_nice' => $this->getSignupClose(),
+            'start_time' =>         $this->start_time,
+            'start_time_nice' =>    $this->getEnd(),
+            'end_time' =>           $this->end_time,
+            'end_time_nice' =>      $this->getEnd(),
+            'description' =>        $this->getDescription(),
+            'current_signups' =>    count($this->getSignupList()),
+            'started' =>            $this->started
         );
     }
     
@@ -242,7 +247,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         }
         
         if(!$this->matches) {
-            $r = LanWebsite_Main::getDb()->query("SELECT ID FROM `tournament_matches` WHERE tournament_id = '%s'", $this->ID);
+            $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s'", $this->ID);
             $this->matches = array();
             while($row = $r->fetch_assoc()) {
                 $this->matches[$row['id']] = new Tournament_Match($row);
