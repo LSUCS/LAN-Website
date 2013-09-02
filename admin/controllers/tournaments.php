@@ -26,7 +26,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             case "delete":
             case "empty": 
             case "view":
-                return array("tournament_id" => array("int","notnull"));
+                return array("id" => array("int","notnull"));
         }
     }
     
@@ -90,19 +90,21 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Delete($inputs) {
-        $tournament = Tournament_Main::tournament($inputs['tournament_id']);
+        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
+        $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         echo $tournament->delete();
     }
     
     public function post_Empty($inputs) {
-        $tournament = Tournament_Main::tournament($inputs['tournament_id']);
+        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
+        $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         echo $tournament->empty();
     }
     
     public function get_View($inputs) {
-        if ($this->isInvalid("tournament_id")) $this->error("Invalid Request");
+        if ($this->isInvalid("id")) $this->error("Invalid Request");
         
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
@@ -115,7 +117,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function get_Matches($inputs) {
-        if ($this->isInvalid("tournament_id")) $this->error("Invalid Request");
+        if ($this->isInvalid("id")) $this->error("Invalid Request");
         
         $tournament = Tournament_Main::tournament($inputs['id'])->getStructure();
         if(!$tournament) $this->error(404);
@@ -129,7 +131,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Start($inputs) {
-        if ($this->isInvalid("tournament_id")) $this->jsonError("Invalid Request");
+        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
         
         $tournament = Tournament_Main::tournament($inputs['id'])->getStructure();
         

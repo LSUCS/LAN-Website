@@ -60,7 +60,7 @@ var tournaments = {
                         
                         var string = '<div id="tournament-' + row.id + '">';
                         string = '<h2 class="tournament-name">' + link + '</h2>';
-                        string += '<div class="tournament-table">';
+                        string += '<div class="tournament-table" id="tournament-' + row.id + '">';
                         string += '<div class="row"><span class="field id">ID</span><span class="value id">' + row.id + '</span></div>';
                         string += '<div class="row"><span class="field game">Game</span><span class="value game">' + row.game_name + '</span></div>';
                         string += '<div class="row"><span class="field team-size">Team Size</span><span class="value team-size">' + row.team_size + '</span></div>';
@@ -160,7 +160,7 @@ var tournaments = {
     
     emptyButton: function(selectedID) {
         if(!selectedID) return;
-        if(this.selectedRow.find(".current-signups").html() == '0') {
+        if($($("#tournament-" + selectedID).find(".current-signups")[1]).html() == '0') {
             Overlay.openOverlay(false, "This tournament has no signups!", 1000);
             return;
         }
@@ -170,7 +170,7 @@ var tournaments = {
         $("#confirm-delete").click(function() {
             $.post(
                 UrlBuilder.buildUrl(true, "tournaments", "empty"),
-                { tournament_id: selectedID },
+                { id: selectedID },
                 function (data) {
                     if (data != null && data.error) {
                         Overlay.openOverlay(true, data.error);
@@ -200,7 +200,7 @@ var tournaments = {
         if(!selectedID) return;
         $.post(
             UrlBuilder.buildUrl(true, 'tournaments', 'start'),
-            { tournament_id: selectedID },
+            { id: selectedID },
             function (data) {
                 if (data != null && data.error) {
                     Overlay.openOverlay(true, data.error);
