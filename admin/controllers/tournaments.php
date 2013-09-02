@@ -32,13 +32,20 @@
         }
         
         public function get_Getentries() {
-            $res = LanWebsite_Main::getDb()->query("SELECT ID from `tournament_tournaments WHERE lan = '%s' ORDER BY game ASC");
+            $res = LanWebsite_Main::getDb()->query("SELECT ID from `tournament_tournaments` WHERE lan = '%s' ORDER BY game ASC",
+                LanWebsite_Main::getSettings()->getSetting("lan_number"));
             
             $tournaments = array();
-            while(list($ID) = $res->fetch_assoc()) {
-                $tournaments[] = Tournaments_Main::tournament($ID);
+            while(list($ID) = $res->fetch_row()) {
+                $tournaments[] = Tournament_Main::tournament($ID);
             }
-            echo json_encode($tournaments->jsonSerialize());
+            //echo json_encode($tournaments);
+            
+            $json = array();
+            foreach($tournaments as $t) {
+                $json[] = $t->jsonSerialize();
+            }
+            echo json_encode(array('tournaments'=>$json, 'games'=>Tournament_Main::getGames(), 'types'=>Tournament_Main::getTypes()));
         }
         
         public function post_Add($inputs) {

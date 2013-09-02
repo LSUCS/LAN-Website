@@ -50,16 +50,16 @@ var tournaments = {
             UrlBuilder.buildUrl(true, 'tournaments', 'getentries'),
             function (data) {
                 $("#entry-table").html("");
-                if (data.length > 0) {
-                    for (var i = 0; i < data.length; i++) {
-                        var row = data[i];
+                if (data.tournaments.length > 0) {
+                    for (var i = 0; i < data.tournaments.length; i++) {
+                        var row = data.tournaments[i];
                         
-                        var link = Urlbuilder.buildUrl(false, 'tournaments', 'view', {'id':row.id});
+                        var link = UrlBuilder.buildUrl(false, 'tournaments', 'view', {'id':row.id});
                         link = '<a href="' + link + '">' + row.game_name + '</a>';
                         
                         var string = '<div id="tournament-' + row.id + '">';
-                        string = '<h2>' + data.name + '</h2>';
-                        string += '<div id="tournament-table">';
+                        string = '<h2 class="tournament-name">' + row.name + '</h2>';
+                        string += '<div class="tournament-table">';
                         string += '<div class="row"><span class="field id">ID</span><span class="value id">' + row.id + '</span></div>';
                         string += '<div class="row"><span class="field game">Game</span><span class="value game">' + link + '</span></div>';
                         string += '<div class="row"><span class="field team-size">Team Size</span><span class="value team-size">' + row.team_size + '</span></div>';
@@ -71,12 +71,11 @@ var tournaments = {
                         string += '<div class="row"><span class="field visible">Visible?</span><span class="value visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span></div>';
                         string += '<div class="row"><span class="field current-signups">Current Signups</span><span class="value current-signups">' + row.current_signups + '</span></div>';
                         string += '<div class="row"><span class="field description">Description</span><span class="value description">' + row.description + '</span></div>';
+                        string += '<div class="row buttons">';
+                        string += '<button class="ui-button delete-tournament" onclick="tournaments.deleteButton(' + row.id + ')">Delete Tournament</button>';
+                        string += '<button class="ui-button empty-signups" onclick="tournaments.emptyButton(' + row.id + ')">Empty Signups</button>';
+                        string += '<button class="ui-button view-signups" onclick="tournaments.viewButton(' + row.id + ')">View Signups</button>';
                         string += '</div>';
-                        
-                        string += '<div class="buttons">';
-                        string += '<button class="delete-tournament" onclick="tournaments.deleteButton(' + row.id + ')">Delete Tournament</button>';
-                        string += '<button class="empty-signups" onclick="tournaments.emptyButton(' + row.id + ')">Empty Signups</button>';
-                        string += '<button class="view-signups" onclick="tournaments.viewButton(' + row.id + ')">View Signups</button>';
                         string += '</div>';
                         string += '</div>';
                                                 
