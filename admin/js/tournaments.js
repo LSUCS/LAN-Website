@@ -54,7 +54,7 @@ var tournaments = {
                     for (var i = 0; i < data.length; i++) {
                         var row = data[i];
                         
-                        var link = Urlbuilder.buildUrl(false, 'tournaments', 'view', array('id'=>row.id));
+                        var link = Urlbuilder.buildUrl(false, 'tournaments', 'view', {'id':row.id});
                         link = '<a href="' + link + '">' + row.game_name + '</a>';
                         
                         var string = '<div id="tournament-' + row.id + '">';
