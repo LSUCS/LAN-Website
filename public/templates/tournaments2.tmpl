@@ -8,14 +8,17 @@ if(count($DataBag["usertournaments"])) {
 <?
         foreach($DataBag["usertournaments"] as $t) {
 ?>
-        <div class="signup">
-            <span class="id" style="display: none"><?=$t["tournament"]->ID?></span>
-            <div class="icon">
-                <img src="<?=$t["tournament"]->getIcon()?>"/>
+        <a href="<?=LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$t['tournament']->ID))?>">
+            <div class="signup">
+                <span class="id" style="display: none"><?=$t["tournament"]->ID?></span>
+                <div class="icon">
+                    <img src="<?=$t["tournament"]->getIcon()?>"/>
+                </div>
+                <div class="name"><?=$t["tournament"]->getName()?></div>
+                <?=(isset($t["team"])) ? '<div class="team"><b>Team:</b> ' . $t["team"]->getName() . '</div>' : ''?>
+                <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div>
             </div>
-            <div class="name"><?=$t["tournament"]->getName()?></div>
-            <?=(isset($t["team"])) ? '<div class="team"><b>Team:</b> ' . $t["team"]->getName() . '</div>' : ''?>
-            <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div></div>
+        </a>
 <?
         }
 ?>
@@ -25,7 +28,7 @@ if(count($DataBag["usertournaments"])) {
 }
 if(!count($DataBag["tournaments"])) {
 ?>
-    <div class="notournaments">No Tournaments have been created for this LAN yet</div>
+    <div class="notournaments">There are currently no tournaments for this LAN</div>
 <?
 } else {
 ?>
@@ -37,7 +40,7 @@ if(!count($DataBag["tournaments"])) {
         ?>
             <div class="day"><?=$t->getDay()?></div>
             <a href="<?=LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$t->ID))?>">
-                <div class="tournament" value="<?=$t->ID?>">
+                <div class="tournament">
                     <div class="icon"><img src="<?=$t->getIcon()?>" /></div>
                     <div class="name"><p class="exclude"><?=$t->getName()?></p></div>
                     <div class="right-container">

@@ -61,8 +61,8 @@ var tournaments = {
                     Overlay.openOverlay(true, data.error);
                     return;
                 }
-                Overlay.openOverlay(false, 'Joined successfully', 1000);
-                window.setTimeout("location.reload()", 500);
+                Overlay.openOverlay(false, 'Joined successfully', 2000);
+                window.setTimeout("location.reload()", 2000);
                 
             },
             'json');
@@ -81,8 +81,8 @@ var tournaments = {
                     Overlay.openOverlay(true, data.error);
                     return;
                 }
-                Overlay.openOverlay(false, 'Joined successfully', 1000);
-                window.setTimeout("location.reload()", 500);
+                Overlay.openOverlay(false, 'Joined successfully', 2000);
+                window.setTimeout("location.reload()", 2000);
             },
             'json');
     },
@@ -96,8 +96,8 @@ var tournaments = {
                     Overlay.openOverlay(true, data.error);
                     return;
                 }
-                Overlay.openOverlay(false, 'You have left this tournament', 1000);
-                window.setTimeout("location.reload()", 500);
+                Overlay.openOverlay(false, 'You have left this tournament', 2000);
+                window.setTimeout("location.reload()", 2000);
             },
             'json');
     }

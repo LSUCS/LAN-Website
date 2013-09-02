@@ -48,7 +48,7 @@ if ($DataBag["tournament"]->signupsOpen()) {
 <div style="clear: both;"></div>
 
 <?php
-if($DataBag["tournament"]->signupsOpen()) {
+if($DataBag["tournament"]->signupsOpen() && LanWebsite_Main::getAuth()->isLoggedIn()) {
 ?>
 
 

@@ -47,7 +47,9 @@ class Tournament_Tournament {//implements jsonSerializable{
         return array(
             'id' =>             $this->ID,
             'type' =>           $this->type,
+            'type_name' =>      Tournament_Main::getType($this->type),
             'game' =>           $this->game,
+            'game_name' =>      Tournament_Main::getGame($this->game), 
             'name' =>           $this->name,
             'lan' =>            $this->lan,
             'team_size' =>      $this->team_size,

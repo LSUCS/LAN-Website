@@ -31,6 +31,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             //The tournament has been deleted, but the signups haven't. This shouldn't happen, but clean up the db.
             if(!$row['tournament']) {
                 $db->query("DELETE FROM `tournament_signups` WHERE tournament_id = '%s'", $row['tournament_id']);
+                continue;
             }
             
             //If the signup was part of a team
@@ -75,6 +76,8 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function get_Create() {
+        LanWebsite_Main::getAuth()->requireLogin();
+        
         $tmpl = LanWebsite_Main::getTemplateManager();
         $tmpl->setSubTitle("Create Team");
         $tmpl->addTemplate("tournament_create");
@@ -82,6 +85,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Createteam($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
         if($this->isInvalid('name')) $this->errorJson("Invalid Name");
         
         if(strlen($inputs["name"]) > 200 || strlen($inputs["name"]) < 3) $this->errorJson("Invalid Name" . strlen($inputs["name"]));
@@ -96,6 +100,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Joinsolo($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
         if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
         
         $db = LanWebsite_Main::getDb();
@@ -114,9 +119,13 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+            
+        //We could update here, but it feels like a lot of effort for what it's worth
+        LanWebsite_Cache::delete('signuplist_' . $inputs['tournament_id']);
     }
     
     public function post_Leave($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
         if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
         
         $db = LanWebsite_Main::getDb();
@@ -135,6 +144,9 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         $db->query("DELETE FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+            
+        //We could update here, but it feels like a lot of effort for what it's worth
+        LanWebsite_Cache::delete('signuplist_' . $inputs['tournament_id']);
     }
 }
 
