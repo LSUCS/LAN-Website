@@ -11,7 +11,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
                     "description" => "notnull",
                     "start" => "int",
                     "end" => "int",
-                    "signups-close" => "int",
+                    "signups_close" => "int",
                     "type" => "int",
                     "signups" => "bool",
                     "visible" => "bool"
@@ -25,7 +25,10 @@ class Tournaments_Controller extends LanWebsite_Controller {
                 );
             case "delete":
             case "empty": 
-            case "view":
+            case "start":
+            case "signups":
+            case "view": 
+            case "matches":
                 return array("id" => array("int","notnull"));
         }
     }
@@ -90,29 +93,28 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Delete($inputs) {
-        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
+        if ($this->isInvalid("id")) $this->errorJson("Invalid Request");
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         echo $tournament->delete();
     }
     
     public function post_Empty($inputs) {
-        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
+        if ($this->isInvalid("id")) $this->errorJson("Invalid Request");
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         echo $tournament->empty();
     }
     
-    public function get_View($inputs) {
-        if ($this->isInvalid("id")) $this->error("Invalid Request");
+    public function get_Edit($inputs) {
+        if ($this->isInvalid("id")) $this->errorJson("Invalid Request");
         
         $tournament = Tournament_Main::tournament($inputs['id']);
-        if(!$tournament) $this->error(404);
-                  
-        $tmpl = LanWebsite_Main::getTemplateManager();
-		$tmpl->setSubTitle("View Tournament");
-        $tmpl->addTemplate('view', $tournament);
+        if(!$tournament) $this->errorJson(404);
         
+		$tmpl = LanWebsite_Main::getTemplateManager();
+		$tmpl->setSubTitle("Edit Tournament");
+        $tmpl->addTemplate('tournament_matches', array('tournament'=>$tournament, 'matches'=>$matches));        
 		$tmpl->output();
     }
     
@@ -131,21 +133,28 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Start($inputs) {
-        if ($this->isInvalid("id")) $this->jsonError("Invalid Request");
+        if ($this->isInvalid("id")) $this->errorJson("Invalid Request");
+                
+        $tournament = Tournament_Main::tournament($inputs['id'], false)->getStructure();
+        if(!$tournament) $this->errorJson("Invalid Tournament");
         
-        $tournament = Tournament_Main::tournament($inputs['id'])->getStructure();
-        
-        if($tournament->started) $this->jsonError("This tournament has already started");
+        if($tournament->started) $this->errorJson("This tournament has already started");
         
         //Close signups and make it display as started
         //In theory creating matches could take a while, so we wanna close signups first
         LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
         LanWebsite_Cache::delete('tournament', 'tournament_' . $tournament->ID);
-        echo $tournament->createMatches();
+        
+        $output = $tournament->createMatches();
+        if($output !== true) {
+            $this->errorJson("A fatal error occured: " . $output);
+        }
     }
     
     public function get_Signups($inputs) {
-        $tournament = Tournament_Main::tournament($inputs['tournament_id']);
+        if ($this->isInvalid("id")) $this->error("Invalid Request");
+        
+        $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
 
         //echo json_encode($tournament->getSignupList());
@@ -158,10 +167,10 @@ class Tournaments_Controller extends LanWebsite_Controller {
     }
     
     public function post_Editmatch($inputs) {
-        if($this->isInvalid("id")) $this->jsonError("Invalid Match");
-        if($this->isInvalid("score1")) $this->jsonError("Invalid Score 1");
-        if($this->isInvalid("score2")) $this->jsonError("Invalid Score 2");
-        if($this->isInvalid("winner")) $this->jsonError("Invalid Winner");
+        if($this->isInvalid("id")) $this->errorJson("Invalid Match");
+        if($this->isInvalid("score1")) $this->errorJson("Invalid Score 1");
+        if($this->isInvalid("score2")) $this->errorJson("Invalid Score 2");
+        if($this->isInvalid("winner")) $this->errorJson("Invalid Winner");
         
         $played = ($inputs["winner"]) ? 1 : 0;
         LanWebsite_Main::getDb()->query("UPDATE `tournament_matches` SET played_bool = '%s' score1 = '%s', score2 = '%s', winner='%s' WHERE id = '%s'",

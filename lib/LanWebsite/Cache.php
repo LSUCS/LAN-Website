@@ -30,7 +30,7 @@ class LanWebsite_Cache {
     }
     
     public static function delete($group, $elem) {
-        self::$init();
+        self::init();
         $key = md5($group . '.' . $elem);
         self::$server->delete($key);
     }

@@ -4,12 +4,14 @@
    
 class Tournament_Roundrobin extends Tournament_Structure {
     private $shuffle = true;
+    public $minimumPlayers = 3;
+    
     public function createMatches() {
         //Total number of signups. Don't use cache cos it needs to be exact
         $total = count($this->getSignups(false));
         
         //Minimum of 3 teams
-        if($total < 3) return false;
+        if($total < $this->minimumPlayers) return "There must be at least " . $this->minimumPlayers . " teams for a Round Robin tournament";
         
         //If we have an odd number of signups we need to use a ghost team
         $ghost = false;
@@ -28,28 +30,30 @@ class Tournament_Roundrobin extends Tournament_Structure {
         $teams = array_values($teams);
         //If we need to use a ghost team add it to the end
         if($ghost) $teams[] = 'ghost';
-        
+
         //Loop rounds
         for($i = 0; $i < $rounds; $i++) {
             //First round we don't need to alter anything
-            if($i = 0) {
+            if($i == 0) {
                 $roundTeams = $teams;
             } else {
                 //Change the order based on the order of last round
+                $rt2 = array();
                 foreach($roundTeams as $ind => $t) {
-                    $rt2 = array();
 
                     //Initial team doesn't change, rotate all others
-                    if($ind == 0) continue;
+                    if($ind !== 0) {
                     
-                    //Move the top row right one
-                    if($ind < $teams/2 - 1) $ind++;
-                    //Move the top right corner to the bottom right corner
-                    elseif($ind == $teams/2 - 1) $ind = $teams-1;
-                    //Move the bottom row left one
-                    elseif($ind > $teams/2) $ind--;
-                    //Move the bottom left corner to the second position
-                    elseif($ind == $teams/2) $ind = 1;
+                        //Move the top row right one
+                        if($ind < $total/2 - 1) $ind++;
+                        //Move the top right corner to the bottom right corner
+                        elseif($ind == $total/2 - 1) $ind = $total-1;
+                        //Move the bottom row left one
+                        elseif($ind > $total/2) $ind--;
+                        //Move the bottom left corner to the second position
+                        elseif($ind == $total/2) $ind = 1;
+                    
+                    }
                     
                     $rt2[$ind] = $t;
                 }
@@ -65,6 +69,7 @@ class Tournament_Roundrobin extends Tournament_Structure {
                 $this->createMatch($roundTeams[$j], $roundTeams[$j + $total/2], $i);
             }
         }
+        return true;
     }
     
     public function display() {
@@ -75,21 +80,16 @@ class Tournament_Roundrobin extends Tournament_Structure {
             $played = 0;
             $won = 0;
             $lost = 0;
-            
-            if($team instanceOf LanWebsite_User) {
-                $id = $team->getUserId();
-            } else {
-                $id = $team->ID;
-            }
+            $id = Tournament_Main::getPlayerId($team);
             
             foreach($this->getMatches() as $match) {
                 if(!$match->getPlayed()) continue;
+                $played++;
+                
                 if($match->getPlayer1() == $id) {
-                    $played++;
                     if($match->getWinner() == 1) $won++;
                     else $lost++;
                 } elseif($match->getPlayer2() == $id) {
-                    $played++;
                     if($match->getWinner() == 2) $won++;
                     else $lost++;
                 }
@@ -100,10 +100,7 @@ class Tournament_Roundrobin extends Tournament_Structure {
         
         $teams = $this->bubbleSort($teams);
         
-        //Template-ception. Hopefully this will work. I actually have no idea though. I have a feeling I've done this before, but might be thinking of a different site
-        $tmpl = LanWebsite_Main::getTemplateManager();
-        $tmpl->addTemplate('tournament_roundrobin', $teams);
-		$tmpl->output();
+        $this->showTemplate('roundrobin', array('teams' =>$teams));
     }
     
     //No idea if this will work, I was feeling lazy so stole this off of the internet

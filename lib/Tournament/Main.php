@@ -51,9 +51,9 @@ class Tournament_Main {
         return self::$games;
     }
     
-    public static function tournament($id) {
-        if(array_key_exists($id, self::$tournaments)) return self::$tournaments[$id];
-        self::$tournaments[$id] = new Tournament_Tournament($id);
+    public static function tournament($id, $cache = false) {
+        if(!$cache && array_key_exists($id, self::$tournaments)) return self::$tournaments[$id];
+        self::$tournaments[$id] = new Tournament_Tournament($id, $cache);
         return self::$tournaments[$id];
     }
     

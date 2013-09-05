@@ -40,8 +40,8 @@ class Tournament_Match {
             $this->player1 = Tournament_Main::team($this->player1);
             $this->player2 = Tournament_Main::team($this->player2);
         } else {
-            $this->player1 = LanWebsite::getAuth()->getUserById($this->player1);
-            $this->player2 = LanWebsite::getAuth()->getUserById($this->player2);
+            $this->player1 = LanWebsite_Main::getUserManager()->getUserById($this->player1);
+            $this->player2 = LanWebsite_Main::getUserManager()->getUserById($this->player2);
         }
     }
     

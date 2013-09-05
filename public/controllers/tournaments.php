@@ -121,7 +121,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
             
         //We could update here, but it feels like a lot of effort for what it's worth
-        LanWebsite_Cache::delete('signuplist_' . $inputs['tournament_id']);
+        LanWebsite_Cache::delete('tournament', 'signuplist_' . $inputs['tournament_id']);
     }
     
     public function post_Leave($inputs) {
@@ -146,7 +146,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
             
         //We could update here, but it feels like a lot of effort for what it's worth
-        LanWebsite_Cache::delete('signuplist_' . $inputs['tournament_id']);
+        LanWebsite_Cache::delete('tournament' ,'signuplist_' . $inputs['tournament_id']);
     }
 }
 

@@ -19,9 +19,9 @@ class Tournament_Tournament {//implements jsonSerializable{
     private $signups = null;
     private $signupList = null;
     
-    function __construct($ID) {
+    function __construct($ID, $useCache = true) {
         if($ID == 0) throw new Tournament_404;
-        if(!LanWebsite_Cache::get('tournament', 'tournament_' . $ID, $r)) {
+        if(!$useCache || !LanWebsite_Cache::get('tournament', 'tournament_' . $ID, $r)) {
             $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_tournaments` WHERE id = '%s'", $ID)->fetch_assoc();
             if(!$r) throw new Tournament_404;
             
@@ -115,7 +115,7 @@ class Tournament_Tournament {//implements jsonSerializable{
     
     public function isVisibleToUser() {
         if(is_null($this->ID)) return false;
-        return ($this->isVisible() || LanWebsite_Main::getAuth()->getActiveUser()->isAdmin());
+        return ($this->isVisible() || LanWebsite_Main::getUserManager()->getActiveUser()->isAdmin());
     }
 
     public function getStart($formatDate = true) {
@@ -178,13 +178,13 @@ class Tournament_Tournament {//implements jsonSerializable{
     }
     
     public function getStructure() {
-        if(!$this->started) return false;
+        //if(!$this->started) return false;
         //Get the type
         $type = Tournament_Main::getType($this->type);
         //Turn it into nice class format. E.g Round Robin to Roundrobin
         $type = ucfirst(strtolower(str_replace(' ','',$type)));
         $type = 'Tournament_' . $type;
-        return new $type;
+        return new $type($this->ID);
     }
     
     //Methods
@@ -198,10 +198,10 @@ class Tournament_Tournament {//implements jsonSerializable{
         if($this->getTeamSize() > 1) {
             $signups = LanWebsite_Main::getDb()->query("SELECT team_id, COUNT(user_id) AS players FROM `tournament_signups` WHERE tournament_id = '%s' GROUP BY team_id", $this->ID);
             while($Row = $signups->fetch_assoc()) {
-			    $this->signups[$Row['user_id']] = array('team' => new Tournament_Team($Row['team_id']), 'players' => $Row['players']);
+			    $this->signups[$Row['team_id']] = array('team' => new Tournament_Team($Row['team_id']), 'players' => $Row['players']);
             }
         } else {
-            $signups = $db->query("SELECT user_id FROM `tournament_signups` WHERE tournament_id = '%s'", $this->ID);
+            $signups = LanWebsite_Main::getDb()->query("SELECT user_id FROM `tournament_signups` WHERE tournament_id = '%s'", $this->ID);
             while($Row = $signups->fetch_assoc()) {
 			    $this->signups[$Row['user_id']] = LanWebsite_Main::getUserManager()->getUserById($Row['user_id']);
             }
@@ -250,7 +250,7 @@ class Tournament_Tournament {//implements jsonSerializable{
             $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s'", $this->ID);
             $this->matches = array();
             while($row = $r->fetch_assoc()) {
-                $this->matches[$row['id']] = new Tournament_Match($row);
+                $this->matches[$row['id']] = new Tournament_Match($row['id']);
             }
         }
     }

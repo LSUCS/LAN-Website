@@ -105,7 +105,7 @@ var tournaments = {
                 description: $("#new-description").val(),
                 start: $("#new-start").val(),
                 end: $("#new-end").val(),
-                signup_end: $("#new-signups-end").val(),
+                signups_close: $("#new-signups-end").val(),
                 signups: $("#new-signups").prop('checked'),
                 visible: $("#new-visible").prop('checked'),
             },
