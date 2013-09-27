@@ -12,12 +12,20 @@ function edit(id) {
     if(winner1) winner = 1;
     else if(winner2) winner = 2;
     
+    var score1 = $("#score1-" + id).val();
+    var score2 = $("#score2-" + id).val();
+    
+    if(winner == 0 && score1 !== "" && score2 !== "") {
+        Overlay.openOverlay(false, "You cannot have scores if there is no winner!", 2000);
+        return;
+    }
+    
     Overlay.loadingOverlay();
     $.post(
         UrlBuilder.buildUrl(true, 'tournaments', 'editmatch'), {
             'id': id,
-            'score1': $("#score1-" + id).val(),
-            'score2': $("#new-type-" + id).val(),
+            'score1': score1,
+            'score2': score2,
             'winner': winner,
         },
         function (data) {
@@ -26,7 +34,7 @@ function edit(id) {
                 return;
             }
             Overlay.openOverlay(false, "Match Edited", 1000);
-            window.setTimeout("window.reload();", 1000);
+            window.setTimeout("location.reload()", 1000);
         },
         'json');
 }

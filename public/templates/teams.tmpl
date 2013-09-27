@@ -1,0 +1,72 @@
+<?php
+//Hacky css fix to make it look like a different page. Annoying lack of css ties to grab onto
+if($DataBag['userteams']) { 
+?>
+<script>
+$(document).ready(function() {
+    $('#team-options .teams').css('color', '#999');
+    $("#team-options .teams").hover(function(){
+        $(this).css('color', '#F1642B');
+    }, function() {
+        $(this).css('color', '#999')
+    });
+    $('#team-options .your').css('color', '#F1642B'); 
+});
+</script>
+<?php
+}
+
+
+if(count($DataBag['invites'])) {
+?>
+<div id="invites">
+    <h2>Invites</h2>
+<?php
+    foreach($DataBag['invites'] as $I) {
+?>
+    <a href="<?=LanWebsite_Main::buildUrl(false, 'teams', 'view', array('teamid'=>$I["team"]->ID));?>">
+        <div class="row invite">
+            <span class="name"><?=$I["team"]->getName()?></span>
+            <span class="date"><?=Tournament_Main::timeDiff($I["date"])?></span>
+        </div>
+    </a>
+<?php
+    }
+?>
+</div>
+<?php
+}
+
+?>
+<div id="teams">
+    <h2>Teams</h2>
+<?php
+if(count($DataBag['teams'])) {
+    foreach($DataBag['teams'] as $T) {
+?>
+    <a href="<?=LanWebsite_Main::buildUrl(false, 'teams', 'view', array('teamid'=>$T->ID));?>">
+        <div class="row team">
+            <span class="name"><?=$T->getName()?></span>
+            <span class="members"><?=count($T->getMembers())?></span>
+        </div>
+    </a>
+<?php
+    }
+} else {
+    if($DataBag['userteams']) {
+?>
+    <div class="row team">
+        <span class="noteams">You are not a member of any teams =[. Why not <a href="<?=LanWebsite_Main::buildUrl(false,'teams','create')?>">Create One?</a></span>
+    </div>
+<?php
+    } else {
+?>
+    <div class="row team">
+        <span class="noteams">There are currently no teams. Why not <a href="<?=LanWebsite_Main::buildUrl(false,'teams','create')?>">Create One?</a></span>
+    </div>
+<?php
+    }
+}
+?>
+
+</div>

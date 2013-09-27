@@ -173,7 +173,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         if($this->isInvalid("winner")) $this->errorJson("Invalid Winner");
         
         $played = ($inputs["winner"]) ? 1 : 0;
-        LanWebsite_Main::getDb()->query("UPDATE `tournament_matches` SET played_bool = '%s' score1 = '%s', score2 = '%s', winner='%s' WHERE id = '%s'",
+        LanWebsite_Main::getDb()->query("UPDATE `tournament_matches` SET played_bool = '%s', score1 = '%s', score2 = '%s', winner='%s' WHERE id = '%s'",
             $played, $inputs["score1"], $inputs["score2"], $inputs["winner"], $inputs["id"]);
         LanWebsite_Cache::delete('tournament', 'match_' . $inputs["id"]);
     }

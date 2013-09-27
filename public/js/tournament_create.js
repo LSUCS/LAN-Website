@@ -8,7 +8,7 @@ $(document).ready(function() {
 function createTeam() {
     Overlay.loadingOverlay();
     $.post(
-        UrlBuilder.buildUrl(false, "tournaments", "createteam"),
+        UrlBuilder.buildUrl(false, "teams", "createteam"),
         { name: $("#team-name").val(), icon: $("#team-icon").val(), description: $("#team-description").val() },
         function (data) {
             if (data != null) {

@@ -1,11 +1,10 @@
-<?
-
+<?php
 if(count($DataBag["usertournaments"])) {
 ?>
 
     <div id="signup-label">My Signups</div>
     <div id="my-signups">
-<?
+<?php
         foreach($DataBag["usertournaments"] as $t) {
 ?>
         <a href="<?=LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$t['tournament']->ID))?>">
@@ -19,24 +18,24 @@ if(count($DataBag["usertournaments"])) {
                 <div class="starts"><b>Starts:</b><?=$t["tournament"]->getStart()?></div>
             </div>
         </a>
-<?
+<?php
         }
 ?>
     </div>
     
-<?
+<?php
 }
 if(!count($DataBag["tournaments"])) {
 ?>
     <div class="notournaments">There are currently no tournaments for this LAN</div>
-<?
+<?php
 } else {
 ?>
 
     <div id="tournaments">
     
-        <?
-        foreach ($DataBag["tournaments"] as $t) {
+        <?php
+        foreach($DataBag["tournaments"] as $t) {
         ?>
             <div class="day"><?=$t->getDay()?></div>
             <a href="<?=LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$t->ID))?>">
@@ -46,19 +45,19 @@ if(!count($DataBag["tournaments"])) {
                     <div class="right-container">
                         <div class="right">
                             <div><b>Game:</b> <?=$t->getGame()?></div>
-                            <? if ($t->signupsOpen()) echo '<div><b>Signups Close:</b> ' . $t->getSignupClose() . '</div>'; ?>
+                            <?php if($t->signupsOpen()) echo '<div><b>Signups Close:</b> ' . $t->getSignupClose() . '</div>'; ?>
                             <div><b>Starts:</b> <?=$t->getStart()?></div>
                             <div><b>Ends:</b> <?=$t->getEnd()?></div>
                         </div>
                     </div>
                 </div>
             </a>
-        <?
+        <?php
         }
         ?>
 
     </div>
 
-<?
+<?php
 }
 ?>

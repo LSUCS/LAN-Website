@@ -66,7 +66,7 @@ class Tournament_Roundrobin extends Tournament_Structure {
                 //Using this model. Teams: 8, half is 4. So 0 and 4, 1 and 5, 2 and 6, etc.
                 // 0 1 2 3
                 // 4 5 6 7
-                $this->createMatch($roundTeams[$j], $roundTeams[$j + $total/2], $i);
+                $this->createMatch($roundTeams[$j], $roundTeams[$j + $total/2], $i+1);
             }
         }
         return true;
@@ -84,12 +84,13 @@ class Tournament_Roundrobin extends Tournament_Structure {
             
             foreach($this->getMatches() as $match) {
                 if(!$match->getPlayed()) continue;
-                $played++;
                 
-                if($match->getPlayer1() == $id) {
+                if(Tournament_Main::getPlayerId($match->getPlayer1()) == $id) {
+                    $played++;
                     if($match->getWinner() == 1) $won++;
                     else $lost++;
-                } elseif($match->getPlayer2() == $id) {
+                } elseif(Tournament_Main::getPlayerId($match->getPlayer2()) == $id) {
+                    $played++;
                     if($match->getWinner() == 2) $won++;
                     else $lost++;
                 }
@@ -110,7 +111,7 @@ class Tournament_Roundrobin extends Tournament_Structure {
         }      
         for ($outer = 0; $outer < $length; $outer++) {
             for ($inner = 0; $inner < $length; $inner++) {
-                if ($array[$outer]["won"] < $array[$inner]["won"]) {
+                if ($array[$outer]["won"] > $array[$inner]["won"]) {
                     $tmp = $array[$outer];
                     $array[$outer] = $array[$inner];
                     $array[$inner] = $tmp;

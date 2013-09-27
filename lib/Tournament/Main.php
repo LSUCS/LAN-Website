@@ -117,4 +117,56 @@ class Tournament_Main {
             return $player->getName();
         }
     }
+    
+    public static function timeDiff($time) {
+        $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
+        $lengths = array("60","60","24","7","4.35","12","10");
+        
+        $now = time();
+        
+        $difference = $now - $time;
+        $tense = "ago";
+        
+        for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+           $difference /= $lengths[$j];
+        }
+        
+        $difference = round($difference);
+        
+        if($difference != 1) {
+           $periods[$j].= "s";
+        }
+
+        return implode(array($difference, $periods[$j], $tense), ' ');
+    }
+    
+    public static function loadAlerts() {
+        $alerts = array();
+        $db = LanWebsite_Main::getDb();
+        
+        //General alerts
+        $res = $db->query("SELECT message, level, user_id, link FROM `tournament_alerts` WHERE user_id = '%s' OR user_id = 0", LanWebsite_Main::getAuth()->getActiveUserId());
+        while($row = $res->fetch_assoc()) {
+            $alerts[] = new LanWebsite_Alert(constant('LanWebsite_Alert::' . $row['level']), $row['message'], $row['link']);
+        }
+        
+        //Tournaments
+        $res = $db->query("SELECT t.ID, t.start_time, t.end_time, t.started FROM `tournament_signups` AS s JOIN `tournament_tournaments` AS t ON s.tournament_id = t.ID WHERE s.user_id = '%s'", LanWebsite_Main::getAuth()->getActiveUserId());
+        while($row = $res->fetch_assoc()) {
+            $time = $row['start_time'] - time();
+            $end = $row['end_time'] - time();
+            if($time < 3600 && $end > 0) {
+                if($row['started']) {
+                    $level = LanWebsite_Alert::ALERT_IMPORTANT;
+                    $message = 'A tournament that you are playing in is currently in progress';
+                } else {
+                    $level = LanWebsite_Alert::ALERT_NOTICE;
+                    $message = 'A tournament that you are playing in is starting soon';
+                }
+                $link = LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$row['ID']));
+                $alerts[] = new LanWebsite_Alert($level, $message, $link);
+            }
+        }
+        return $alerts;
+    }
 }

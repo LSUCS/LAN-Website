@@ -159,6 +159,10 @@
                 $data["datestring"] = date('d', strtotime(LanWebsite_Main::getSettings()->getSetting("lan_start_date"))) . date("-dS M Y", strtotime(LanWebsite_Main::getSettings()->getSetting("lan_end_date")));
                 $data["styles"] = array();
                 $data["scripts"] = array();
+                
+                //Alerts
+                $data["alerts"] = Tournament_Main::loadAlerts();
+                
                 $templates[] = array("template" => 'templates/body.tmpl', "data" => $data);
             }
             

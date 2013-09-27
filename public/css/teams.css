@@ -1,0 +1,49 @@
+#teams, #invites {
+    margin:auto;
+    width:40%;
+}
+#teams .row, #invites .row {
+    background-color:#EAEAEA;
+    background-image:linear-gradient(#FAFAFA, #EAEAEA);
+    background-repeat:repeat no-repeat;
+    border:1px solid #CACACA;
+    border-bottom-left-radius:3px;
+    border-bottom-right-radius:3px;
+    border-top-left-radius:3px;
+    border-top-right-radius:3px;
+    margin:5px;
+    padding:10px;
+    width:100%;
+}
+#teams .row:hover, #invites .row:hover {
+    background-color:#EAEAEA;
+    background-image:linear-gradient(#FDF2E8, #FFE6CD);
+    background-repeat:repeat no-repeat;
+    color:#F1642B;
+}
+#teams .name, #invites .name {
+    display:inline-block;
+    font-size:18px;
+    width:70%;
+}
+#teams .name a, #invites .name a {
+    color:#666666;
+}
+#teams .members:before, {
+    content:url(/images/group.png);
+    margin-right:10px;
+    vertical-align:middle;
+}
+#teams .members {
+    display:inline-block;
+    text-align:center;
+    width:28%;
+}
+
+#team-options .teams{
+    color: #F1642B;
+}
+
+#invites {
+    margin-bottom: 20px;
+}

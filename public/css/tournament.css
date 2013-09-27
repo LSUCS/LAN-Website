@@ -109,7 +109,7 @@
     #tournament-tabs .ui-tabs-panel {
         background: white;
         border-width: 0px 1px 1px 1px; 
-        height: 400px;
+        
     }
     #tournament-tabs li a {
         padding-left: 60px;
@@ -158,3 +158,115 @@
                 margin-right: 30px;
                 margin-top: 16px;
             }
+            
+#round-robin-display {
+    
+}
+    #round-robin-display span {
+        display: inline-block;
+    }
+    #round-robin-display div {
+        margin: 5px;
+    	height: 34px;
+        
+    }
+    #round-robin-display .header {
+        font-weight: bold;
+    }
+    #round-robin-display .name {
+        width: 200px;
+    }
+    #round-robin-display .position {
+        width: 20px;
+        text-align: center;
+    }
+    #round-robin-display .played {
+        width: 70px;
+        text-align: center;
+    }
+    #round-robin-display .won, #round-robin-display .lost  {
+        width: 50px;
+        text-align: center;
+    }
+    
+#matches {
+    font-size: 16px;
+}
+    #matches h2 {
+        margin-top: 10px;
+    }
+    #matches span {
+        display: inline-block;
+    }
+    #matches .match {
+        width: 97%;
+        
+        border-radius: 10px;
+    	padding: 10px;
+    	height: 20px;
+        
+        margin: 10px;
+            
+        background: #ffd9a8; /* Old browsers */
+    	background: -moz-linear-gradient(top,  #ffd9a8 0%, #efbd88 100%); /* FF3.6+ */
+    	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffd9a8), color-stop(100%,#efbd88)); /* Chrome,Safari4+ */
+    	background: -webkit-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* Chrome10+,Safari5.1+ */
+    	background: -o-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* Opera 11.10+ */
+    	background: -ms-linear-gradient(top,  #ffd9a8 0%,#efbd88 100%); /* IE10+ */
+    	background: linear-gradient(to bottom,  #ffd9a8 0%,#efbd88 100%); /* W3C */
+    	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd9a8', endColorstr='#efbd88',GradientType=0 ); /* IE6-9 */
+        
+    }
+    
+    #matches .played {
+        background: #C4FFC5; /* Old browsers */
+    	background: -moz-linear-gradient(top,  #C4FFC5 0%, #8EFF68 100%); /* FF3.6+ */
+    	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#C4FFC5), color-stop(100%,#8EFF68)); /* Chrome,Safari4+ */
+    	background: -webkit-linear-gradient(top,  #C4FFC5 0%,#8EFF68 100%); /* Chrome10+,Safari5.1+ */
+    	background: -o-linear-gradient(top,  #C4FFC5 0%,#8EFF68 100%); /* Opera 11.10+ */
+    	background: -ms-linear-gradient(top,  #C4FFC5 0%,#8EFF68 100%); /* IE10+ */
+    	background: linear-gradient(to bottom,  #C4FFC5 0%,#8EFF68 100%); /* W3C */
+    	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#C4FFC5', endColorstr='#8EFF68',GradientType=0 ); /* IE6-9 */
+    }
+    
+    #matches .scores {
+        display: inline-block;
+        width: 33%;
+        text-align: center;
+    }
+    
+    #matches .score1 {
+        width: 38%;
+        text-align: right;
+    }
+    #matches .score2 {
+        text-align: left;
+        width: 38%;
+    }
+    #matches .vs {
+        width: 19%;
+    }
+    
+    
+    #matches .right-player {
+        display: inline-block;
+        width: 32%;
+    }
+    
+    #matches .left-player {
+        display: inline-block;
+        width: 32%;
+    }
+    
+    #matches .winner {
+        font-weight: bold;
+    }
+    
+    #matches .player1 {
+        float: left;
+    }
+    
+    #matches .player2 {
+        float: right;
+    }
+    

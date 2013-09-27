@@ -12,14 +12,14 @@ foreach($DataBag["matches"] as $match) {
     }
 ?>
     <div class="match <?=($match->getPlayed()) ? 'played' : ''?>" id="match-<?=$match->ID?>">
-        <div class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=LanWebsite_Main::getPlayerLink($match->getPlayer1())?></div>
-        <div class="score1"><input type="text" id="score1-<?=$match->ID?>" value="<?=$match->getScore1()?>" /></div>
-        <div class="winnerbox"><input id="winner1" type="checkbox" <?=($match->getWinner() == 1) ? 'checked="checked"' : ''?> /></div>
-        <div class="vs">V</div>
-        <div class="winnerbox"><input id="winner2" type="checkbox" <?=($match->getWinner() == 2) ? 'checked="checked"' : ''?> /></div>
-        <div class="score2"><input type="text" id="score2-<?=$match->ID?>" value="<?=$match->getScore2()?>" /></div>
-        <div class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=LanWebsite_Main::getPlayerLink($match->getPlayer2())?></div>
-        <div class="edit"><button class="editButton" onclick="edit('<?=$match->ID?>')">Edit</button></div>
+        <span class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer1())?></span>
+        <span class="score1"><input type="text" id="score1-<?=$match->ID?>" value="<?=$match->getScore1()?>" placeholder="Score" /></span>
+        <span class="winnerbox"><input id="winner1-<?=$match->ID?>" type="checkbox" <?=($match->getWinner() == 1) ? 'checked="checked"' : ''?> /></span>
+        <span class="vs">V</span>
+        <span class="winnerbox"><input id="winner2-<?=$match->ID?>" type="checkbox" <?=($match->getWinner() == 2) ? 'checked="checked"' : ''?> /></span>
+        <span class="score2"><input type="text" id="score2-<?=$match->ID?>" value="<?=$match->getScore2()?>" placeholder="Score" /></span>
+        <span class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer2())?></span>
+        <span class="edit"><button class="editButton" onclick="edit('<?=$match->ID?>')">Edit</button></span>
     </div>
 <?php
 }

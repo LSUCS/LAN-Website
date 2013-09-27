@@ -13,10 +13,7 @@ class Tournament_Highscore extends Tournament_Structure {
         $scores = $this->getMatches();
         $scores = $this->bubbleSort($scores);
         
-        //Template-ception. Hopefully this will work. I actually have no idea though. I have a feeling I've done this before, but might be thinking of a different site
-        $tmpl = LanWebsite_Main::getTemplateManager();
-        $tmpl->addTemplate('tournament_highscore', $scores);
-		$tmpl->output();
+        $this->showTemplate('tournament_highscore', $scores);
     }
     
     //No idea if this will work, I was feeling lazy so stole this off of the internet
@@ -26,7 +23,7 @@ class Tournament_Highscore extends Tournament_Structure {
         }      
         for ($outer = 0; $outer < $length; $outer++) {
             for ($inner = 0; $inner < $length; $inner++) {
-                if ($array[$outer]->getScore1() < $array[$inner]->getScore1()) {
+                if ($array[$outer]->getScore1() > $array[$inner]->getScore1()) {
                     $tmp = $array[$outer];
                     $array[$outer] = $array[$inner];
                     $array[$inner] = $tmp;

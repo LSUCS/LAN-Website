@@ -1,0 +1,21 @@
+#content {
+    margin-top: 40px;
+}
+#team-options {
+    text-align: center;
+    height:0;
+    position:relative;
+    top: -65px;
+}
+    #team-options li {
+        font-family: reznor;
+        font-size: 20px;
+        font-weight: bold;
+        display: inline;
+        padding: 0 10px;
+        list-style: none;
+    }
+    
+    #team-options {
+        
+    }

@@ -490,15 +490,15 @@ body {
         }
 
     #subtitle {
-		width: 960px;
-		margin-left: auto;
-		margin-right: auto;
-		padding-left: 50px;
         font-family: reznor;
         font-size: 37px;
-		margin-top: 20px;
+        
+		width: 960px;
         height: 40px;
-        margin-bottom: 20px;
+        
+		padding-left: 50px;
+        
+		margin: 10px auto;
     }
         #subtitle img {
             position: relative;
@@ -819,3 +819,95 @@ body {
         margin-top: 10px;
         opacity: 0.8;
     }
+    
+/* Tournament Alerts */
+
+#alerts {
+	margin-left: auto;
+	margin-right: auto;
+	overflow:hidden;
+	width: 960px;
+    
+}
+.alert {
+	height: 24px;
+	margin: 0 auto;
+	margin-top: 5px;
+	padding: 5px;
+	line-height:24px;
+	font-size:18px;
+    
+   	border-radius: 3px;
+}
+.alert.message .alert-message {
+    color: #000;
+}
+.alert .alert-message {
+    color: #FFF;
+}
+.alert .alert-message::before{
+	margin-right:5px;
+	vertical-align:middle;
+}
+.alert.message{
+	background-color:#EAEAEA;
+	background-image:linear-gradient(#FAFAFA, #EAEAEA);
+	background-repeat:repeat no-repeat;
+	border: 1px solid #CACACA;
+}
+.alert.message .alert-message::before{
+	content:url(/images/email.png);
+
+}
+.alert.message:hover {
+    background-image:linear-gradient(#FAFAFA, #DADADA);
+}
+.alert.notice{
+	background-color:#F0AD4E;
+	background-image:linear-gradient(#f5ca8d, #F0AD4E);
+	background-repeat:repeat no-repeat;
+	border: 1px solid #e78f14;
+}
+.alert.notice .alert-message::before{
+	content:url(/images/error.png);
+
+}
+.alert.notice:hover {
+    background-image:linear-gradient(#F5CA8D, #E09D3E);
+}
+.alert.important{
+	background-color:#D9534F;
+	background-image:linear-gradient(#e58a87, #D9534F);
+	background-repeat:repeat-x;
+	border: 1px solid #bc2d28;
+}
+.alert.important .alert-message::before{
+	content:url(/images/exclamation.png);
+}
+.alert.important:hover {
+    background-image:linear-gradient(#E58A87, #C9433F);
+}
+.alert.success{
+	background-color:#5CB85C;
+	background-image:linear-gradient(#8bcd8b, #5CB85C);
+	background-repeat:repeat no-repeat;
+	border: 1px solid #3f913f;
+}
+.alert.success .alert-message::before{
+	content:url(/images/accept.png);
+}
+.alert.success:hover{
+    background-image:linear-gradient(#8BCD8B, #4CC83C);
+}
+.alert .alert-close {
+    background-image:url(/images/cross.png);
+    background-position:50% 50%;
+    background-repeat:no-repeat no-repeat;
+    display:block;
+    height:100%;
+    float: right;
+    margin-right: 5px;
+    text-indent:0;
+    width:16px;
+    cursor: pointer;
+}

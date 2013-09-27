@@ -1,0 +1,47 @@
+<?php
+$T = $DataBag;
+
+if($T->isCaptain()) {
+?>
+    <div class="infobar">You are the captain of this team</div>
+<?php  
+} elseif($T->isTeamMember()) {
+?>
+    <div class="infobar">You are a member of this team</div>
+<?php
+}
+?>
+<script>
+var teamID = <?=$T->ID?>;
+</script>
+
+<div id="team">
+    <h2><?=$T->getName()?></h2>
+    
+    <div id="team-info">
+        <span>Team Information</span>
+        <?=$T->getDescription()?>
+    </div>
+    
+    <div id="team-members">
+        <span class="meta-tag">Members</span>
+<?php
+    foreach($T->getMembers() as $Member) {
+?>
+        <div class="member">
+            <span class="member-name"><?=Tournament_Main::getPlayerLink($Member['user'])?></span>
+        </div>
+<?php
+    }
+?>
+    </div>
+<?php
+    if($T->isTeamMember()) {
+?>
+    <div id="team-invite">
+        <button id="invite-button">Invite Members</button>
+    </div>
+<?php
+    }
+?>
+</div>

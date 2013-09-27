@@ -4,6 +4,7 @@ class Tournament_Team {//implements jsonSerializable{
     public $ID = null;
     private $name;
     private $members;
+    private $description;
     
     function __construct($ID) {
         if(!LanWebsite_Cache::get('tournament', 'team_' . $ID, $r)) {
@@ -14,8 +15,8 @@ class Tournament_Team {//implements jsonSerializable{
         }
         
         $this->ID =     (int) $ID;
-        $this->name =   (string) $r['name'];
-        $this->members = $this->loadMembers();
+        $this->name =   (string) $r['Name'];
+        $this->loadMembers();
     }
     
     function jsonSerialize() {
@@ -33,8 +34,13 @@ class Tournament_Team {//implements jsonSerializable{
     }
     
     public function getMembers() {
-        if(is_null($this->ID)) return false;
+        if(is_null($this->ID)) return array();
         return $this->members;
+    }
+    
+    public function getDescription() {
+        if(is_null($this->ID)) return false;
+        return $this->description;
     }
     
     //Methods
@@ -43,17 +49,28 @@ class Tournament_Team {//implements jsonSerializable{
         return array_key_exists($user, $this->members);
     }
     
+    public function isCaptain() {
+        $user = LanWebsite_Main::getAuth()->getActiveUserId();
+        return (array_key_exists($user, $this->members) && $this->members[$user]['permission'] > 0);
+    }
+    
+    public function getCaptain() {
+        foreach($this->members as $m) {
+            if($m['permission'] > 0) return $m['user'];
+        }
+    }
+    
     private function loadMembers() {
         if(!LanWebsite_Cache::get('tournament', 'team_members_' . $this->ID, $this->members)) {
             $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_teams_members` WHERE team_id = '%s'", $this->ID);
             
+            $this->members = array();
             if($r->num_rows) {
-                $this->members = array();
                 while($row = $r->fetch_assoc()) {
-                    $this->members[$row['user_id']] = LanWebsite_Main::getAuth()->getUserById($Row['user_id']);
+                    $this->members[$row['user_id']] = array('user' => LanWebsite_Main::getUserManager()->getUserById($row['user_id']), 'permission' => $row['permission']);
                 }
-                LanWebsite_Cache::set('tournament', 'team_members_' . $this->ID, $this->members);
             }
+            LanWebsite_Cache::set('tournament', 'team_members_' . $this->ID, $this->members);
         }
     }
     

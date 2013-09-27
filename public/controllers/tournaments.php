@@ -4,7 +4,6 @@ class Tournaments_Controller extends LanWebsite_Controller {
     public function getInputFilters($action) {
         switch ($action) {
             case "view": return array("id" => array('notnull', 'int'));
-            case "createteam": return array("name" => "notnull", "icon" => "url", "description" => "string");
             case "joinsolo": return array("tournament_id" => array('notnull', 'int'));
             case "leave": return array("tournament_id" => array('notnull', 'int'));
         }
@@ -48,6 +47,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         $tmpl = LanWebsite_Main::getTemplateManager();
 		$tmpl->setSubTitle("Tournaments");
+        $tmpl->addTemplate('tournament_header');
         $tmpl->addTemplate('tournaments2', array('tournaments' => $tournaments, 'usertournaments' => $userTournaments));
 		$tmpl->output();
     }
@@ -71,32 +71,9 @@ class Tournaments_Controller extends LanWebsite_Controller {
 
         $tmpl = LanWebsite_Main::getTemplateManager();
         $tmpl->setSubTitle($tournament->getName());
+        $tmpl->addTemplate('tournament_header');
         $tmpl->addTemplate('tournament', array('tournament'=>$tournament, 'user_teams' => $userTeams, 'signup_list'=>$signups_list, 'bracket' => $bracket, 'matches' => $matches));
         $tmpl->output();
-    }
-    
-    public function get_Create() {
-        LanWebsite_Main::getAuth()->requireLogin();
-        
-        $tmpl = LanWebsite_Main::getTemplateManager();
-        $tmpl->setSubTitle("Create Team");
-        $tmpl->addTemplate("tournament_create");
-        $tmpl->output();
-    }
-    
-    public function post_Createteam($inputs) {
-        LanWebsite_Main::getAuth()->requireLogin();
-        if($this->isInvalid('name')) $this->errorJson("Invalid Name");
-        
-        if(strlen($inputs["name"]) > 200 || strlen($inputs["name"]) < 3) $this->errorJson("Invalid Name" . strlen($inputs["name"]));
-        
-        $db = LanWebsite_Main::getDb();
-        
-        $r = $db->query("SELECT * FROM tournament_teams WHERE Name LIKE '%s'", $inputs["name"]);
-        if($r->num_rows) $this->errorJson("A team with this name already exists!" . $r->num_rows);
-        
-        $r = $db->query("INSERT INTO tournament_teams (Name, Icon, Description) VALUES ('%s', '%s', '%s')", $inputs["name"], $inputs["icon"], $inputs["description"]);
-        echo json_encode(array('id'=>$db->getLink()->insert_id));
     }
     
     public function post_Joinsolo($inputs) {

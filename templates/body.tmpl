@@ -146,7 +146,7 @@
                 <div id="lan">LAN<span><?=$DataBag["lan"]?></span></div>
                 <?=$DataBag["datestring"]?>
             </div></a>
-            <? if ($DataBag["countdown"]) { ?>
+            <?php if ($DataBag["countdown"]) { ?>
                 <div id="booking-container">
                     <div id="countdown">
                         <span class="countdown-section">
@@ -172,7 +172,7 @@
                         </div>
                     </a>
                 </div>
-            <? } ?>
+            <?php } ?>
         </div>
         
         <div style="clear: both;"></div>
@@ -186,7 +186,7 @@
             <li><a href="<?=LanWebsite_Main::buildUrl(false, "stats")?>"><img src="/images/accessbar/stats.png" />Stats</a></li>
         </ul>
         
-        <? if (defined("LANWEBSITE_ADMIN") && LANWEBSITE_ADMIN == true) { ?>
+        <?php if (defined("LANWEBSITE_ADMIN") && LANWEBSITE_ADMIN == true) { ?>
         
             <ul class="subtabs admintabs">
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "settings")?>">Settings</a></li>
@@ -199,10 +199,20 @@
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "tournaments")?>">Tournaments</a></li>
             </ul>
         
-        <? } ?>
+        <?php } 
+        
+        if(count($DataBag["alerts"])) { ?>
+        
+        <div id="alerts">
+<?php
+            foreach($DataBag["alerts"] as $A) echo $A;
+?>
+        </div>
+        
+        <?php } ?>                
         
         <div id="subtitle">
-            <img src="/images/arrow.png" /><?php echo $DataBag["subtitle"]; ?>
+            <img src="/images/arrow.png" /><?=$DataBag["subtitle"]?>
         </div>
 
     </div>
