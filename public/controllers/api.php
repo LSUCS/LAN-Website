@@ -57,12 +57,13 @@
             if (!$ticket) $this->errorJSON("You do not have a ticket for the LAN, please visit the front desk");
             if ($ticket["activated"] == 0) $this->errorJSON("Your ticket has not been activated. Go to the front desk");
             
+/*
             //Check seat
             $seats = explode("\n", file_get_contents("data/seats.txt"));
             if ($inputs["seat"] == "" || !in_array($inputs["seat"], $seats)) $this->errorJSON("Invalid seat");
             $occupied = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE seat = '%s' AND lan_number = '%s'", $inputs["seat"], $lan)->fetch_assoc();
             if ($occupied && $occupied["assigned_forum_id"] != $user->getUserId()) $this->errorJSON("That seat is already occupied");
-            
+*/
             
             //Update ticket with seat
             LanWebsite_Main::getDb()->query("UPDATE `tickets` SET seat = '%s' WHERE ticket_id = '%s'", $inputs["seat"], $ticket["ticket_id"]);
