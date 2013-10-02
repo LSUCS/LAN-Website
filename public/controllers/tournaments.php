@@ -5,6 +5,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         switch ($action) {
             case "view": return array("id" => array('notnull', 'int'));
             case "joinsolo": return array("tournament_id" => array('notnull', 'int'));
+            case "joinasteam": return array("tournament_id" => array('notnull', 'int'), "team_id" => array('notnull', 'int'));
             case "leave": return array("tournament_id" => array('notnull', 'int'));
         }
     }
@@ -62,6 +63,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         $signups_list = $tournament->getSignupList();
         $userTeams = Tournament_Main::getUserTeams();
+        
         if($tournament->started) {
             $matches = $tournament->getMatches();
             $bracket = $tournament->getStructure();
@@ -80,25 +82,57 @@ class Tournaments_Controller extends LanWebsite_Controller {
         LanWebsite_Main::getAuth()->requireLogin();
         if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
         
+        $Tournament = Tournament_Main::tournament($inputs["tournament_id"]);
+        if(!$Tournament) $this->errorJson("Invalid Tournament (404)");
+        
+        if(!$Tournament->isVisibleToUser()) $this->errorJson(403);
+        if(!$Tournament->signupsOpen()) $this->errorJson("Signups are closed for this tournament");
+        if($Tournament->started) $this->errorJson("This tournament has already started!");
+        
         $db = LanWebsite_Main::getDb();
-        
-        $r = $db->query("SELECT visible, signups, started FROM `tournament_tournaments` WHERE id = '%s'", $inputs["tournament_id"]);
-        if(!$r->num_rows) $this->errorJson("Invalid Tournament (404)");
-        
-        $r = $r->fetch_assoc();
-        if(!$r["visible"]) $this->errorJson(403);
-        if(!$r["signups"]) $this->errorJson("Signups are closed for this tournament");
-        if($r["started"]) $this->errorJson("This tournament has already started!");
-        
         $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
-            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+            $Tournament->ID, LanWebsite_Main::getAuth()->getActiveUserId());
         if($r->num_rows) $this->errorJson("You have already signed up to this tournament!");
         
         $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', 0)",
-            $inputs['tournament_id'], LanWebsite_Main::getAuth()->getActiveUserId());
+            $Tournament->ID, LanWebsite_Main::getAuth()->getActiveUserId());
             
         //We could update here, but it feels like a lot of effort for what it's worth
-        LanWebsite_Cache::delete('tournament', 'signuplist_' . $inputs['tournament_id']);
+        LanWebsite_Cache::delete('tournament', 'signuplist_' . $Tournament->ID);
+    }
+    
+    public function post_Joinasteam($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        if($this->isInvalid('tournament_id')) $this->errorJson("Invalid Tournament");
+        if($this->isInvalid('team_id')) $this->errorJson("Invalid Team");
+        
+        $Tournament = Tournament_Main::tournament($inputs["tournament_id"]);
+        if(!$Tournament) $this->errorJson("Invalid Tournament (404)");
+        
+        $Team = Tournament_Main::team($inputs["team_id"]);
+        if(!$Team) $this->errorJson("Team does not exist");
+        
+        if($Tournament->getTeamSize() < 2) $this->errorJson("This is not a team tournament!");
+        if(!$Tournament->isVisibleToUser()) $this->errorJson(403);
+        if(!$Tournament->signupsOpen()) $this->errorJson("Signups are closed for this tournament");
+        if($Tournament->started) $this->errorJson("This tournament has already started!");
+        
+        $db = LanWebsite_Main::getDb();
+        $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND user_id = '%s'",
+            $Tournament->ID, LanWebsite_Main::getAuth()->getActiveUserId());
+        if($r->num_rows) $this->errorJson("You have already signed up to this tournament!");
+        
+        $r = $db->query("SELECT * FROM `tournament_signups` WHERE tournament_id = '%s' AND team_id = '%s'",
+            $Tournament->ID, $Team->ID);
+        if($r->num_rows >= $Tournament->getTeamSize()) {
+            $this->errorJson("This team is already at the maximum number of players");
+        }
+        
+        $db->query("INSERT INTO `tournament_signups` (tournament_id, user_id, team_id) VALUES ('%s', '%s', '%s')",
+            $Tournament->ID, LanWebsite_Main::getAuth()->getActiveUserId(), $Team->ID);
+        
+        //We could update here, but it feels like a lot of effort for what it's worth
+        LanWebsite_Cache::delete('tournament', 'signuplist_' . $Tournament->ID);
     }
     
     public function post_Leave($inputs) {

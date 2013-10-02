@@ -1,13 +1,17 @@
 <?php
-$T = $DataBag;
-
+$T = $DataBag['team'];
+/*
 if($T->isCaptain()) {
 ?>
-    <div class="infobar">You are the captain of this team</div>
+    <div class="alert success center">You are the captain of this team</div>
 <?php  
 } elseif($T->isTeamMember()) {
 ?>
-    <div class="infobar">You are a member of this team</div>
+    <div class="alert success center">You are a member of this team</div>
+<?php
+} else*/if($DataBag['invite']) {
+?>
+    <div class="alert success center">You have been invited to join this team! <button id="invite-accept">Accept</button><button id="invite-decline">Decline</button></div>
 <?php
 }
 ?>

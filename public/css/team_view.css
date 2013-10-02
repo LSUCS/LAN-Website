@@ -43,3 +43,8 @@
 	display:block;
 	text-align:center;
 }
+
+.alert button {
+    height: 26px;
+    font-size: 12px;
+}

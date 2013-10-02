@@ -4,6 +4,7 @@ class Tournament_Match {
     public $ID = null;
     private $tournamentID;
     private $round;
+    private $game;
     //The IDs of the teams or users in the match
     private $player1;
     private $player2;
@@ -35,14 +36,15 @@ class Tournament_Match {
         $this->teams_bool =     (bool) $r['teams_bool'];
         $this->tournamentID =   (int) $r['tournament_id'];
         $this->round =          (int) $r['round'];
+        $this->game =           (int) $r['game'];
                 
         if($this->teams_bool) {
             $this->player1 = Tournament_Main::team($this->player1);
             $this->player2 = Tournament_Main::team($this->player2);
         } else {
-            $this->player1 = LanWebsite_Main::getUserManager()->getUserById($this->player1);
-            $this->player2 = LanWebsite_Main::getUserManager()->getUserById($this->player2);
-        }
+            $this->player1 = ($this->player1) ? LanWebsite_Main::getUserManager()->getUserById($this->player1) : Tournament_Main::team(0);
+            $this->player2 = ($this->player2) ? LanWebsite_Main::getUserManager()->getUserById($this->player2) : Tournament_Main::team(0);
+        }                
     }
     
     //Getter Functions
@@ -84,5 +86,10 @@ class Tournament_Match {
     public function getRound() {
         if(is_null($this->ID)) return false;
         return $this->round;
+    }
+    
+    public function getGame() {
+        if(is_null($this->ID)) return false;
+        return $this->game;
     }
 }

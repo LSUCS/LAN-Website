@@ -64,19 +64,19 @@ $(document).ready(function() {
         $("#info-bar").slideUp(200);
         infobar_entered = false;
     });
-    /*
+    
     $('.alert .alert-close').live("click", function(e) {
         e.stopPropagation();
-        $.post(
+        /*$.post(
             UrlBuilder.buildUrl(false, "tournaments", "alert"),
             { alert: $($(this).parent()). },
             function (data) {
                 
             }
-        );
+        );*/
         $($(this).parent()).slideUp(300, function() {$(this).remove()});
         return false;
-    });*/
+    });
     
 });
 

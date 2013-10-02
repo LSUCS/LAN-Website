@@ -2,6 +2,17 @@ $(document).ready(function() {
     $('#invite-button').button().live("click", function() {
         inviteButton();
     });
+    
+    if($('#invite-accept').length) {
+        $('#invite-accept').button().live("click", function() {
+            inviteAccept();
+        });
+    }
+    if($('#invite-decline').length) {
+        $('#invite-decline').button().live("click", function() {
+            inviteDecline();
+        });
+    }
 });
 
 function inviteButton() {
@@ -32,3 +43,30 @@ function invite() {
         'json');
 }
 
+function inviteAccept() {
+    $.post(UrlBuilder.buildUrl(false, "teams", "inviteRespond"),
+        { teamid: teamID, accept: 1 },
+        function (data) {
+            if (data != null && data.error) {
+                Overlay.openOverlay(true, data.error);
+                return;
+            }
+            Overlay.openOverlay(false, "You have accepted the invite to join this team", 1500);
+            window.setTimeout("location.reload();", 1000); 
+        },
+        'json');
+}
+
+function inviteDecline() {
+    $.post(UrlBuilder.buildUrl(false, "teams", "inviteRespond"),
+    { teamid: teamID, accept: 0 },
+    function (data) {
+        if (data != null && data.error) {
+            Overlay.openOverlay(true, data.error);
+            return;
+        }
+        Overlay.openOverlay(false, "You have declined the invite to join this team", 1500);
+        window.setTimeout("location.reload();", 1000); 
+    },
+    'json');
+}

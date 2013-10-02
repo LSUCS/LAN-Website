@@ -1,0 +1,54 @@
+<div id="double-elimination-display">
+
+    <div id="winners-bracket">
+        <div class="round">Round 1
+<?php
+
+$lastRound = null;
+$matches2 = array();
+foreach($DataBag["matches"] as $Match) {
+    if($Match->getRound() < 0) {
+        $matches2[] = $Match;
+        continue;
+    }
+    
+    if($Match->getRound() !== $lastRound) {
+        $lastRound = $Match->getRound();
+        if($Match->getRound() !== 1)echo "</div>\n<div class='round'>Round " . $Match->getRound() . "";
+    }
+?>
+            <div class="match">
+                <div class="match-number"><?=$Match->getGame()?></div>
+                <div class="player1"><?=Tournament_Main::getPlayerLink($Match->getPlayer1())?></div>
+                <div class="player2"><?=Tournament_Main::getPlayerLink($Match->getPlayer2())?></div>
+            </div>
+<?php
+}
+
+?>
+        </div>
+    </div>
+
+    <div id="losers-bracket">
+        <div class="round">Round 1
+<?php
+
+$lastRound = null;
+foreach(array_reverse($matches2) as $Match) {   
+    if($Match->getRound() !== $lastRound) {
+        $lastRound = $Match->getRound();
+        if($Match->getRound() !== -1)echo "</div>\n<div class='round'>Round " . -$Match->getRound() . "";
+    }
+?>
+            <div class="match">
+                <div class="match-number"></div>
+                <div class="player1"><?=Tournament_Main::getPlayerLink($Match->getPlayer1())?></div>
+                <div class="player2"><?=Tournament_Main::getPlayerLink($Match->getPlayer2())?></div>
+            </div>
+<?php
+}
+?>
+        </div>
+    </div>
+
+</div>

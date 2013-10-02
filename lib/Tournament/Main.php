@@ -95,7 +95,7 @@ class Tournament_Main {
         if($player instanceOf LanWebsite_User) {
             $link = LanWebsite_Main::buildUrl(false, 'profile', null, array('member'=>$player->getUsername()));
             $link = "<a href='" . $link . "'>" . $player->getUsername() . "</a>";
-        } else {
+        } elseif($player instanceOf Tournament_Team) {
             $link = LanWebsite_Main::buildUrl(false, 'tournaments', 'viewteam', array('id'=>$player->ID));
             $link = "<a href='" . $link . "'>" . $player->getName() . "</a>";
         }

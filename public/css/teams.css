@@ -29,7 +29,7 @@
 #teams .name a, #invites .name a {
     color:#666666;
 }
-#teams .members:before, {
+#teams .members:before {
     content:url(/images/group.png);
     margin-right:10px;
     vertical-align:middle;

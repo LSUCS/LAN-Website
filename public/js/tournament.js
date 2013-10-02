@@ -41,11 +41,12 @@ $(document).ready(function() {
 });
 
 var tournaments = {
+    userTeams: [],
     joinTeam: function() {
-        if(typeof(window.userTeams == null)) return;
+        if(!this.userTeams.length) return;
         var options = "";
-        for(var x in userTeams) {
-            options += "<option value='" + userTeams[x].id + "'>" + userTeams[x].name + "</option>";
+        for(var x in this.userTeams) {
+            options += "<option value='" + this.userTeams[x].id + "'>" + this.userTeams[x].name + "</option>";
         }
         $('#join-teams').html(options);
         $('#join-team-form').dialog('open');
@@ -55,7 +56,7 @@ var tournaments = {
         var selectedTeam = $('#join-teams').val();
         $.post(
             UrlBuilder.buildUrl(false, "tournaments", "joinasteam"),
-            { team: selectedTeam },
+            { team_id: selectedTeam, tournament_id: $('#tournament-id').html() },
             function(data) {
                 if(data != null && data.error) {
                     Overlay.openOverlay(true, data.error);

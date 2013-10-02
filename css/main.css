@@ -212,6 +212,10 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
     margin-top: 5px;
 }
 
+.center {
+    text-align: center;
+}
+
 /* END GLOBAL */
 /**************/
 

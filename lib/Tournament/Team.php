@@ -2,11 +2,15 @@
 
 class Tournament_Team {//implements jsonSerializable{
     public $ID = null;
-    private $name;
-    private $members;
-    private $description;
+    private $name = "???";
+    private $members = 0;
+    private $description = "";
     
     function __construct($ID) {
+        if($ID == 0) {
+            $this->ID = 0;
+            return;
+        }
         if(!LanWebsite_Cache::get('tournament', 'team_' . $ID, $r)) {
             $r = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_teams` WHERE id = '%s'", $ID)->fetch_assoc();
             if(!$r) return false;

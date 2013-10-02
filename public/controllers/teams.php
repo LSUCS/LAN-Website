@@ -3,9 +3,10 @@
 class Teams_Controller extends LanWebsite_Controller {
     public function getInputFilters($action) {
         switch ($action) {
-            case "view": return array('teamid'=>array('notnull', 'int'));
             case "createteam": return array("name" => "notnull", "icon" => "url", "description" => "string");
             case "invite": return array('teamid'=>array('notnull', 'int'), 'username'=>"string");
+            case "view": return array('teamid' => array("notnull", "int"));
+            case "inviterespond": return array('teamid' => array("notnull", "int"), 'accept' => array("notnull", "bool"));
         }
     }
     
@@ -29,6 +30,7 @@ class Teams_Controller extends LanWebsite_Controller {
     }
     
     public function get_Self() {
+        LanWebsite_Main::getAuth()->requireLogin();
         $db = LanWebsite_Main::getDb();
         
         $invites = array();
@@ -63,10 +65,17 @@ class Teams_Controller extends LanWebsite_Controller {
         $team = Tournament_Main::team($inputs['teamid']);
         if(!$team) $this->error(404);
         
+        $inv = LanWebsite_Main::getDb()->query("SELECT * FROM `tournament_teams_invites` WHERE user_id = '%s' AND status = 1", LanWebsite_Main::getAuth()->getActiveUserId());
+        if($inv->num_rows) {
+            $invite = true;
+        } else {
+            $invite = false;
+        }
+        
         $tmpl = LanWebsite_Main::getTemplateManager();
         $tmpl->setSubTitle($team->getName());
         $tmpl->addTemplate('tournament_header');
-        $tmpl->addTemplate('team_view', $team);
+        $tmpl->addTemplate('team_view', array('team' => $team, 'invite' => $invite));
         $tmpl->output();
     }
     
@@ -96,6 +105,7 @@ class Teams_Controller extends LanWebsite_Controller {
     }
     
     public function post_Invite($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
         if($this->isInvalid('username')) $this->errorJson("Invalid Username");
         if($this->isInvalid('teamid')) $this->errorJson("Invalid Team");
         
@@ -114,8 +124,32 @@ class Teams_Controller extends LanWebsite_Controller {
         
         $db->query("INSERT INTO `tournament_teams_invites` (team_id, user_id, status, date) VALUES ('%s', '%s', 1, '%s')", $inputs['teamid'], $User->getUserId(), time());
         $db->query("INSERT INTO `tournament_alerts` (user_id, level, message, link) VALUES ('%s', '%s', '%s', '%s')",
-            $User->getUserId(), 'ALERT_MESSAGE', "You have been invited to join " . $Team->getName(), LanWebsite_Main::buildUrl(false, 'teams', null, array('userid'=>$User->getUserId())));
+            $User->getUserId(), 'ALERT_MESSAGE', "You have been invited to join " . $Team->getName(), LanWebsite_Main::buildUrl(false, 'teams', 'self', array('teamid'=>$Team->ID)));
         echo true;
+    }
+    
+    public function post_Inviterespond($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        if($this->isInvalid('teamid')) $this->errorJson("Invalid Team ID");
+        if($this->isInvalid('accept')) $this->errorJson("Invalid action");
+        
+        $Team = Tournament_Main::team($inputs['teamid']);
+        if(!$Team) $this->errorJson("Invalid Team");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $inv = $db->query("SELECT * FROM `tournament_teams_invites` WHERE user_id = '%s' AND team_id = '%s' AND status = 1", LanWebsite_Main::getAuth()->getActiveUserId(), $Team->ID);
+        if($inv->num_rows < 1) $this->errorJson("No invite found");
+        
+        $res = $db->query("SELECT * FROM `tournament_teams_members` WHERE user_id = '%s' AND team_id = '%s'", LanWebsite_Main::getAuth()->getActiveUserId(), $Team->ID);
+        if($res->num_rows < 1) {
+            if($inputs["accept"]) {
+                $db->query("INSERT INTO `tournament_teams_members` (team_id, user_id) VALUES ('%s', '%s')", $Team->ID, LanWebsite_Main::getAuth()->getActiveUserId());
+                LanWebsite_Cache::delete("tournament", 'team_members_' . $Team->ID);
+            }
+        }
+        $db->query("DELETE FROM `tournament_teams_invites` WHERE user_id = '%s' AND team_id = '%s' AND status = 1", LanWebsite_Main::getAuth()->getActiveUserId(), $Team->ID);
+        $db->query("DELETE FROM `tournament_alerts` WHERE user_id = '%s' AND link = '%s'", LanWebsite_Main::getAuth()->getActiveUserId(), LanWebsite_Main::buildUrl(false, 'teams', 'self', array('teamid'=>$Team->ID)));
     }
     
 }

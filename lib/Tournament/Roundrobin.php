@@ -74,7 +74,6 @@ class Tournament_Roundrobin extends Tournament_Structure {
     
     public function display() {
         $teams = array();
-        $db = LanWebsite_Main::getDb();
         
         foreach($this->getSignups() as $team) {
             $played = 0;

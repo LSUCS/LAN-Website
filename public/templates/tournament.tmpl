@@ -58,14 +58,16 @@ if($DataBag["tournament"]->signupsOpen() && LanWebsite_Main::getAuth()->isLogged
         if($DataBag["tournament"]->getTeamSize() > 1) echo '<button id="create-team">Create Team</button>';
         //If the user is a member of any teams, give them to javascript and show button for joining
         if(count($DataBag["user_teams"])) {
-            echo '<script> var userTeams = [';
+            echo '<script>$(document).ready(function() {
+                tournaments.userTeams = [';
             foreach($DataBag['user_teams'] as $team) {
-                echo "{'id':'" . $team->ID . "', 'name':'" . $team->getName() . "'},";
+                echo "{'id':'" . $team->ID . "', 'name':'" . str_replace("'", "\\'", $team->getName()) . "'},";
             }
 ?>
-            ]</script>
+            ]; });</script>
             <button id="join-team">Join With Team</button>
-            <div id="join-team-form" title="Create new user">
+            <div id="join-team-form" title="Join Tournament">
+                <span>Please select one of your teams to join this tournament with.</span>
                 <form>
                 <fieldset>
                     <select id="join-teams">
@@ -89,10 +91,12 @@ if($DataBag["tournament"]->signupsOpen() && LanWebsite_Main::getAuth()->isLogged
 <div id="tournament-tabs">
 
     <ul>
+        <li><a href="#signups">Signups</a></li>
 <?php 
+    /*
         if($DataBag["tournament"]->getTeamSize() > 1) { echo '<li><a href="#teams">Teams</a></li>'; }
         else { echo '<li><a href="#signups">Signups</a></li>'; }
-        
+    */
         if($DataBag["bracket"]) { echo '<li><a href="#tabs-2">Standings</a></li>'; }
         if($DataBag["matches"]) { echo '<li><a href="#tabs-3">Matches</a></li>'; }
 ?>
@@ -102,47 +106,57 @@ if($DataBag["tournament"]->signupsOpen() && LanWebsite_Main::getAuth()->isLogged
 $counter = 0; 
 if ($DataBag["tournament"]->getTeamSize() > 1) {
 ?>
-        <div id="teams">
-            <div class="header">
+        <div id="signups">
+            <!--<div class="header">
                 <span class="signup-number"></span>
                 <span class="team-name">Team Name</span>
                 <span class="user-name">Username</span>
-            </div>
+            </div>-->
             <div id="team-list">
-<?
-    $lastTeam = null;
-    foreach($DataBag["signup_list"] as $info) {
-        $counter++;
-        if(isset($info['team'])) $team = $info['team'];
-        $user = $info['user'];
-        
-        if(isset($team)) {
-            //Only show the team name if it was different to the last one
-            if($team->ID !== $lastTeam) {
-                $lastTeam = $team->ID;
-                $teamName = $team->getName();
-                $link = true;
-            } else {
-                $teamName = '';
-                $link = false;
-            }
-        } else {
-            $teamName = '(unassigned)';
-            $link = false;
-        }
-?>
-                <div class="team">
-                    <span class="signup-number"><?=$counter?></span>
-                    <span class="team-name">
 <?php
-        if($link) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID)) . '">';
-        echo $teamName;
-        if($link) echo "</a>";
-?>                        
+    $lastTeam = null;
+    if(count($DataBag["signup_list"]) < 1) {
+?>
+                <div class="user">
+                    <span class="nosignups">
+                        There are currently no signups for this tournament =[
                     </span>
-                    <span class="user-name"><?=$user->getUsername()?></span>
                 </div>
 <?php
+    } else {
+        foreach($DataBag["signup_list"] as $info) {
+            $counter++;
+            if(isset($info['team'])) $team = $info['team'];
+            $user = $info['user'];
+            
+            if(isset($team)) {
+                //Only show the team name if it was different to the last one
+                if($team->ID !== $lastTeam) {
+                    $lastTeam = $team->ID;
+                    $teamName = $team->getName();
+                    $link = true;
+                } else {
+                    $teamName = '';
+                    $link = false;
+                }
+            } else {
+                $teamName = '(unassigned)';
+                $link = false;
+            }
+?>
+                    <div class="team">
+                        <span class="signup-number"><?=$counter?></span>
+                        <span class="team-name">
+<?php
+            if($link) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID)) . '">';
+            echo $teamName;
+            if($link) echo "</a>";
+?>                        
+                        </span>
+                        <span class="user-name"><?=$user->getUsername()?></span>
+                    </div>
+<?php
+        }
     }
 ?>
             </div>

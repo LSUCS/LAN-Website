@@ -142,7 +142,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         //Close signups and make it display as started
         //In theory creating matches could take a while, so we wanna close signups first
-        LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
+        //LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
         LanWebsite_Cache::delete('tournament', 'tournament_' . $tournament->ID);
         
         $output = $tournament->createMatches();

@@ -137,24 +137,26 @@
                 background-color: #fbfbfb;
                 cursor: pointer;
             }
+            #tournament-tabs #team-list .team .signup-number {
+                display: inline-block;
+                width: 50px;
+                text-align: center;   
+            }
             #tournament-tabs #team-list .team .team-name {
-                margin-left: 50px;
+                display: inline-block;
                 width: 300px;
-                display: block;
-                float: left;
+                margin-left: 50px;
             }
             #tournament-tabs #team-list .team .team-leader {
                 width: 320px;
-                display: block;
-                float: left;
+                display: inline-block;
                 font-size: 19px;
             }
             #tournament-tabs #team-list .team .locked {
                 width: 16px;
                 height: 16px;
                 background: url(/images/locked.png);
-                display: block;
-                float: right;
+                display: inline-block;
                 margin-right: 30px;
                 margin-top: 16px;
             }
@@ -187,6 +189,24 @@
     #round-robin-display .won, #round-robin-display .lost  {
         width: 50px;
         text-align: center;
+    }
+    
+#double-elimination-display {
+    height: 800px;
+}
+    #double-elimination-display .round {
+        float: left;
+        width: 200px;
+    }
+    #double-elimination-display .match {
+        display: block;
+        margin: 20px;
+        background-color: #444;
+    }
+    
+    #double-elimination-display #losers-bracket {
+        clear: both;
+        margin-top: 100px;
     }
     
 #matches {
@@ -270,3 +290,18 @@
         float: right;
     }
     
+    #matches a:visited {
+        color: #000;
+    }
+    
+    #matches a:hover {
+        color: #f1642b;
+    }
+    
+#join-team-form {
+    height: 85px !important;
+}
+#join-team-form form {
+    text-align: center;
+    margin-top: 5px;
+}

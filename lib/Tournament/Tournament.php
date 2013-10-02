@@ -58,7 +58,7 @@ class Tournament_Tournament {//implements jsonSerializable{
             'signups_close' =>      $this->signups_close,
             'signups_close_nice' => $this->getSignupClose(),
             'start_time' =>         $this->start_time,
-            'start_time_nice' =>    $this->getEnd(),
+            'start_time_nice' =>    $this->getStart(),
             'end_time' =>           $this->end_time,
             'end_time_nice' =>      $this->getEnd(),
             'description' =>        $this->getDescription(),
@@ -247,7 +247,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         }
         
         if(!$this->matches) {
-            $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s'", $this->ID);
+            $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s' ORDER BY round ASC, game ASC", $this->ID);
             $this->matches = array();
             while($row = $r->fetch_assoc()) {
                 $this->matches[$row['id']] = new Tournament_Match($row['id']);

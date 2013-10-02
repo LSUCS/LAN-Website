@@ -7,7 +7,7 @@ $(document).ready(function() {
     
         
     //Date/Time pickers
-    $('.time-picker').timepicker();
+    $('.time-picker').datetimepicker();
     
     //Load entries
     tournaments.loadEntries();
@@ -103,11 +103,11 @@ var tournaments = {
                 teamsize: $("#new-team-size").val(),
                 type: $("#new-type").val(),
                 description: $("#new-description").val(),
-                start: $("#new-start").val(),
-                end: $("#new-end").val(),
-                signups_close: $("#new-signups-end").val(),
-                signups: $("#new-signups").prop('checked'),
-                visible: $("#new-visible").prop('checked'),
+                start: $("#new-start").datepicker('getDate')/1000,
+                end: $("#new-end").datepicker('getDate')/1000,
+                signups_close: $("#new-signups-end").datepicker('getDate')/1000,
+                signups: ($("#new-signups").prop('checked')) ? 1:0,
+                visible: ($("#new-visible").prop('checked')) ? 1:0,
             },
             function (data) {
                 if (data != null && data.error) {
@@ -142,7 +142,7 @@ var tournaments = {
         $("#confirm-delete").click(function() {
             $.post(
                 UrlBuilder.buildUrl(true, "tournaments", "delete"),
-                { tournament_id: selectedID },
+                { id: selectedID },
                 function (data) {
                     if (data != null && data.error) {
                         Overlay.openOverlay(true, data.error);
