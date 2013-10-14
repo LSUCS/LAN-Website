@@ -59,7 +59,10 @@
 		
 		public function validateCredentials($username, $password) {
 			$data = LanWebsite_Main::getUserManager()->getLsucsAuthResponse('validatecredentials', array("username" => $username, "password" => $password));
-            return $data;
+			if ($data === true) {
+				return true;
+            		}
+            		return false;
 		}
 		
 		
