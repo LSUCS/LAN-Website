@@ -320,6 +320,10 @@ class Account_Controller extends LanWebsite_Controller {
     
     public function post_Authlogin($inputs) {
         LanWebsite_Main::getAuth()->requireNotLoggedIn();
+        
+        if ($this->isInvalid("username")) $this->error("Please enter your Username");
+        if ($this->isInvalid("password")) $this->error("Please enter your Password");
+        
         if (LanWebsite_Main::getAuth()->login($inputs["username"], $inputs["password"])) {
             header("Location:" . LanWebsite_Main::buildUrl(false));
         } else {

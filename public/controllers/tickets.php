@@ -42,6 +42,15 @@
 			$tmpl->output();
         }
         
+        public function get_Howmanylanticketshavesoldsofar() {
+            list($total) = LanWebsite_Main::getDb()->query("SELECT COUNT(*) FROM tickets WHERE lan_number = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_row();
+            
+            $tmpl = LanWebsite_Main::getTemplateManager();
+			$tmpl->setSubTitle("Total Tickets");
+            $tmpl->addTemplate('tickets-total', $total);
+			$tmpl->output();
+        }
+        
         public function post_Complete($inputs) {
             LanWebsite_Main::getAuth()->requireLogin();
             $data["pending_id"] = $inputs["custom"];

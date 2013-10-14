@@ -2,11 +2,9 @@ Options +FollowSymLinks
 RewriteEngine On
 
 #Maintenance
-#RewriteEngine On
 #RewriteBase /
 #RewriteCond %{REQUEST_URI} !^/maintenance\.html$
-#RewriteRule ^(.*)$ http://dev.lan.lsucs.org.uk/maintenance.html [R=307,L]
-#RewriteEngine Off
+#RewriteRule ^(.*)$ http://lan.lsucs.org.uk/maintenance.html [R=307,L]
 
 #Admin routing
 RewriteCond %{SCRIPT_FILENAME} !-f
