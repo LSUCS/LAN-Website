@@ -9,6 +9,8 @@
         }
     
         public function get_Index() {
+            LanWebsite_Main::getAuth()->requireLogin();
+            
             $tmpl = LanWebsite_Main::getTemplateManager();
             $tmpl->setSubTitle("Profile");
             $tmpl->addTemplate('profile');
@@ -16,8 +18,9 @@
         }
         
         public function post_Loadprofile($inputs) {
+            LanWebsite_Main::getAuth()->requireLogin();
         
-            //Decide whether we are sbowing client-requested profile or not
+            //Decide whether we are showing client-requested profile or not
             $inputs["name"] = urldecode($inputs["name"]);
             if (strlen($inputs["name"]) > 0) {
                 $user = LanWebsite_Main::getUserManager()->getUserByName($inputs["name"]);

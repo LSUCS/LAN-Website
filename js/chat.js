@@ -95,7 +95,7 @@ var ChatClient = {
                     $("#chat .contact, #chat .conversation-element").remove();
                     $("#chat #chat-offline").fadeIn(200);
                     $("#chat #chat-online").fadeOut(200)
-                    setTimeout(function() { ChatClient.connect(); }, 3000);
+                    //setTimeout(function() { ChatClient.connect(); }, 3000);
                 };
                 
                 ChatClient.connection.onopen = function() {

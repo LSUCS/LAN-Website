@@ -65,6 +65,22 @@ $(document).ready(function() {
         infobar_entered = false;
     });
     
+    $('.alert .alert-close').live("click", function(e) {
+        e.stopPropagation();
+        
+        var alertID = $($(this).parent()).attr('id');
+        alertID = alertID.substr(alertID.indexOf('-')+1);
+        $.post(
+            UrlBuilder.buildUrl(false, "tournaments", "clearalert"),
+            { alert_id: alertID },
+            function (data) {
+                
+            }
+        );
+        $($(this).parent()).slideUp(300, function() {$(this).remove()});
+        return false;
+    });
+    
 });
 
 //Check account details

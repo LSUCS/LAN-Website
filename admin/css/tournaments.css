@@ -1,0 +1,73 @@
+#add-tournament {
+    width: 400px;
+}
+    #add-tournament label {
+        display: inline-block;
+        width: 150px;
+    }
+    
+    #add-tournament select {
+        display: inline-block;
+        width: 200px;
+    }
+    
+    #add-tournament input {
+        display: inline-block;
+        width: 200px;
+    }
+    
+.tournament-name {
+    margin: 10px 0;
+}
+
+.tournament-table {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #999;
+    border-radius: 10px;
+}
+    .tournament-table .row {
+        height: 30px;
+        line-height: 30px;
+        border-bottom: 1px solid #bbb;
+    }
+    .tournament-table .row .field {
+        display: block;
+        float: left;
+        border-right: 1px solid #bbb;
+        text-align: left;
+        padding-left: 20px;
+        width: 20%;
+    }
+    
+    .tournament-table .row .value {
+        display: block;
+        float: left;
+        text-align: left;
+        padding-left: 20px;
+    }
+
+    .tournament-table input[type='checkbox'] {
+        position: relative;
+        top: 6px;
+    }
+
+    .tournament-table .no-entries {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+    }
+    
+.buttons {
+    display: block;
+    font-size: 14px;
+    height: 50px !important;
+    width: 100%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    
+    border: none !important;
+}

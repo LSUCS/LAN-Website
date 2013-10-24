@@ -323,7 +323,7 @@
         }
         #sleeping-area #sleeping-label {
             top: 180px;
-            left: 45px;
+            left: 65px;
         }
 
     #welcome-desk {
@@ -402,13 +402,38 @@
             top: 332px;
         }
         #main-hall-main #block5 {
-            left: 350px;
+            left: 320px;
             top: 102px;
         }
         #main-hall-main #block6 {
-            left: 470px;
+            left: 420px;
             top: 102px;
         }
+        #main-hall-main #block7 {
+            left: 550px;
+            top: 450px;
+        }
+        #main-hall-main #block8 {
+            left: 550px;
+            top: 525px;
+        }
+        #main-hall-main #block7 .seat, #main-hall-main #block8 .seat {
+            float: right;
+        }
+        
+        #visitor-label {
+            top: 65px;
+            left: 43px;
+        }
+        
+        #visitor-seats {
+            top: 40px;
+            left: 45px;
+        }
+        #visitor-seats .seat {
+            float: left;
+        }
+        
         #toilet-door1 {
             left: 260px;
         }

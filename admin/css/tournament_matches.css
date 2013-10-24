@@ -1,0 +1,13 @@
+.match {
+    
+}
+    .match span {
+        display: inline-block;
+        text-align: center;
+    }
+    .match .player1, .match .player2 {
+        width: 200px;
+    }
+    .match .score1 input, .match .score2 input {
+        width: 100px;
+    }

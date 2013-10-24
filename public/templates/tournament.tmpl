@@ -1,96 +1,286 @@
-<div class="return"><span></span><a href="<? echo LanWebsite_Main::buildUrl(false, "tournaments"); ?>">Return to tournaments</a></div>
+<div class="return"><span></span><a href="<?=LanWebsite_Main::buildUrl(false, "tournaments")?>">Return to tournaments</a></div>
 
 <div class="tournament-header">
-    <div class="tournament-logo"><img src="<? echo $DataBag["tournament"]["game_icon"]; ?>" /></div>
-    <div class="title"><? echo $DataBag["tournament"]["tournament_name"]; ?></div>
+    <div class="tournament-logo"><img src="<?=$DataBag["tournament"]->getIcon()?>" /></div>
+    <div class="title"><?=$DataBag["tournament"]->getName()?></div>
+    <div style="display: none;" id="tournament-id"><?=$DataBag["tournament"]->ID?></div>
 </div>
 
 <div id="info-container">
-<div id="tournament-info">
-    <div class="info-element">
-        <div class="info-left">Game:</div>
-        <div class="info-right"><? echo $DataBag["tournament"]["game"]; ?></div>
+    <div id="tournament-info">
+        <div class="info-element">
+            <div class="info-left">Game:</div>
+            <div class="info-right"><?=$DataBag["tournament"]->getGame()?></div>
+        </div>
+        <div class="info-element">
+            <div class="info-left">Team Size:</div>
+            <div class="info-right"><?=$DataBag["tournament"]->getTeamSize()?></div>
+        </div>
+<?php
+if ($DataBag["tournament"]->signupsOpen()) {
+?>
+        <div class="info-element">
+            <div class="info-left">Signups close:</div>
+            <div class="info-right"><?=$DataBag["tournament"]->getSignupClose()?></div>
+        </div>
+<?php
+}
+?>
+        <div class="info-element">
+            <div class="info-left">Starts:</div>
+            <div class="info-right"><?=($DataBag["tournament"]->started) ? "Started!" : $DataBag["tournament"]->getStart()?></div>
+        </div>
+        <div class="info-element">
+            <div class="info-left">Ends:</div>
+            <div class="info-right"><?=$DataBag["tournament"]->getEnd()?></div>
+        </div>
+        <div class="info-element">
+            <div class="info-left">Format:</div>
+            <div class="info-right"><?=$DataBag["tournament"]->getType()?></div>
+        </div>
+        <div class="info-element">
+            <div class="info-left">Description:</div>
+            <div class="info-right description"><?=$DataBag["tournament"]->getDescription()?></div>
+        </div>
     </div>
-    <? if ($DataBag["tournament"]["signups"] == 1) { ?>
-    <div class="info-element">
-        <div class="info-left">Signups close:</div>
-        <div class="info-right"><? echo date('g:ia D', $DataBag["tournament"]["signup_close"]); ?></div>
-    </div>
-    <? } ?>
-    <div class="info-element">
-        <div class="info-left">Starts:</div>
-        <div class="info-right"><? echo date('g:ia D', $DataBag["tournament"]["start_time"]); ?></div>
-    </div>
-    <div class="info-element">
-        <div class="info-left">Ends:</div>
-        <div class="info-right"><? echo date('g:ia D', $DataBag["tournament"]["end_time"]); ?></div>
-    </div>
-    <? if ($DataBag["tournament"]["format_id"] > 0) { ?>
-    <div class="info-element">
-        <div class="info-left">Format:</div>
-        <div class="info-right"><? echo $DataBag["format"]["format_name"]; ?></div>
-    </div>
-    <? } ?>
-    <div class="info-element">
-        <div class="info-left">Description:</div>
-        <div class="info-right description"><? echo $DataBag["tournament"]["description"]; ?></div>
-    </div>
-</div>
 </div>
 
 <div style="clear: both;"></div>
 
-<? if ($DataBag["tournament"]["signups"] == 1) { ?>
+<?php
+if($DataBag["tournament"]->signupsOpen() && LanWebsite_Main::getAuth()->isLoggedIn()) {
+?>
 
 
 <div id="tournament-buttons">
-    <?
-    if (!$DataBag["signup"] || $DataBag["signup"]["team_id"] < 1) echo '<button id="create-team">Create Team</button>';
-    if (!$DataBag["signup"]) echo '<button id="join-solo">Join Solo</button>';
-    if ($DataBag["signup"]["team_id"] > 0) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "leaveteam", array("tournamentid" => $DataBag["tournament"]["tournament_id"])) . '"><button id="leave-team">Leave Team</button></a>';
-    if ($DataBag["signup"]) echo '<button id="leave-tournament">Leave Tournament</button>';
-    ?>
+<?php
+    if(!$DataBag["tournament"]->isSignedUp()) {
+        //if($DataBag["tournament"]->getTeamSize() > 1) echo '<button id="create-team">Create Team</button>';
+        //If the user is a member of any teams, give them to javascript and show button for joining
+        if(count($DataBag["user_teams"])) {
+            echo '<script>$(document).ready(function() {
+                tournaments.userTeams = [';
+            foreach($DataBag['user_teams'] as $team) {
+                echo "{'id':'" . $team->ID . "', 'name':'" . str_replace("'", "\\'", $team->getName()) . "'},";
+            }
+?>
+            ]; });</script>
+            <button id="join-team">Join With Team</button>
+            <div id="join-team-form" title="Join Tournament">
+                <span>Please select one of your teams to join this tournament with.</span>
+                <form>
+                <fieldset>
+                    <select id="join-teams">
+                    </select>
+                </fieldset>
+                </form>
+            </div>
+<?php
+        }
+        echo '<button id="join-solo">Join Solo</button>';
+    } else {
+        echo '<button id="leave-tournament">Leave Tournament</button>';
+    }
+?>
 </div>
+
+<?php 
+}
+?>
 
 <div id="tournament-tabs">
-
     <ul>
-        <? if ($DataBag["tournament"]["teams"] == 1) { ?><li><a href="#teams">Teams</a></li><? } ?>
-        <? if ($DataBag["tournament"]["teams"] == 0) { ?><li><a href="#signups">Signups</a></li><? } ?>
-        <? if (count($DataBag["brackets"]) > 0) { ?><li><a href="#tabs-2">Bracket</a></li><? } ?>
-        <? if (count($DataBag["matches"]) > 0) { ?><li><a href="#tabs-3">Matches</a></li><? } ?>
+<?php
+
+    if($DataBag['tournament']->getType() == "High Score") echo '<li><a href="#tabs-2">Scores</a></li>';
+    else {
+?>
+        <li><a href="#signups">Signups</a></li>
+<?php 
+    /*
+        if($DataBag["tournament"]->getTeamSize() > 1) { echo '<li><a href="#teams">Teams</a></li>'; }
+        else { echo '<li><a href="#signups">Signups</a></li>'; }
+    */
+        if($DataBag["bracket"]) echo '<li><a href="#tabs-2">Standings</a></li>';
+        if($DataBag["matches"]) { echo '<li><a href="#tabs-3">Matches</a></li>'; }
+    }
+?>
     </ul>
     
-    <? if ($DataBag["tournament"]["teams"] == 1) { ?>
-        <div id="teams">
+<?php
+$counter = 0; 
+if ($DataBag["tournament"]->getTeamSize() > 1) {
+?>
+        <div id="signups">
+            <!--<div class="header">
+                <span class="signup-number"></span>
+                <span class="team-name">Team Name</span>
+                <span class="user-name">Username</span>
+            </div>-->
             <div id="team-list">
-                <? foreach($DataBag["teams"] as $team) {
-                    
-                    echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "jointeam", array("teamid" => $team["team_id"])) . '"><div class="team"><span class="team-name">' . $team["team_name"] . '</span><span class="team-leader">Captain: ' . ($team["leader_id"] > 0?LanWebsite_Main::getUserManager()->getUserById($team["leader_id"])->getUsername():'-') . '</span><span class="playercount">' . count($team["players"]) . '/' . $DataBag["tournament"]["max_team_size"] . '</span>' . ($team["password"] != ""?'<span class="locked"></span></a>':'') . '</div>';
-                
-                } ?>
+<?php
+    $lastTeam = null;
+    if(count($DataBag["signup_list"]) < 1) {
+?>
+                <div class="user">
+                    <span class="nosignups">
+                        There are currently no signups for this tournament =[
+                    </span>
+                </div>
+<?php
+    } else {
+        foreach($DataBag["signup_list"] as $info) {
+            $counter++;
+            if(isset($info['team'])) $team = $info['team'];
+            $user = $info['user'];
+            
+            if(isset($team)) {
+                //Only show the team name if it was different to the last one
+                if($team->ID !== $lastTeam) {
+                    $lastTeam = $team->ID;
+                    $teamName = $team->getName();
+                    $link = true;
+                } else {
+                    $teamName = '';
+                    $link = false;
+                }
+            } else {
+                $teamName = '(unassigned)';
+                $link = false;
+            }
+?>
+                    <div class="team">
+                        <span class="signup-number"><?=$counter?></span>
+                        <span class="team-name">
+<?php
+            if($link) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID)) . '">';
+            echo $teamName;
+            if($link) echo "</a>";
+?>                        
+                        </span>
+                        <span class="user-name"><?=$user->getUsername()?></span>
+                    </div>
+<?php
+        }
+    }
+?>
             </div>
         </div>
-    <?
-    
-    } else { ?>
+<?php 
+} else {
+    if($DataBag['tournament']->getType() == "High Score") {
+        
+    } else {
+    ?>
         <div id="signups">
-            derp
-        </div>
-    <? }
+            <div class="header">
+                <span class="signup-number"></span>
+                <span class="user-name">Username</span>
+            </div>
+<?php
+        if(count($DataBag["signup_list"])) {
+            foreach($DataBag["signup_list"] as $info) {
+                $counter++;
+                $user = $info['user'];
+?>
     
-    if (count($DataBag["brackets"]) > 0) { ?>
+            <div class="user">
+                <span class="signup-number"><?=$counter?></span>
+                <span class="user-name">
+                    <a href="<?=LanWebsite_Main::buildUrl(false, "profile", null, array('userid'=>$user->getUserId()))?>"><?=$user->getUsername()?></a>
+                </span>
+            </div>
+<?php
+            }
+        } else {
+?>
+            <div class="user">
+                <span class="nosignups">
+                    There are currently no signups for this tournament =[
+                </span>
+            </div>
+<?php
+        }
+?>
+        </div>
+<?php
+    }
+}
+    
+if($DataBag["bracket"]) {
+?>
         <div id="tabs-2">
-            herp
+            <?php $DataBag["bracket"]->display(); ?>
         </div>
-    <? }
-    
-    if (count($DataBag["matches"]) > 0) { ?>
+<?php
+}
+
+if($DataBag["matches"]) {
+?>
     <div id="tabs-3">
-        merp
+        <div id="matches">
+            <h2>Winner's Bracket</h2>
+<?php
+    $lastRound = null;
+    $loserBracket = array();
+    foreach($DataBag["matches"] as $match) {
+        //Ignore games that haven't been completely decided yet
+        if(Tournament_Main::isGhost($match->getPlayer1()) && Tournament_Main::isGhost($match->getPlayer2())) continue;
+        
+        $round = $match->getRound();
+        if($round < 0) $loserBracket[] = $match;
+        
+        if($round !== $lastRound) {
+            $lastRound = $round;
+            echo "<h2>Round " . $round . "</h2>";
+        }
+?>
+            <div class="match <?=($match->getPlayed()) ? 'played' : ''?>" id="match-<?=$match->ID?>">
+                <div class="left-player">
+                    <span class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer1())?></span>
+                </div>
+                <div class="scores">
+                    <span class="score1"><?=($match->getPlayed()) ? $match->getScore1() : ''?></span>
+                    <span class="vs">V</span>
+                    <span class="score2"><?=($match->getPlayed()) ? $match->getScore2() : ''?></span>
+                </div>
+                <div class="right-player">
+                    <span class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer2())?></span>
+                </div>
+            </div>
+<?php
+    }
+    if(count($loserBracket)) {
+        echo "<h2>Loser's Bracket</h2>";
+        $loserBracket = array_reverse($loserBracket);
+        foreach($loserBracket as $match) {
+            $round = $match->getRound();
+            if($round !== $lastRound) {
+                $lastRound = $round;
+                echo "<h2>Round " . -$round . "</h2>";
+            }
+?>
+            <div class="match <?=($match->getPlayed()) ? 'played' : ''?>" id="match-<?=$match->ID?>">
+                <div class="left-player">
+                    <span class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer1())?></span>
+                </div>
+                <div class="scores">
+                    <span class="score1"><?=($match->getPlayed()) ? $match->getScore1() : ''?></span>
+                    <span class="vs">V</span>
+                    <span class="score2"><?=($match->getPlayed()) ? $match->getScore2() : ''?></span>
+                </div>
+                <div class="right-player">
+                    <span class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer2())?></span>
+                </div>
+            </div>
+<?php
+        }
+    }
+?>
+        </div>
     </div>
-    <? } ?>
+<?php
+}
+?>
     
 </div>
-
-<? } ?>

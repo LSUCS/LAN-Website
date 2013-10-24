@@ -1,0 +1,50 @@
+#team{
+    display: block;
+	position:relative;
+	background-color:#EAEAEA;
+	background-image:linear-gradient(#FAFAFA, #EAEAEA);
+	background-repeat:repeat no-repeat;
+	border:1px solid #CACACA;
+	border-radius:3px;
+	margin:5px;
+	padding:10px;
+	max-width:100%;
+    overflow: hidden;
+}
+#team h2{
+	
+}
+#team-info{
+	overflow:hidden;
+	float:left;
+	max-width: 80%;
+	width:625px;
+	padding:5px 0;
+}
+#team-members{
+	overflow:hidden;
+	float:right;
+	width:200px;
+	padding:5px 0;
+}
+#team-members span{
+
+}
+#team-members>span::before{
+	content:url(http://dev.lan.lsucs.org.uk/images/group.png);
+	vertical-align: middle;
+	margin-right:5px;
+}
+#team-members .member{
+	margin-left:22px;
+}
+#team-invite{
+	clear:both;
+	display:block;
+	text-align:center;
+}
+
+.alert button {
+    height: 26px;
+    font-size: 12px;
+}

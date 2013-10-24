@@ -1,0 +1,33 @@
+.detail {
+    min-height: 50px;
+    margin-bottom: 10px;
+    width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+}
+    .detail .detail-label {
+        display: block;
+        float: left;
+        width: 200px;
+        height: 35px;
+        line-height: 35px;
+    }
+    .detail .sub-detail {
+        display: block;
+        float: right;
+        width: 330px;
+        font-size: 11px;
+        min-height: 30px;
+        margin-top: 3px;
+        color: #555;
+    }
+.create-team {
+    font-size: 14px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#team-options .create {
+    color: #F1642B;
+}

@@ -1,0 +1,24 @@
+<div id="high-score-display">
+    <div class="header">
+        <span class="position">#</span>
+        <span class="name">Name</span>
+        <span class="score">Score</span>
+    </div>
+<?php
+
+$position = 0;
+foreach($DataBag as $match) {
+    $position++;
+    
+    $link = Tournament_Main::getPlayerLink($match->getPlayer1());
+    
+?>
+    <div class="score-row">
+        <span class="position"><?=$position?></span>
+        <span class="name"><?=$link?></span>
+        <span class="score"><?=$match->getScore1()?></span>
+    </div>
+<?php
+}
+?>
+</div>

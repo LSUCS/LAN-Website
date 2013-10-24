@@ -1,0 +1,33 @@
+<div id="round-robin-display">
+    <div class="header">
+        <span class="position">#</span>
+        <span class="name">Name</span>
+        <span class="played">Played</span>
+        <span class="won">Won</span>
+        <span class="lost">Lost</span>
+    </div>
+<?php
+$position = 0;
+
+foreach($DataBag["teams"] as $team) {
+    $position++;
+    
+    $link = Tournament_Main::getPlayerLink($team["team"]);
+    
+?>
+
+    <div class="team-info">
+        <span class="position"><?=$position?></span>
+        <span class="name"><?=$link?></span>
+        <span class="played"><?=$team['played']?></span>
+        <span class="won"><?=$team['won']?></span>
+        <span class="lost"><?=$team['lost']?></span>
+    </div>
+
+<?php
+}
+
+?>
+
+
+</div>

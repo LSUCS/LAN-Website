@@ -1,0 +1,31 @@
+<h1>Matches</h1>
+
+<div id="matches">
+<?php
+
+$lastRound = null;
+foreach($DataBag["matches"] as $match) {
+    //Ignore games that haven't been completely decided yet
+    if(Tournament_Main::isGhost($match->getPlayer1()) || Tournament_Main::isGhost($match->getPlayer2())) continue;
+    
+    $round = $match->getRound();
+    if($round !== $lastRound) {
+        $lastRound = $round;
+        echo "<h2>Round " . $round . "</h2>";
+    }
+?>
+    <div class="match <?=($match->getPlayed()) ? 'played' : ''?>" id="match-<?=$match->ID?>">
+        <span class="player1 <?=($match->getWinner() == 1) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer1())?></span>
+        <span class="score1"><input type="text" id="score1-<?=$match->ID?>" value="<?=$match->getScore1()?>" placeholder="Score" /></span>
+        <span class="winnerbox"><input id="winner1-<?=$match->ID?>" type="checkbox" <?=($match->getWinner() == 1) ? 'checked="checked"' : ''?> /></span>
+        <span class="vs">V</span>
+        <span class="winnerbox"><input id="winner2-<?=$match->ID?>" type="checkbox" <?=($match->getWinner() == 2) ? 'checked="checked"' : ''?> /></span>
+        <span class="score2"><input type="text" id="score2-<?=$match->ID?>" value="<?=$match->getScore2()?>" placeholder="Score" /></span>
+        <span class="player2 <?=($match->getWinner() == 2) ? 'winner' : ''?>"><?=Tournament_Main::getPlayerLink($match->getPlayer2())?></span>
+        <span class="edit"><button class="editButton" onclick="edit('<?=$match->ID?>')">Edit</button></span>
+    </div>
+<?php
+}
+
+?>
+</div>
