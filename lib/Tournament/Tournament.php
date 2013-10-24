@@ -14,6 +14,7 @@ class Tournament_Tournament {//implements jsonSerializable{
     private $start_time;
     private $end_time;
     private $description;
+    private $collated;
     
     private $matches = null;
     private $signups = null;
@@ -41,6 +42,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         $this->end_time =       (int) $r['end_time'];
         $this->description =    (string) $r['description'];
         $this->started =        (bool) $r['started'];
+        $this->collated =       (bool) $r['collated'];
     }
     
     function jsonSerialize() {
@@ -63,7 +65,8 @@ class Tournament_Tournament {//implements jsonSerializable{
             'end_time_nice' =>      $this->getEnd(),
             'description' =>        $this->getDescription(),
             'current_signups' =>    count($this->getSignupList()),
-            'started' =>            $this->started
+            'started' =>            $this->started,
+            'collated' =>           $this->collated
         );
     }
     
@@ -148,6 +151,11 @@ class Tournament_Tournament {//implements jsonSerializable{
         if(!$this->started) return false;
         if(is_null($this->matches) || !$useCache) $this->updateMatches($useCache);
         return $this->matches;
+    }
+    
+    public function isCollated() {
+        if(is_null($this->ID)) return false;
+        return $this->collated;
     }
     
 

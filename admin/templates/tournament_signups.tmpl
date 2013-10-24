@@ -43,4 +43,21 @@
     </div>
 <?php
         }
+?>
+    <p>This output is horrible but I'm feeling lazy. Doesn't really show much more information than the public page. But it does host this button:</p>
+    <button id="collate">Collate Teams</button>
+    <script>
+        $(document).ready(function() {
+            $('#collate').button();
+            $("#collate").live("click", function() {
+                $.post(UrlBuilder.buildUrl(true, 'tournaments', 'collate'), 
+                {id: <?=$DataBag["tournament"]->ID?>},
+                function() {
+                    
+                });
+            });
+        });
+    
+    </script>
+<?php
     }

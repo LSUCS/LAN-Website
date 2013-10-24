@@ -231,7 +231,7 @@ class Tournament_Doubleelimination extends Tournament_Structure {
     }
     
     public function display() {
-        $this->showTemplate('doubleelimination', array('matches'=>$this->getMatches()));
+        $this->showTemplate('doubleelimination2', array('matches'=>$this->getMatches()));
     }
     
     public function updateMatch($matchID) {
