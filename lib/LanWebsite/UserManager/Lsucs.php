@@ -12,6 +12,7 @@
 		
 		public function getUserById($userId) {
             //Get user data from LSUCS auth system
+            if($userId == 0) return false;
             $auth = $this->getLsucsAuthResponse('getuserbyid', array("userid" => $userId));
             if (isset($auth['error'])) return false;
             
@@ -61,8 +62,8 @@
         
         public function getLsucsAuthResponse($method, $params) {
             //Check cache
-            $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
-            if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
+//            $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
+//            if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
             
                 //Prepare fields
                 $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
@@ -78,8 +79,9 @@
                 
                 //Decode response and store
                 $result = json_decode(curl_exec($ch), true);
-                LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
-            }
+                if(isset($result['error'])) die('Fatal Auth Error: ' . $result['error']); 
+//                LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
+//            }
             return $result;
         }
         
