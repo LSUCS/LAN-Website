@@ -61,7 +61,7 @@
             //Instant IE ban
             if (strpos(getenv("HTTP_USER_AGENT"), "MSIE") > -1) {
                 preg_match("/MSIE (\d\d?)\./", getenv("HTTP_USER_AGENT"), $matches);
-                if ($matches[1] < 8) Header("Location: no-ie.html");
+                if ($matches[1] < 8) Header("Location: /no-ie.html");
             }
             
             //Parse page - if invalid, load 'not found' template
