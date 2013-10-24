@@ -140,6 +140,10 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         if($tournament->started) $this->errorJson("This tournament has already started");
         
+        if($tournament->getTeamSize() > 1 && !$tournament->isCollated()) $this->errorJson("Teams must be collated for this tournament before it can start");
+        
+        //BEGIN STARTING
+                
         //Close signups and make it display as started
         //In theory creating matches could take a while, so we wanna close signups first
         LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
@@ -163,10 +167,10 @@ class Tournaments_Controller extends LanWebsite_Controller {
 		$tmpl->output();
     }
     
-    public function get_Collate($inputs) {
+    public function post_Collate($inputs) {
         if ($this->isInvalid("id")) $this->error("Invalid Request");
         
-        $db = Tournament_Main::getDb();
+        $db = LanWebsite_Main::getDb();
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         
@@ -237,7 +241,35 @@ class Tournaments_Controller extends LanWebsite_Controller {
             }
             
             foreach($teamPairs as $pair) {
+                $teamName = Tournament_Main::team($pair[0])->getName();
+                $teamName .- " & " . Tournament_Main::team($pair[1])->getName();
                 
+                $res = $db->query("INSERT INTO `tournament_teams` (Name, Description, Temporary) VALUES ('%s', 'This team was create automatically by the tournament system', 1)", $teamName);
+                $id = $res->inserted_id;
+                
+                $db->query("
+                    UPDATE 
+                        `tournament_signups`
+                    SET 
+                        team_id = '%s'
+                    WHERE 
+                        (
+                            team_id = '%s'
+                        OR 
+                            team_id = '%s'
+                        )
+                        AND
+                            tournament_id = '%s'
+                    ", $id, $pair[0], $pair[1], $tournament->ID);
+                    
+                $db->query("
+                    INSERT INTO 
+                        `tournament_teams_members` (
+                            team_id,
+                            user_id,
+                            permission
+                        ) SELECT '%s' AS team_id, user_id, 0 AS permission FROM `tournament_signups` WHERE team_id = '%s'", $id, $id);
+                $db->query("UPDATE `tournament_teams_members SET permission = 1 WHERE team_id = '%s' LIMIT 1", $id);
             }
             
             //TODO: Add additional logic here for left over players
@@ -276,7 +308,8 @@ class Tournaments_Controller extends LanWebsite_Controller {
                     for($y = 0; $y < $teamSize; $y++) {
                         $player = array_shift($noTeam);
                         $permission = ($player == $firstPlayer) ? 1 : 0;
-                        $db->query("INSERT INTO `tournament_teams_members` (team_id, user_id, permission) VALUES ('%s', '%s', '%s')", $id, $player->getId(), $permission);
+                        $db->query("INSERT INTO `tournament_teams_members` (team_id, user_id, permission) VALUES ('%s', '%s', '%s')", $id, $player->getUserId(), $permission);
+                        $db->query("UPDATE `tournament_signups` SET team_id = '%s' WHERE user_id = '%s' AND tournament_id = '%s'", $id, $player->getUserId(), $tournament->ID);
                     }
                 }
             }
