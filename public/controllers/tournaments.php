@@ -7,6 +7,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
             case "joinsolo": return array("tournament_id" => array('notnull', 'int'));
             case "joinasteam": return array("tournament_id" => array('notnull', 'int'), "team_id" => array('notnull', 'int'));
             case "leave": return array("tournament_id" => array('notnull', 'int'));
+            case "clearalert": return array("alert_id" => 'notnull');
         }
     }
     
@@ -47,7 +48,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         
         $tmpl = LanWebsite_Main::getTemplateManager();
-		$tmpl->setSubTitle("Tournaments");
+		$tmpl->setSubTitle("Tournaments <sup>(beta)</sup>");
         $tmpl->addTemplate('tournament_header');
         $tmpl->addTemplate('tournaments2', array('tournaments' => $tournaments, 'usertournaments' => $userTournaments));
 		$tmpl->output();
@@ -158,6 +159,17 @@ class Tournaments_Controller extends LanWebsite_Controller {
             
         //We could update here, but it feels like a lot of effort for what it's worth
         LanWebsite_Cache::delete('tournament' ,'signuplist_' . $inputs['tournament_id']);
+    }
+    
+    public function post_Clearalert($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        if($this->isInvalid('alert_id')) $this->errorJson("Invalid Alert");
+        
+        if(array_key_exists('cleared_alerts', $_COOKIE)) $clearedAlerts = unserialize($_COOKIE['cleared_alerts']);
+        else $clearedAlerts = array();
+        $clearedAlerts[] = $inputs['alert_id'];
+        setcookie('cleared_alerts', serialize($clearedAlerts), time() + 604800, '/', '.lsucs.org.uk');
+        echo "cleared";
     }
 }
 

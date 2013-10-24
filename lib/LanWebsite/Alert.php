@@ -13,7 +13,8 @@
         private $message = null;
         private $link = null;
         
-        public function __construct($level, $message, $link=null) {
+        public function __construct($level, $message, $link=null, $id) {
+            $this->id = $id;
             $this->level = $level;
             $this->message = $message;
             $this->link = $link;

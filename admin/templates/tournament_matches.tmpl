@@ -5,6 +5,9 @@
 
 $lastRound = null;
 foreach($DataBag["matches"] as $match) {
+    //Ignore games that haven't been completely decided yet
+    if(Tournament_Main::isGhost($match->getPlayer1()) || Tournament_Main::isGhost($match->getPlayer2())) continue;
+    
     $round = $match->getRound();
     if($round !== $lastRound) {
         $lastRound = $round;

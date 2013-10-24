@@ -247,7 +247,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         }
         
         if(!$this->matches) {
-            $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s' ORDER BY round ASC, game ASC", $this->ID);
+            $r = LanWebsite_Main::getDb()->query("SELECT id FROM `tournament_matches` WHERE tournament_id = '%s' ORDER BY round ASC, game DESC", $this->ID);
             $this->matches = array();
             while($row = $r->fetch_assoc()) {
                 $this->matches[$row['id']] = new Tournament_Match($row['id']);

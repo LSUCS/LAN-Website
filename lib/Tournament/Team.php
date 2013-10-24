@@ -6,9 +6,10 @@ class Tournament_Team {//implements jsonSerializable{
     private $members = 0;
     private $description = "";
     
-    function __construct($ID) {
+    function __construct($ID, $name = false) {
         if($ID == 0) {
             $this->ID = 0;
+            if($name && $name !== 'ghost') $this->name = $name;
             return;
         }
         if(!LanWebsite_Cache::get('tournament', 'team_' . $ID, $r)) {

@@ -496,6 +496,7 @@ body {
     #subtitle {
         font-family: reznor;
         font-size: 37px;
+        text-transform: lowercase;
         
 		width: 960px;
         height: 40px;
@@ -508,6 +509,9 @@ body {
             position: relative;
             top: 4px;
             margin-left: -20px;
+        }
+        #subtitle sup {
+            font-size: 16px;
         }
 
 #content {

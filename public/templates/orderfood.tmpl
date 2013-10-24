@@ -36,7 +36,7 @@
 					echo 
 						'<div class="shop-option' . (strlen($option["description"]) > 0?' described':'') . '" value="' . $option["option_id"] . '">
 							<div class="option-name">' . $option["option_name"] . '</div>
-							<input class="option-amount" maxlength="1" type="number" value="0" />
+							<input class="option-amount" maxlength="1" type="number" value="0" min="0" max="9" />
 							<div class="option-price">&pound;' . $option["price"] . '</div>';
 					if (strlen($option["description"]) > 0) echo '<div class="option-description">' . $option["description"] . '</div>';
 					echo '</div>';				

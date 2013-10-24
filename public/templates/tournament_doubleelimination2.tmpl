@@ -1,0 +1,12 @@
+<script type="text/javascript" src="/js/easeljs-0.7.0.min.js"></script>
+<script type="text/javascript" src="/public/js/doubleelimination.js"></script>
+<script type="text/javascript">
+<?php
+    $json=array();
+    foreach($DataBag['matches'] as $m) {
+        $json[] = $m->jsonSerialize();
+    }
+?>
+var matches = <?=json_encode($json)?>;
+</script>
+<canvas id="doubleElminiationBracket">HTML5 Canvas not supported</canvas>

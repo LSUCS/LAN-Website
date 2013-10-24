@@ -1,15 +1,15 @@
 <?php
 
-class Tournament_Doubleelimination extends Tournament_Structure {
+class Tournament_Singleelimination extends Tournament_Structure {
     private $shuffle = true;
-    public $minimumPlayers = 4;
+    public $minimumPlayers = 2;
     
     public function createMatches() {
         //Total number of signups. Don't use cache cos it needs to be exact
         $total = count($this->getSignups(false));
         
         //Minimum of 4 teams
-        if($total < $this->minimumPlayers) return "There must be at least " . $this->minimumPlayers . " teams for a Double Elimination tournament";
+        if($total < $this->minimumPlayers) return "There must be at least " . $this->minimumPlayers . " teams for a Single Elimination tournament";
         
         //We can use cache this time cos we just cleared it above
         $teams = $this->getSignups();
@@ -19,9 +19,9 @@ class Tournament_Doubleelimination extends Tournament_Structure {
         $teamsMaster = array_values($teams);
         
         
-        /////////////////////////
-        //Create winners bracket
-        /////////////////////////
+        ////////////////
+        //Create bracket
+        ////////////////
         
         
         //The total number of rounds
@@ -98,136 +98,12 @@ class Tournament_Doubleelimination extends Tournament_Structure {
             }
         }
         
-        ////////////////////////
-        //Create losers bracket
-        ////////////////////////
-        
-        //Total number of losers to be put into the initial losers bracket
-        if($extraGames) {
-            $losers = $masterBase/4 + $extraGames;
-        } else {
-            $losers = $masterBase/2;
-        }
-        
-        //The total number of rounds
-        $loserRounds = ceil(log($losers, 2));
-        
-        //If we aren't at a perfect number
-        if(log($losers, 2) !== $loserRounds) {
-            $extraLoserGames = $losers - pow(2, $loserRounds-1);
-        } else {
-            $extraLoserGames = false;
-        }
-        $loserBase = pow(2, $loserRounds);
-        $winnerBase = $masterBase;
-        
-        echo "\n\nLosers:" . $losers;
-        echo "\nLoser Base: " . $loserBase;
-        echo "\nLoser Rounds: " . $loserRounds;
-        echo "\nExtra Games: " . (string)$extraLoserGames;
-        
-        $lastRoundGames = 0;
-        for($round = 1; $round <= $loserRounds+1; $round++) {
-            echo "\nLast: " . $lastRoundGames . " and " . $loserBase;
-            $winnerRound = false;
-            if($lastRoundGames !== (int)$loserBase/2 && $round !== 1) {
-                $loserBase += $winnerBase/2;
-                $winnerRound = true;    
-            }            
-            if($round == 1) $winnerRound = true;
-            /*
-            //Wh$loserBase += $winnerBase/2; where players from the winners bracket are moving down. happens every other round
-            if(($extraGames && $round % 2 !== 0 && $round !== 1) || (!$extraGames && $round % 2 !== 0))  {
-                $loserBase += $winnerBase/2;
-                $winnerRound = true;
-            }
-            if($round == 1 || $extraGames && $round == 2) {
-                $winnerRound = true;
-            }
-            */
-            if($winnerRound && $round !== 1) {
-                //Reverse the games in this round
-                //Make an array of them
-                $firstIndex = null;
-                $round = array_shift(array_values($this->games));
-                $round = $round['round'];
-                $reverseGames = array();
-                foreach($this->games as $i=>$g) {
-                    if($g['round'] == $round) {
-                        if(is_null($firstIndex)) $firstIndex = $i;
-                        $reverseGames[] = $g;
-                    }
-                }
-                //Reverse it and re-insert
-                foreach(array_reverse($reverseGames) as $g) {
-                    $this->games[$firstIndex] = $g;
-                    $firstIndex++;
-                }
-            }
-
-            $loserBase /= 2;
-            $winnerBase /= 2;
-            if($loserBase < 1) break;
-
-            if($round == 1 && $extraLoserGames) {
-                for($game = 1; $game <= $extraLoserGames; $game++) {
-                    $lastRoundGames++;
-                    $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost($winnerRound), -$round, $game, true);
-                }
-                continue;
-            }
-            if($round == 2 && $extraLoserGames) {
-                $round2LGame = 1;
-                $extraLoserGamesTemp = $extraLoserGames;
-                while($extraLoserGamesTemp > $loserBase*2) {
-                    $lastRoundGames++;
-                    $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost($winnerRound), -$round, $round2LGame, true);
-                    $round2LGame++;
-                    $extraLoserGamesTemp -= 2;
-                }
-                
-                
-                for($game = $round2LGame; $game <= $extraLoserGames; $game++) {
-                    $lastRoundGames++;
-                    $round2LGame++;
-                    $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost(false), -$round, $game, true);
-                }
-                for($game = $round2LGame + 1; $game <= $loserBase; $game++) {
-                    $lastRoundGames++;
-                    $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost($winnerRound), -$round, $game, true);
-                }
-            } else {
-                if($round == 1) {
-                    for($game = 1; $game <= $loserBase; $game++) {
-                        $lastRoundGames++;
-                        $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost($winnerRound), -$round, $game, true);
-                    }
-                } else {
-                    for($game = 1; $game <= $loserBase; $game++) {
-                        $lastRoundGames++;                        
-                        $this->createMatch($this->getNextGhost($winnerRound), $this->getNextGhost(false), -$round, $game, true);
-                    }
-                }
-            }
-        }
-        
-        //Create the final(s)
-        $this->createMatch('ghost', 'Winner of Losers Bracket', $rounds+1, 1, true);
-        $this->createMatch('ghost', 'Loser of Final (if necessary)', $rounds+2, 1, true);
-        
         return true;
     }
     
     private function getNextTeam(&$teams) {
         if(count($teams)) return Tournament_Main::getPlayerId(array_shift($teams));
         return 'ghost';
-    }
-    
-    private function getNextGhost($winnerRound) {
-        if(!$winnerRound) return 'ghost';
-        $nextGame = array_shift($this->games);
-        if(!$nextGame || $nextGame['round'] < 0) return 'ghost';
-        return "Loser of Round " . $nextGame['round'] . " Game " . $nextGame['game'];
     }
     
     public function display() {
@@ -285,20 +161,6 @@ class Tournament_Doubleelimination extends Tournament_Structure {
                 break;
             }
         }
-        
-        //Keep this seperate for ease
-        //Move the loser into the losers bracket if the game was in the winners bracket
-        $loser = $match->getLoser();
-        if($winnersBracketBool) {
-            $res = $db->query("UPDATE `tournament_matches` SET player1 = '%s' WHERE player1 = 'Loser of Round %s Game %s'", $loser, $match->getRound(), $match->getGame());
-            if(!$res->affected_rows) {
-                $res = $db->query("UPDATE `tournament_matches` SET player2 = '%s' WHERE player2 = 'Loser of Round %s Game %s'", $loser, $match->getRound(), $match->getGame());
-                if(!$res->affected_rows) {
-                    die("Tournament value error");
-                }
-            }
-            
-        } 
     }
 }
 

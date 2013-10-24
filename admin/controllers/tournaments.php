@@ -26,9 +26,9 @@ class Tournaments_Controller extends LanWebsite_Controller {
             case "delete":
             case "empty": 
             case "start":
-            case "signups":
             case "view": 
             case "matches":
+            case "collate":
                 return array("id" => array("int","notnull"));
         }
     }
@@ -142,7 +142,7 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         //Close signups and make it display as started
         //In theory creating matches could take a while, so we wanna close signups first
-        //LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
+        LanWebsite_Main::getDb()->query("UPDATE `tournament_tournaments` SET started=1, signups=0 WHERE id = '%s'", $tournament->ID);
         LanWebsite_Cache::delete('tournament', 'tournament_' . $tournament->ID);
         
         $output = $tournament->createMatches();
@@ -151,19 +151,138 @@ class Tournaments_Controller extends LanWebsite_Controller {
         }
     }
     
-    public function get_Signups($inputs) {
+    public function get_View($inputs) {
         if ($this->isInvalid("id")) $this->error("Invalid Request");
         
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
 
-        //echo json_encode($tournament->getSignupList());
-
-        $json = array();
-        foreach($tournament->getSignupList() as $t) {
-            $json[] = $t->jsonSerialize();
+        $tmpl = LanWebsite_Main::getTemplateManager();
+		$tmpl->setSubTitle("Tournament Signups");
+        $tmpl->addTemplate('tournament_signups', array('tournament'=>$tournament, 'signups'=>$tournament->getSignupList(false)));        
+		$tmpl->output();
+    }
+    
+    public function get_Collate($inputs) {
+        if ($this->isInvalid("id")) $this->error("Invalid Request");
+        
+        $db = Tournament_Main::getDb();
+        $tournament = Tournament_Main::tournament($inputs['id']);
+        if(!$tournament) $this->error(404);
+        
+        if(!$tournament->signupsOpen()) $this->error("The signups must be closed before you can collate teams");
+        $teamSize = $tournament->getTeamSize();
+        if($teamSize < 2) $this->error("This is not a team tournament!");
+        
+        $signups = $tournament->getSignups(false);
+        $tSignups = count($signups);
+        
+        if($tSignups % $teamSize !== 0) { 
+            $this->error("This tournament has team sizes of " . $teamSize . ", but there are " . $tSignups . " signups. " . $tSignups . " does not divide by " . $teamSize);
         }
-        echo json_encode($json);
+        
+        
+        
+        //Dry run, collect and sort data about the teams and how many members they have in the tournament, and how many solo players we have
+        $teams = array();
+        $noTeam = array();
+        foreach($signups as $player) {
+            //Check if the user's team ID is non (unassigned) or they aren't paired with a team (second clause shouldn't happen)
+            if($player['team_id'] == 0 || !array_key_exists('team', $player)) {
+                $noTeam[] = $player;
+            } else {
+                //Checks if the team exists in the main array
+                if(!array_key_exists($player['team']->ID, $teams)) {
+                    $teams[$player['team']->ID] = array();
+                }
+                $teams[$player['team']->ID][] = $player;
+            }
+        }
+        
+        $noTeamRequired = 0;
+        foreach($teams as $teamPlayers) {
+            $numPlayers = count($teamPlayers);
+            if($numPlayers > $teamSize) $this->error("FATAL: Team " . $teamPlayers[0]['team']->getName() . " has more than " . $teamSize . " players!");
+            if($numPlayers == 1) {
+                $noTeam[] = $teamPlayers[0];
+            } else {
+                if($numPlayers !== $teamSize) {
+                    $neededPlayers = $teamSize - $numPlayers;
+                    $noTeamRequired += $neededPlayers;
+                } //Else there is no problem, the team has enough players
+            }
+        }
+        
+        //Number of players without a team
+        $numNoTeam = count($noTeam);
+        
+        //Allocate unassigned players to teams where possible
+        //Make unassigned players into teams
+        if($noTeamRequired < $numNoTeam) { //There are less people not in a team than teams needing players. Gonna have to split teams 
+            
+            //Annoying cases where there aren't enough solo players. Try to pair teams
+            $teamNeededPlayers = array();
+            $teamPairs = array();
+            foreach($teams as $teamPlayers) {
+                if(count($teamPlayers) !== $teamSize) {      
+                    //Does a team need the amount of players that this team has?
+                    if($key = array_search(count($teamPlayers), $teamNeededPlayers)) {
+                        unset($teamNeededPlayers[$key]);
+                        $teamPairs[] = array($key, $teamPlayers[0]['team']->ID);
+                    } else {
+                        $neededPlayers = $teamSize - $numPlayers;
+                        $teamNeededPlayers[$teamPlayers[0]['team']->ID] = $neededPlayers;
+                    }
+                }
+            }
+            
+            foreach($teamPairs as $pair) {
+                
+            }
+            
+            //TODO: Add additional logic here for left over players
+            
+        } else { 
+            //Assign each team the number of unassigned players that it needs
+            foreach($teams as $teamPlayers) {
+                if(count($teamPlayers) !== $teamSize) {
+                    $neededPlayers = $teamSize - $numPlayers;
+                    for($x = 0; $x < $neededPlayers; $x++) {
+                        $player = array_shift($noTeam);
+                        $db->query("UPDATE `tournament_signups` SET team_id = '%s', team_temporary = 1 WHERE tournament_id = '%s' AND user_id = '%s'", $teamPlayers[0]['team']->ID, $tournament->ID, $player->getId());
+                    }
+                }
+            }
+        
+            //We still have players unassigned to teams
+            if(count($noTeam) !== 0) {
+                if(count($noTeam) % $teamSize) {//Oh oh, this isn't good
+                    $this->error("FATAL: Remeinder of players (" . count($noTeam) . ") isn't a multiple of the team size: " . $teamSize);
+                }
+                $teamsToCreate = count($noTeam) / $teamSize;
+                for($x = 0; $x < $teamsToCreate; $x++) {
+                    $firstPlayer = array_shift(array_values($noTeam));
+                    
+                    $teamName = $firstPlayer->getUsername();
+                    if(substr($teamName, -1) == 's') {
+                        $teamName += "' Team";
+                    } else {
+                        $teamName += "'s Team";
+                    }
+                    
+                    $res = $db->query("INSERT INTO `tournament_teams` (Name, Description, Temporary) VALUES ('%s', 'This team was create automatically by the tournament system', 1)", $teamName);
+                    $id = $res->inserted_id;
+                    
+                    for($y = 0; $y < $teamSize; $y++) {
+                        $player = array_shift($noTeam);
+                        $permission = ($player == $firstPlayer) ? 1 : 0;
+                        $db->query("INSERT INTO `tournament_teams_members` (team_id, user_id, permission) VALUES ('%s', '%s', '%s')", $id, $player->getId(), $permission);
+                    }
+                }
+            }
+            
+        }
+        
     }
     
     public function post_Editmatch($inputs) {
@@ -172,9 +291,22 @@ class Tournaments_Controller extends LanWebsite_Controller {
         if($this->isInvalid("score2")) $this->errorJson("Invalid Score 2");
         if($this->isInvalid("winner")) $this->errorJson("Invalid Winner");
         
+        $db = LanWebsite_Main::getDb();
+        //Check the match exists, and get the tournament id for later
+        $res = $db->query("SELECT tournament_id FROM `tournament_matches` WHERE id = '%s'", $inputs["id"]);
+        if($res->num_rows < 1) {
+            $this->errorJson("Invalid Match (404)");
+        }
+        list($tournament_id) = $res->fetch_row();
+        
         $played = ($inputs["winner"]) ? 1 : 0;
-        LanWebsite_Main::getDb()->query("UPDATE `tournament_matches` SET played_bool = '%s', score1 = '%s', score2 = '%s', winner='%s' WHERE id = '%s'",
+        
+        $db->query("UPDATE `tournament_matches` SET played_bool = '%s', score1 = '%s', score2 = '%s', winner='%s' WHERE id = '%s'",
             $played, $inputs["score1"], $inputs["score2"], $inputs["winner"], $inputs["id"]);
         LanWebsite_Cache::delete('tournament', 'match_' . $inputs["id"]);
+        
+        
+        $Structure = Tournament_Main::tournament($tournament_id)->getStructure();
+        $Structure->updateMatch($inputs["id"]);
     }
 }

@@ -118,6 +118,10 @@ class Tournament_Main {
         }
     }
     
+    public static function isGhost($player) {
+        return (self::getPlayerId($player) == 0) ? true : false;
+    }
+    
     public static function timeDiff($time) {
         $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
         $lengths = array("60","60","24","7","4.35","12","10");
@@ -144,10 +148,17 @@ class Tournament_Main {
         $alerts = array();
         $db = LanWebsite_Main::getDb();
         
+        if(array_key_exists('cleared_alerts', $_COOKIE)) {
+            $clearedAlerts = unserialize($_COOKIE['cleared_alerts']);
+        } else {
+            $clearedAlerts = array();
+        }
+        
         //General alerts
-        $res = $db->query("SELECT message, level, user_id, link FROM `tournament_alerts` WHERE user_id = '%s' OR user_id = 0", LanWebsite_Main::getAuth()->getActiveUserId());
-        while($row = $res->fetch_assoc()) {
-            $alerts[] = new LanWebsite_Alert(constant('LanWebsite_Alert::' . $row['level']), $row['message'], $row['link']);
+        $res = $db->query("SELECT id, message, level, user_id, link FROM `tournament_alerts` WHERE user_id = '%s' OR user_id = 0", LanWebsite_Main::getAuth()->getActiveUserId());
+        while($row = $res->fetch_assoc()) {                  
+            if(in_array($row['id'], $clearedAlerts)) continue;
+            $alerts[] = new LanWebsite_Alert(constant('LanWebsite_Alert::' . $row['level']), $row['message'], $row['link'], $row['id']);
         }
         
         //Tournaments
@@ -163,8 +174,10 @@ class Tournament_Main {
                     $level = LanWebsite_Alert::ALERT_NOTICE;
                     $message = 'A tournament that you are playing in is starting soon';
                 }
+                if(in_array($row['id'], $clearedAlerts)) continue;
+                
                 $link = LanWebsite_Main::buildUrl(false, 'tournaments', 'view', array('id'=>$row['ID']));
-                $alerts[] = new LanWebsite_Alert($level, $message, $link);
+                $alerts[] = new LanWebsite_Alert($level, $message, $link, 'tournament_' . $level . '_' . $row['id']);
             }
         }
         return $alerts;

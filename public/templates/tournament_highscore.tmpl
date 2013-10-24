@@ -7,7 +7,7 @@
 <?php
 
 $position = 0;
-foreach($DataBag['score'] as $match) {
+foreach($DataBag as $match) {
     $position++;
     
     $link = Tournament_Main::getPlayerLink($match->getPlayer1());

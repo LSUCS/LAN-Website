@@ -1,0 +1,17 @@
+#signups #signup-header {
+    background: #444;
+}
+
+span {
+    display: inline-block;
+}
+
+#signups .row span:nth-child(1) {
+    width: 20px;
+}
+#signups .row span:nth-child(2) {
+    width: 200px;
+}
+#signups .row span:nth-child(3) {
+    width: 300px;
+}

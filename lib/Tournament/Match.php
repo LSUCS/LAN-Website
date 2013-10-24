@@ -5,7 +5,8 @@ class Tournament_Match {
     private $tournamentID;
     private $round;
     private $game;
-    //The IDs of the teams or users in the match
+    //The IDs of the teams or users in the match#
+    //Or placeholder strings
     private $player1;
     private $player2;
     //Whether or not the match has been played
@@ -27,8 +28,8 @@ class Tournament_Match {
         }
         
         $this->ID =             (int) $ID;
-        $this->player1 =        (int) $r['player1'];
-        $this->player2 =        (int) $r['player2'];
+        $this->player1 =        $r['player1'];
+        $this->player2 =        $r['player2'];
         $this->played_bool =    (bool) $r['played_bool'];
         $this->score1 =         (string) $r['score1'];
         $this->score2 =         (string) $r['score2'];
@@ -37,14 +38,49 @@ class Tournament_Match {
         $this->tournamentID =   (int) $r['tournament_id'];
         $this->round =          (int) $r['round'];
         $this->game =           (int) $r['game'];
-                
-        if($this->teams_bool) {
-            $this->player1 = Tournament_Main::team($this->player1);
-            $this->player2 = Tournament_Main::team($this->player2);
+        
+        if(ctype_digit($r['player1'])) {
+            if($this->teams_bool) {
+                $this->player1 = Tournament_Main::team($this->player1);
+            } else {
+                $this->player1 = ($this->player1) ? LanWebsite_Main::getUserManager()->getUserById($this->player1) : Tournament_Main::team(0);
+            }
         } else {
-            $this->player1 = ($this->player1) ? LanWebsite_Main::getUserManager()->getUserById($this->player1) : Tournament_Main::team(0);
-            $this->player2 = ($this->player2) ? LanWebsite_Main::getUserManager()->getUserById($this->player2) : Tournament_Main::team(0);
-        }                
+            $this->player1 = new Tournament_Team(0, $r['player1']);
+        }
+        if(ctype_digit($r['player2'])) {
+            if($this->teams_bool) {
+                $this->player2 = Tournament_Main::team($this->player2);
+            } else {
+                $this->player2 = ($this->player2) ? LanWebsite_Main::getUserManager()->getUserById($this->player2) : Tournament_Main::team(0);
+            }
+        } else {
+            $this->player2 = new Tournament_Team(0, $r['player2']);
+        }        
+    }
+    
+    function jsonSerialize() {
+        return array(
+            'id' =>                 $this->ID,
+            'player1' =>            array(
+                                        'id' => Tournament_Main::getPlayerId($this->player1), 
+                                        'name' => Tournament_Main::getPlayerName($this->player1),
+                                        'link' => Tournament_Main::getPlayerLink($this->player1)
+                                    ),
+            'player2' =>            array(
+                                        'id' => Tournament_Main::getPlayerId($this->player2),
+                                        'name' => Tournament_Main::getPlayerName($this->player2),
+                                        'link' => Tournament_Main::getPlayerLink($this->player2)
+                                    ),
+            'played_bool' =>        $this->played_bool,
+            'score1' =>             $this->getScore1(),
+            'score2' =>             $this->getScore2(),
+            'winner' =>             $this->getWinner(),
+            'teams_bool' =>         $this->getTeamsBool(),
+            'tournament_id' =>      $this->tournamentID,
+            'round' =>              $this->getRound(),
+            'game' =>               $this->getGame()
+        );
     }
     
     //Getter Functions

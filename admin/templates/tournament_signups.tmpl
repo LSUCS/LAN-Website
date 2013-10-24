@@ -1,0 +1,46 @@
+<div id="signups">
+    <div id="signup-header" class="row">
+        <span>#</span>
+        <span>Team Name</span>
+        <span>Name</span>
+    </div>
+
+<?php
+    if(count($DataBag["signups"]) < 1) {
+?>
+    <div class="user">
+        <span class="nosignups">
+            There are currently no signups for this tournament =[
+        </span>
+    </div>
+<?php
+    } else {
+        $counter = 0;
+        foreach($DataBag["signups"] as $info) {
+            $counter++;
+            if(isset($info['team'])) $team = $info['team'];
+            $user = $info['user'];
+            
+            if(isset($team)) {
+                //Only show the team name if it was different to the last one
+                $teamName = $team->getName();
+                $link = true;
+            } else {
+                $teamName = '(unassigned)';
+                $link = false;
+            }
+?>
+    <div class="team row">
+        <span class="signup-number"><?=$counter?></span>
+        <span class="team-name">
+<?php
+            if($link) echo '<a href="' . LanWebsite_Main::buildUrl(false, "tournaments", "team", array("id" => $team->ID)) . '">';
+            echo $teamName;
+            if($link) echo "</a>";
+?>                        
+        </span>
+        <span class="user-name"><?=Tournament_Main::getPlayerLink($user)?></span>
+    </div>
+<?php
+        }
+    }

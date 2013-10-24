@@ -1,19 +1,28 @@
 <?php
 
 class Tournament_Highscore extends Tournament_Structure {
+    private $displayScores = 0;
+    
     public function createMatches() {
         //No matches to create. Wooo
+        return true;
+    }
+    
+    public function updateMatch($info) {
         return;
     }
     
     public function display() {
-        $db = LanWebsite_Main::getDb();
+        if(!$this->displayScores) {
+            echo 'Scores are hidden for this Tournament';
+            return;
+        }
         
         //Entries are saved as matches
         $scores = $this->getMatches();
         $scores = $this->bubbleSort($scores);
         
-        $this->showTemplate('tournament_highscore', $scores);
+        $this->showTemplate('highscore', $scores);
     }
     
     //No idea if this will work, I was feeling lazy so stole this off of the internet

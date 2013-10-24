@@ -119,6 +119,10 @@ class Tournament_Roundrobin extends Tournament_Structure {
         }
         return $array;
     }
+    
+    public function updateMatch($info) {
+        
+    }
 }
 
 ?>
