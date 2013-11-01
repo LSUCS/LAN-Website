@@ -151,6 +151,7 @@
             if ($this->include_main) {
                 $user = LanWebsite_Main::getUserManager()->getActiveUser();
                 $data["countdown"] = LanWebsite_Main::getSettings()->getSetting("enable_timer");
+                $data["countdown_date"] = LanWebsite_Main::getSettings()->getSetting("lan_start_date");
                 $data["subtitle"] = $this->subtitle;
                 $data["loggedin"] = LanWebsite_Main::getAuth()->isLoggedIn();
                 $data["admin"] = $user->isAdmin();

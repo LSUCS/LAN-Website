@@ -9,7 +9,6 @@ $(document).ready(function() {
     }
 
     loadDetails();
-    loadTickets();
     
     //Check details
     $.get(
@@ -40,6 +39,27 @@ $(document).ready(function() {
     $(document).on({'click': function() {
         claimTicket();
     }}, "#confirm-claim");
+    
+    $('#group-info').hide();
+    //Change booking group buttons
+    $("#input-creategroup").click(function() {
+        groupButton('create');
+    });
+    $("#input-joingroup").click(function() {
+        groupButton('join');        
+    });
+    $('#input-leavegroup').click(function() {
+        groupButton('leave');
+    });
+    $('#update-info').click(function() {
+        
+        $.post(UrlBuilder.buildUrl(false, "account", "updatepreference"),
+            {preference: $('#seating-info').val(), groupid: $('#current-group').html()},
+            function() {
+                Overlay.openOverlay(false, "Preference Updated", 1000);
+            }
+        ); 
+    });
     
     //Code link
     if (PageVars["code"] && PageVars["code"] != "") {
@@ -256,19 +276,13 @@ function loadDetails() {
                     $("#lan-van input, #lan-van textarea").attr('disabled', 'disabled');
                 }
             }
-        },
-        'json');
-}
-
-function loadTickets() {
-    $.post(
-        UrlBuilder.buildUrl(false, "account", "gettickets"),
-        function (data) {
+            
+            //Tickets
             $("#table-body").html("");
-            if (data.length > 0) {
-                for (var i = 0; i < data.length; i++) {
-                    var ticket = data[i];
-                    var row = '<div class="ticket-row' + (i % 2?' odd':' even') + (i == data.length-1?' end-ticket':'') + '"><span class="ticket-id">' + ticket["ticket_id"] + '</span>';
+            if (data.tickets.length) {
+                for (var i = 0; i < data.tickets.length; i++) {
+                    var ticket = data.tickets[i];
+                    var row = '<div class="ticket-row' + (i % 2?' odd':' even') + (i == data.tickets.length-1?' end-ticket':'') + '"><span class="ticket-id">' + ticket["ticket_id"] + '</span>';
                     row += '<span class="lan">' + ticket["lan_number"] + '</span>';
                     row += '<span class="ticket-type">' + ticket["member_ticket"].replace("1", "Member").replace("0", "Non-Member") + '</span>';
                     row += '<span class="purchaser">' + ticket["purchased_forum_name"] + '</span>';
@@ -284,6 +298,64 @@ function loadTickets() {
             } else {
                 $("#table-body").append('<div class="no-tickets odd end-ticket">No tickets found for your account</div>');
             }
+            
+            //Group Seat Booking
+            $("#booking-table-body").html("");
+            if(data.groupBooking.error) {
+                $("#seatbookingError").html(data.groupBooking.error);
+                $("#input-groupid").prop('disabled', true);
+                $("#input-groupid").css('background-color', '#DDD');
+                $("#input-groupid").css('background-image', 'none');
+                $("#claim-ticket-button").prop("disabled", true);
+                $('#group-info').hide();                
+            }
+            if(data.groupBooking.group) {
+                $("#current-group").html(data.groupBooking.group.ID);
+                $('#seating-info').html(data.groupBooking.group.seatPreference);
+                if(data.groupBooking.groupMembers.length) {
+                    for(var i = 0; i < data.groupBooking.groupMembers.length; i++) {
+                        var groupMember = data.groupBooking.groupMembers[i];
+                        var row = '<div class="booking-row' + (i % 2?' odd':' even') + '">';
+                        row += '<span class="username">' + groupMember + '</span>';
+                        row += '</div>';
+                        $("#booking-table-body").append(row);
+                    }
+                }
+                $('#group-info').show();
+                if(data.groupBooking.group.showUpdate) {
+                    $('#update-info').show();
+                } else {
+                    $('#update-info').hide();
+                }
+            } else {
+                $('#group-info').hide();
+            }
         },
         'json');
+}
+
+function groupButton(action) {
+    if(action == "leave") {
+        var groupID = $('#current-group').html();
+    } else {
+        if($("#input-groupid").val() == "") {
+            $('#input-groupid').css('border-color', 'red');
+            $('#input-groupid').addClass('shaking');
+            window.setTimeout("$('#input-groupid').removeClass('shaking');", 1000);
+            return;
+        } else {
+            var groupID = $("#input-groupid").val();
+        }
+    }            
+    $.post(UrlBuilder.buildUrl(false, "account", action + "group"),
+        {groupid: groupID},
+        function(data) {
+            console.log(data.error);
+            if (data != null && data.error) {
+                Overlay.openOverlay(true, data.error);
+                return;
+            }
+            loadDetails();
+        }
+    , 'json');
 }

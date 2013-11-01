@@ -1,0 +1,15 @@
+.group {
+    padding: 30px;
+    padding-top: 20px;
+    border-radius: 10px;
+    background-color: #eee;
+    margin-bottom: 20px;
+}
+
+.group h2 {
+    text-align: center;
+}
+
+.group .info, .group .members {
+    margin: 5px;
+}

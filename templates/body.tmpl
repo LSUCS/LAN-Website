@@ -147,6 +147,7 @@
                 <?=$DataBag["datestring"]?>
             </div></a>
             <?php if ($DataBag["countdown"]) { ?>
+                <script>var countdown_start = "<?=$DataBag['countdown_date']?>";</script>
                 <div id="booking-container">
                     <div id="countdown">
                         <span class="countdown-section">
@@ -197,6 +198,7 @@
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "lanvan")?>">LAN Van</a></li>
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "food")?>">Food</a></li>
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "tournaments")?>">Tournaments</a></li>
+                <li><a href="<?=LanWebsite_Main::buildUrl(true, "groupseats")?>">Seat Booking</a></li>
             </ul>
         
         <?php } 

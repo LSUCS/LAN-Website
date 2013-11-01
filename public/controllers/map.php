@@ -20,7 +20,7 @@
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `map_cache`");
             $return["data"] = array();
             while($row = $res->fetch_assoc()) $return["data"][] = $row;
-            $return["interval"] = LanWebsite_Main::getSettings()->getSetting("map_browser_update_interval");
+            //$return["interval"] = LanWebsite_Main::getSettings()->getSetting("map_browser_update_interval");
             
             echo json_encode($return);
         

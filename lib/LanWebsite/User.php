@@ -15,6 +15,9 @@
         private $currently_playing;
         private $favourite_games = array();
 		
+        public function __toString() {
+            return "<a href='/profile/?member=" . $this->username . "'>" . $this->username . "</a>";
+        }
         
         public function isAdmin() {
             return ($this->userLevel == UserLevel::Admin);        

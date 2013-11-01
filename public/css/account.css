@@ -31,7 +31,7 @@
 #account-details {
 }
 
-#game-details h1, #tickets h1, #lan-van h1 {
+#game-details h1, #tickets h1, #lan-van h1, #seatbooking h1 {
     font-size: 37px;
 }
     #favourite-games {
@@ -212,5 +212,89 @@
     margin-left: 10px;
 }
 
+#seatbookingError {
+    font-weight: bold;
+    color: red;
+    text-align: center;
+    margin-bottom: 10px;
+}
 
+#seat-booking-table {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #999;
+    border-radius: 10px;
+}
+    #seat-booking-table #table-head {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 10px 10px 0px 0px;
+        border-bottom: 1px solid #bbb;
+        background-image: url('../../images/table-head.png');
+        background-repeat: repeat-x;
+    }
+    #seat-booking-table #table-head span {
+        display: block;
+        float: left;
+        text-align: center;
+    }
+    
+    #seat-booking-table .username {
+        width: 200px;
+    }
 
+    #seat-booking-table .booking-row {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+        #seat-booking-table .booking-row span {
+            display: block;
+            float: left;
+            margin-right: 1px;
+        }
+        #ticket-table .odd {
+            background-color: #FFF8F5;
+        }
+        #ticket-table .booking-row:last-child {
+            border-radius: 0px 0px 10px 10px;
+        }
+
+#group-info p {
+    line-height: 30px;
+}        
+
+#seat-info-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+    #seat-info-container textarea {
+        width: 400px;
+        height: 60px;
+    }
+
+@-webkit-keyframes spaceboots {
+	0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+	10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+	20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+	30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+	40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+	50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+	60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+	70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+	80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+	90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+	100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+}
+.shaking {
+	-webkit-animation-name: spaceboots;
+	-webkit-animation-duration: 0.8s;
+	-webkit-transform-origin:50% 50%;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+}
+.shake {
+	display:inline-block;
+	position:relative;
+}

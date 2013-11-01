@@ -21,7 +21,7 @@
             $tmpl->addTemplate('tickets');
             $tmpl->output();
         }
-        
+
         public function post_Deleteraffle($inputs) {
             if ($this->isInvalid("ticket_number")) $this->errorJSON("Invalid ticket number");
             LanWebsite_Raffle::deleteTicket($inputs["ticket_number"]);

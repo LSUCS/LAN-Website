@@ -36,7 +36,11 @@
                     echo "MySQL server timeout, reconnecting\n";
                     $this->connect();
                     $res = $this->db->query($query);
-                } else die("MySQLi Error: " . $this->db->error);
+                } else {
+                    //print_r(debug_backtrace());
+                    //echo $query;
+                    die("MySQLi Error: " . $this->db->error);
+                }
             }
             return $res;
 		}

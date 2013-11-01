@@ -34,6 +34,7 @@
             "max_order_lookup_attempts" => array("int", 60, SettingsGroup::General),
             "lan_ip_addresses" => array("text", "0.0.0.0,0.0.0.0", SettingsGroup::General),
             "disable_lan_van" => array("bool", false, SettingsGroup::LanVan),
+            "enable_seat_bookings" => array("bool", false, SettingsGroup::SeatBookings),
             "map_cron_lock" => array("bool", false, SettingsGroup::Map),
             "map_process_url" => array("url", "http://dev.lan.lsucs.org.uk/map/processseat/?ticket=", SettingsGroup::Map),
             "map_browser_update_interval" => array('int', 30, SettingsGroup::Map),
@@ -161,6 +162,7 @@
         const Email = "Email";
         const ReceiptSystem = "Receipt System";
         const LanVan = "LAN Van";
+        const SeatBookings = "Seat Bookings";
         const Map = "Live Map";
         const GameServer = "Server List";
         const Chat = "Chat";

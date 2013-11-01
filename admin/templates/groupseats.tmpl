@@ -1,0 +1,23 @@
+<h1>seat groups</h1>
+
+<?php
+foreach($DataBag as $group) {
+?>
+    <div class="group">
+        <h2><?=$group["ID"]?> (<?=count($group["members"])?>)</h2>
+        <div class="info"><strong>Preference:</strong><br /><?=$group["seatPreference"]?></div>
+        <div class="members"><strong>Members:</strong><br />
+<?php
+    foreach($group["members"] as $member) {
+?>
+        <div class="member row"><?=$member?><?=($group["groupOwner"] == $member->getUserId()) ? '*' : ''?></div>
+<?php
+    }
+?>
+        </div>
+    </div>
+
+<?php
+}
+
+?>

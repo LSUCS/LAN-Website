@@ -14,6 +14,6 @@
     LanWebsite_Main::getTemplateManager()->setBaseDir('/admin/');
     LanWebsite_Main::getAuth()->requireAdmin();
     
-    LanWebsite_Main::route(array("settings", "tournaments", "whatson", "blog", "gallery", "tickets", "lanvan", "tf2", "hungergames", "food"), "settings");
+    LanWebsite_Main::route(array("settings", "tournaments", "whatson", "blog", "gallery", "tickets", "lanvan", "tf2", "hungergames", "food", "groupseats"), "settings");
 
 ?>

@@ -101,7 +101,11 @@ class Teams_Controller extends LanWebsite_Controller {
         if($r->num_rows) $this->errorJson("A team with this name already exists!" . $r->num_rows);
         
         $r = $db->query("INSERT INTO tournament_teams (Name, Icon, Description) VALUES ('%s', '%s', '%s')", $inputs["name"], $inputs["icon"], $inputs["description"]);
-        echo json_encode(array('id'=>$db->getLink()->insert_id));
+        $teamid = $db->getLink()->insert_id;
+        
+        $r = $db->query("INSERT INTO tournament_teams_members (team_id, user_id, permission) VALUES ('%s', '%s', 1)", $teamid, LanWebsite_Main::getAuth()->getActiveUserId());
+        
+        echo json_encode(array('teamid'=>$teamid));
     }
     
     public function post_Invite($inputs) {
@@ -124,7 +128,7 @@ class Teams_Controller extends LanWebsite_Controller {
         
         $db->query("INSERT INTO `tournament_teams_invites` (team_id, user_id, status, date) VALUES ('%s', '%s', 1, '%s')", $inputs['teamid'], $User->getUserId(), time());
         $db->query("INSERT INTO `tournament_alerts` (user_id, level, message, link) VALUES ('%s', '%s', '%s', '%s')",
-            $User->getUserId(), 'ALERT_MESSAGE', "You have been invited to join " . $Team->getName(), LanWebsite_Main::buildUrl(false, 'teams', 'self', array('teamid'=>$Team->ID)));
+            $User->getUserId(), 'ALERT_MESSAGE', "You have been invited to join " . $Team->getName(), LanWebsite_Main::buildUrl(false, 'teams', 'view', array('teamid'=>$Team->ID)));
         echo true;
     }
     

@@ -17,7 +17,7 @@ function createTeam() {
                     return;
                 }
                 Overlay.openOverlay(false, "Team Created, Redirecting", 1000);
-                window.setTimeout("document.location = '" + UrlBuilder.buildUrl(false, "tournaments", "viewteam", {id: data.id}) + "';", 500);
+                window.setTimeout("document.location = '" + UrlBuilder.buildUrl(false, "teams", "view", {id: data.id}) + "';", 500);
             }
         },
         'json');

@@ -13,6 +13,10 @@ class Account_Controller extends LanWebsite_Controller {
             case "autocomplete": return array("term" => "notnull"); break;
             case "claimticket": return array("code" => "notnull", "email" => array("notnull", "email")); break;
             case "editaccountdetails": return array("name" => "notnull", "emergency_contact_name" => "notnull", "emergency_contact_number" => "notnull"); break;
+            case "joingroup":
+            case "leavegroup":
+            case "creategroup": return array("groupid" => "notnull");
+            case "updatepreference": return array("groupid" => "notnull", "preference"=>"");
         }
     }
  
@@ -266,6 +270,8 @@ class Account_Controller extends LanWebsite_Controller {
     
         LanWebsite_Main::getAuth()->requireLogin();
         $user = LanWebsite_Main::getUserManager()->getActiveUser();
+        $db = LanWebsite_Main::getDb();
+        
         $return = array("user_id" => $user->getUserId(), "real_name" => $user->getFullName(), "emergency_contact_name" => $user->getEmergencyContact(), "emergency_contact_number" => $user->getEmergencyNumber(), "steam_name" => $user->getSteam(), "currently_playing" => $user->getCurrentlyPlaying(), "games" => $user->getFavouriteGames());
 
         //Get van
@@ -273,28 +279,52 @@ class Account_Controller extends LanWebsite_Controller {
         if ($van) $return["van"] = $van;
         $return["van_enabled"] = !LanWebsite_Main::getSettings()->getSetting("disable_lan_van");
         
-        echo json_encode($return);
-    }
-    
-    public function get_Gettickets() {
-    
-        LanWebsite_Main::getAuth()->requireLogin();
-        
-        $user = LanWebsite_Main::getUserManager()->getActiveUser();
-        
-        $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND (purchased_forum_id = '%s' OR assigned_forum_id = '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $user->getUserId(), $user->getUserId());
+        //Tickets (and some group booking lookahead code)
+        $res = $db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND (purchased_forum_id = '%s' OR assigned_forum_id = '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $user->getUserId(), $user->getUserId());
         $tickets = array();
+        $userTicket = false;
         while ($ticket = $res->fetch_assoc()) {
             $purchaser = LanWebsite_Main::getUserManager()->getUserById($ticket["purchased_forum_id"]);
             $ticket["purchased_forum_name"] = $purchaser->getUsername();
             if ($ticket["assigned_forum_id"] != null && $ticket["assigned_forum_id"] != 0) {
                 $assigned  = LanWebsite_Main::getUserManager()->getUserById($ticket["assigned_forum_id"]);
                 $ticket["assigned_forum_name"] = $assigned->getUsername();
+                if($ticket["assigned_forum_id"] == $user->getUserId()) $userTicket = $ticket;
             } else $ticket["assigned_forum_name"] = "";
             $tickets[] = $ticket;
         }
+        $return["tickets"] = $tickets;
         
-        echo json_encode($tickets);
+        //Seat/Group bookings
+        $groupBookings = array('groupMembers'=>array());
+        if(!LanWebsite_Main::getSettings()->getSetting("enable_seat_bookings")) {
+            $groupBookings["error"] = "Group seat booking disabled";
+        } else {
+            if($userTicket === false) {
+                $groupBookings["error"] = "You must have purchased a LAN ticket to be able to arrange group seating";
+            } else {
+                if(!empty($userTicket["seatbooking_group"])) {
+                    $group = $db->query("SELECT ID, seatPreference, groupOwner FROM seatbooking_groups WHERE ID = '%s'", $userTicket["seatbooking_group"]);
+                    $group = $group->fetch_assoc();
+                    $groupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE seatbooking_group = '%s'", $userTicket["seatbooking_group"]);
+                    while(list($ID) = $groupMembers->fetch_row()) {
+                        $user = LanWebsite_Main::getUserManager()->getUserById($ID);
+                        $link = "<a href='/profile/?member=" . $user->getUsername() . "'>" . $user->getUsername() . "</a>"; 
+                        if($group["groupOwner"] == $ID) {
+                            $link .= " (creator)";
+                        }
+                        $groupBookings['groupMembers'][] = $link;
+                    }
+                    $group["showUpdate"] = ($group["groupOwner"] == LanWebsite_Main::getAuth()->getActiveUserId()) ? 1:0;
+                } else {
+                    $group = false;
+                }
+                $groupBookings['group'] = $group;
+            }
+        }
+        $return["groupBooking"] = $groupBookings;
+       
+        echo json_encode($return);
     }
     
     public function get_Login($inputs, $failed = false) {
@@ -330,7 +360,120 @@ class Account_Controller extends LanWebsite_Controller {
             $this->get_Login($inputs, true);
         }
     }
+    
+    public function post_Creategroup($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        
+        if($this->isInvalid("groupid")) $this->errorJson("Invalid Group ID");
+        $groupID = $inputs['groupid'];
+        
+        if(strlen($groupID) < 3 || strlen($groupID) > 50) $this->errorJson("Invalid Group ID");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $exists = $db->query("SELECT * FROM seatbooking_groups WHERE ID = '%s'", $groupID);
+        if($exists->num_rows) $this->errorJson("Sorry, this group name already exists");
+        
+        //Get the user's old group
+        $oldGroup = $db->query("SELECT seatbooking_group FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
+        list($oldGroup) = $oldGroup->fetch_row();
+        
+        $db->query("INSERT INTO seatbooking_groups (ID, groupOwner) VALUES ('%s', '%s')", $groupID, LanWebsite_Main::getAuth()->getActiveUserId());
+        $db->query("UPDATE tickets SET seatbooking_group = '%s' WHERE lan_number = '%s' AND assigned_forum_id = '%s' LIMIT 1", $groupID, LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
+        
+        if($oldGroup) {
+            $this->cleanUpGroup($oldGroup);
+        }
+        
+        echo true;
+    }
+    
+    public function post_Joingroup($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        
+        if($this->isInvalid("groupid")) $this->errorJson("Invalid Group ID");
+        $groupID = $inputs['groupid'];
+        
+        if(strlen($groupID) < 3 || strlen($groupID) > 50) $this->errorJson("Invalid Group ID");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $exists = $db->query("SELECT * FROM seatbooking_groups WHERE ID = '%s'", $groupID);
+        if(!$exists->num_rows) $this->errorJson("This group does not exist");
+        
+        //Get the user's old group
+        $oldGroup = $db->query("SELECT seatbooking_group FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
+        list($oldGroup) = $oldGroup->fetch_row();
+        //Update user to new group
+        $db->query("UPDATE tickets SET seatbooking_group = '%s' WHERE lan_number = '%s' AND assigned_forum_id = '%s' LIMIT 1", $groupID, LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
+        
+        if($oldGroup) {
+            $this->cleanUpGroup($oldGroup);
+        }
+        
+        echo true;
+    }
+    
+    public function post_Leavegroup($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        
+        if($this->isInvalid("groupid")) $this->errorJson("Invalid Group ID");
+        $groupID = $inputs['groupid'];
+        
+        if(strlen($groupID) < 3 || strlen($groupID) > 50) $this->errorJson("Invalid Group ID");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        //Get the user's old group
+        $oldGroup = $db->query("SELECT seatbooking_group FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
+        list($oldGroup) = $oldGroup->fetch_row();
+        $db->query("UPDATE tickets SET seatbooking_group = '' WHERE lan_number = '%s' AND assigned_forum_id = '%s' LIMIT 1", LanWebsite_Main::getSettings()->getSetting("lan_number"), LanWebsite_Main::getAuth()->getActiveUserId());
 
+        if($oldGroup) {
+            $this->cleanUpGroup($oldGroup);
+        }
+        
+        echo true;
+    }
+    
+    public function post_Updatepreference($inputs) {
+        LanWebsite_Main::getAuth()->requireLogin();
+        
+        if($this->isInvalid("groupid")) $this->errorJson("Invalid Group ID");
+        $groupID = $inputs['groupid'];
+        
+        if(strlen($groupID) < 3 || strlen($groupID) > 50) $this->errorJson("Invalid Group ID");
+        
+        $db = LanWebsite_Main::getDb();
+        
+        $group = $db->query("SELECT groupOwner FROM seatbooking_groups WHERE ID = '%s'", $groupID);
+        list($groupOwner) = $group->fetch_row();
+        
+        if($groupOwner !== LanWebsite_Main::getAuth()->getActiveUserId()) $this->errorJson("Only the group owner can edit the preferences");
+        
+        $db->query("UPDATE seatbooking_groups SET seatPreference = '%s' WHERE ID = '%s'", $inputs["preference"], $groupID);
+        
+        echo true;
+    }
+    
+    private function cleanUpGroup($groupID) {
+        $db = LanWebsite_Main::getDb();
+        
+        //If the group has no members left, delete it
+        $oldGroupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE seatbooking_group = '%s'", $groupID);
+        if($oldGroupMembers->num_rows < 1) {
+            $db->query("DELETE FROM seatbooking_groups WHERE ID = '%s'", $groupID);
+        }
+        
+        //If the user leaving the group was the owner 
+        $oldGroupRow = $db->query("SELECT groupOwner FROM seatbooking_groups WHERE ID = '%s'", $groupID);
+        list($oldgroupOwner) = $oldGroupRow->fetch_row();
+
+        if($oldgroupOwner == LanWebsite_Main::getAuth()->getActiveUserId()) {
+            list($newOwner) = $oldGroupMembers->fetch_row();
+            $db->query("UPDATE seatbooking_groups SET groupOwner = '%s'", $newOwner);
+        }
+    }
 }
 
 ?>

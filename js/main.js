@@ -21,12 +21,16 @@ $(document).ready(function() {
         $("#userdropdown").stop().slideUp(200);
         dropdown_entered = false;
     });
+
+    if($('#countdown').length) {    
+        //Date countdown
+        $.get(UrlBuilder.buildUrl(false, 'account', 'date'),
+            function (data) {
+                Countdown.start(data);
+            });
     
-    //Date countdown
-    $.get(UrlBuilder.buildUrl(false, 'account', 'date'),
-          function (data) {
-            Countdown.start(data);
-          });
+        Countdown.start(countdown_start);
+    }
           
     //Buttons
     $("button").each(function() { $(this).button(); });
@@ -135,7 +139,7 @@ var LanContact = {
                 
                 var hover = '<div class="head-box ' + c + '">';
                 hover += '<div class="avatar"><img src="' + data.avatar + '" /></div>';
-                hover += '<div class="main-info">' + (data.name == ""?data.username:data.name) + '<br />';
+                hover += '<div class="main-info"><a href="http://lsucs.org.uk/members/' + data.user_id + '">' + (data.name == ""?data.username:data.name) + '</a><br />';
                 if (data.ingame == 1) hover += 'In Game<br />' + data.game;
                 else if (data.online == 1) hover += 'At LAN';
                 else hover += 'Offline';
@@ -170,6 +174,8 @@ var LanContact = {
 
 //Countdown object
 var Countdown = {
+    
+    timer: null,
 
     calcAge: function(secs, num1, num2) {
       s = ((Math.floor(secs/num1))%num2).toString();
@@ -184,7 +190,7 @@ var Countdown = {
         $("#countdown-minutes").html(this.calcAge(secs,60,60));
         $("#countdown-seconds").html(this.calcAge(secs,1,60));
 
-        setTimeout("Countdown.countBack(" + (secs-1) + ")", 990);
+        setTimeout("Countdown.countBack(" + (secs-1) + ")", 995);
     },
     
     start: function(dstring) {

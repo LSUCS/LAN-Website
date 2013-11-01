@@ -83,9 +83,6 @@ function loadMap() {
                 loaded = true;
             }
             
-            //Set next time to load
-            setTimeout(function() { loadMap(); }, data["interval"] * 1000);
-            
             //Unset lock
             lock = false;
         },
