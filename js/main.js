@@ -24,10 +24,10 @@ $(document).ready(function() {
 
     if($('#countdown').length) {    
         //Date countdown
-        $.get(UrlBuilder.buildUrl(false, 'account', 'date'),
+        /*$.get(UrlBuilder.buildUrl(false, 'account', 'date'),
             function (data) {
                 Countdown.start(data);
-            });
+            });*/
     
         Countdown.start(countdown_start);
     }

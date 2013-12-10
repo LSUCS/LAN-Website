@@ -1,5 +1,4 @@
 <?
-
     class Stats_Controller extends LanWebsite_Controller {
     
         public function get_Index() {
@@ -39,5 +38,3 @@
         }
     
     }
-
-?>

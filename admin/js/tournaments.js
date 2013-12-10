@@ -72,6 +72,7 @@ var tournaments = {
                         string += '<div class="row"><span class="field visible">Visible?</span><span class="value visible"><input type="checkbox" class="visible-checkbox" ' + ((row.visible) ? 'checked="checked"' : '') + ' /></span></div>';
                         string += '<div class="row"><span class="field current-signups">Current Signups</span><span class="value current-signups">' + row.current_signups + '</span></div>';
                         string += '<div class="row"><span class="field description">Description</span><span class="value description">' + row.description + '</span></div>';
+                        string += '<div class="row"><span class="field static">Static Link</span><span class="value static">' + row.static_link + '</span></div>';
                         string += '<div class="row buttons">';
                         if(row.started) {
                             string += '<button class="view-matches button" onclick="tournaments.matchesButton(' + row.id + ')">Matches</button>';
@@ -108,6 +109,7 @@ var tournaments = {
                 signups_close: $("#new-signups-end").datepicker('getDate')/1000,
                 signups: ($("#new-signups").prop('checked')) ? 1:0,
                 visible: ($("#new-visible").prop('checked')) ? 1:0,
+                static_link: $("#new-static").val(),
             },
             function (data) {
                 if (data != null && data.error) {

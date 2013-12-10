@@ -61,8 +61,8 @@
 			$data = LanWebsite_Main::getUserManager()->getLsucsAuthResponse('validatecredentials', array("username" => $username, "password" => $password));
 			if ($data === true) {
 				return true;
-            		}
-            		return false;
+            }
+  		    return false;
 		}
 		
 		

@@ -14,7 +14,8 @@ class Tournaments_Controller extends LanWebsite_Controller {
                     "signups_close" => "int",
                     "type" => "int",
                     "signups" => "bool",
-                    "visible" => "bool"
+                    "visible" => "bool",
+                    "static_link" => ""
                 );
             case "editmatch":
                 return array(
@@ -85,10 +86,10 @@ class Tournaments_Controller extends LanWebsite_Controller {
         
         //Let's insert
         LanWebsite_Main::getDb()->query("
-            INSERT INTO `tournament_tournaments` (lan, game, name, team_size, type, description, start_time, end_time, signup_close, signups, visible) 
-            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+            INSERT INTO `tournament_tournaments` (lan, game, name, team_size, type, description, start_time, end_time, signup_close, signups, visible, static_link) 
+            VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
             LanWebsite_Main::getSettings()->getSetting("lan_number"), $inputs["game"], $inputs["name"], $inputs["teamsize"], $inputs["type"], $inputs["description"],
-                $inputs["start"], $inputs["end"], $inputs["signups_close"], $inputs["signups"], $inputs["visible"]);
+                $inputs["start"], $inputs["end"], $inputs["signups_close"], $inputs["signups"], $inputs["visible"], $inputs["static_link"]);
         echo true;
     }
     

@@ -1,13 +1,28 @@
 $(document).ready(function() {
+    $('#nav-normal').on('click', function() {
+        clickNav('normal');
+        return false;
+    });
+    $('#nav-bygame').on('click', function() {
+        clickNav('bygame');
+        return false
+    })
     
-    loadStats();
+    clickNav('normal');
 
 });
 
-function loadStats() {
+function clickNav(graph) {
+    $('#statsnav a').css('color', '');
+    $('#nav-' + graph).css('color', '#f1642b');
+    loadStats(graph);
+}
+
+function loadStats(graph) {
     $.get(
         UrlBuilder.buildUrl(false, "stats", "loadstats"),
         function(ret) {
+            $("#gametime").html("");
             var data = ret.data;
             var ticks = [];
             var s1 = [];
@@ -15,6 +30,7 @@ function loadStats() {
             var max = 0;
             for (var game in data) {
                 var time = data[game];
+                if(graph == "bygame") time /= ret.count[game];
                 s1.push(time);
                 ticks.push(game);
                 labels.push(ret.count[game] + " player" + (ret.count[game] > 1?"s":""));
@@ -38,8 +54,16 @@ function loadStats() {
             
             $("#gametime").height(54*s1.length + 80);
             
+            switch(graph) {
+                case "bygame":
+                    var title = "Average Time Per Player (Steam games only)";
+                    break;
+                default:
+                    var title = "Total Time Per Game (Steam games only)";
+            }
+            
             var gametime = $.jqplot("gametime", [ s1 ], {
-                title: "Total time per game (Steam games only)",
+                title: title,
                 animate: true,
                 animateReplot: true,
                 seriesDefaults: {
@@ -75,6 +99,7 @@ function loadStats() {
                 case "days": tot = tot / (60*60*24); break;
                 case "weeks": tot = tot / (60*60*24*7); break;
             }
+
             $("#totaltime").html("<b>Total:</b> " + Math.round(tot * 10) / 10 + ' ' + unit);
             
         },

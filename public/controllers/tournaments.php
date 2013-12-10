@@ -11,14 +11,14 @@ class Tournaments_Controller extends LanWebsite_Controller {
         }
     }
     
-    public function get_Index() {
+    public function get_Index2() {
         $tmpl = LanWebsite_Main::getTemplateManager();
         $tmpl->setSubTitle("Tournaments");
         $tmpl->addTemplate('tournaments');
         $tmpl->output();
     }
     
-    public function get_Index2() {
+    public function get_Index() {
         
         $db = LanWebsite_Main::getDb();
         
@@ -68,6 +68,8 @@ class Tournaments_Controller extends LanWebsite_Controller {
         $tournament = Tournament_Main::tournament($inputs['id']);
         if(!$tournament) $this->error(404);
         if(!$tournament->isVisibleToUser()) $this->error(403);
+        
+        $tournament->redirectStatic();
         
         $signups_list = $tournament->getSignupList();
         $userTeams = Tournament_Main::getUserTeams();

@@ -14,7 +14,7 @@ $(document).ready(function() {
     //HTML5 requires a little more space
     if($(".option-amount")[0].type == "number") {
         $(".option-amount").css({
-            "width": "25px",
+            "width": "30px",
             "border-radius": "5px 2px 2px 5px",
             "-moz-border-radius": "5px 2px 2px 5px",
             "-webkit-border-radius": "5px 2px 2px 5px"

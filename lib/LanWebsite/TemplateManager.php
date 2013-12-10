@@ -192,6 +192,17 @@
             $DataBag = $template['data'];
             include trim($template['template'], "/");
         }
+        
+        private static function getFileTime($file) {
+            //This is kinda hacky, but fed up of people complaining about cache bugs
+            $root = '/home/soc_lsucs/lan.lsucs.org.uk/htdocs/';
+            if(file_exists($root . $file)) {
+                $output = filemtime($root . $file);
+            } else {
+                $output = 0;
+            }
+            return '?' . $output;
+        }
     
     }
 

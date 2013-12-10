@@ -306,7 +306,7 @@ class Account_Controller extends LanWebsite_Controller {
                 if(!empty($userTicket["seatbooking_group"])) {
                     $group = $db->query("SELECT ID, seatPreference, groupOwner FROM seatbooking_groups WHERE ID = '%s'", $userTicket["seatbooking_group"]);
                     $group = $group->fetch_assoc();
-                    $groupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE seatbooking_group = '%s'", $userTicket["seatbooking_group"]);
+                    $groupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE lan_number = '%s' AND seatbooking_group = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"), $userTicket["seatbooking_group"]);
                     while(list($ID) = $groupMembers->fetch_row()) {
                         $user = LanWebsite_Main::getUserManager()->getUserById($ID);
                         $link = "<a href='/profile/?member=" . $user->getUsername() . "'>" . $user->getUsername() . "</a>"; 
@@ -471,7 +471,7 @@ class Account_Controller extends LanWebsite_Controller {
 
         if($oldgroupOwner == LanWebsite_Main::getAuth()->getActiveUserId()) {
             list($newOwner) = $oldGroupMembers->fetch_row();
-            $db->query("UPDATE seatbooking_groups SET groupOwner = '%s'", $newOwner);
+            $db->query("UPDATE seatbooking_groups SET groupOwner = '%s' WHERE ID = '%s'", $newOwner, $groupID);
         }
     }
 }

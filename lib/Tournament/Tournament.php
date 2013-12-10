@@ -15,6 +15,7 @@ class Tournament_Tournament {//implements jsonSerializable{
     private $end_time;
     private $description;
     private $collated;
+    private $static_link = '';
     
     private $matches = null;
     private $signups = null;
@@ -43,6 +44,7 @@ class Tournament_Tournament {//implements jsonSerializable{
         $this->description =    (string) $r['description'];
         $this->started =        (bool) $r['started'];
         $this->collated =       (bool) $r['collated'];
+        $this->static_link =    (string) $r['static_link'];
     }
     
     function jsonSerialize() {
@@ -66,7 +68,8 @@ class Tournament_Tournament {//implements jsonSerializable{
             'description' =>        $this->getDescription(),
             'current_signups' =>    count($this->getSignupList()),
             'started' =>            $this->started,
-            'collated' =>           $this->collated
+            'collated' =>           $this->collated,
+            'static_link' =>        $this->static_link
         );
     }
     
@@ -156,6 +159,18 @@ class Tournament_Tournament {//implements jsonSerializable{
     public function isCollated() {
         if(is_null($this->ID)) return false;
         return $this->collated;
+    }
+    
+    public function getStaticLink() {
+        if(is_null($this->ID)) return false;
+        return $this->static_link;
+    }
+    
+    public function redirectStatic() {
+        if(!empty($this->static_link)) {
+            header("Location:" . $this->static_link);
+            die;
+        }
     }
     
 

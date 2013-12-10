@@ -222,7 +222,7 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
 
 
 /* MAIN FRAMEWORK STYLING */
-#background {
+/*#background {
     display: block;
     width: 100%;
     height: 100%;  
@@ -231,7 +231,7 @@ p:not(#foo) > input[type=radio]:disabled:checked + label:hover:active		{ backgro
     top: 0px; 
     z-index: -1;
 	background-image: url("../images/main-bg.png");
-}
+}*/
 
 body {
     min-width: 960px;

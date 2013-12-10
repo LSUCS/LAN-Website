@@ -27,6 +27,15 @@
             $folder = array_pop($folders);
             echo json_encode(array_rand(array_flip(glob($folder . "/*.*")), 10));
         }
+        
+        public function get_Test() {
+            $userManager = LanWebsite_Main::getUserManager();
+            
+            $u = $userManager->getUserById(870);
+            
+            var_dump($u);
+            die;
+        }
     
     }
 
