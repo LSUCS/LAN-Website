@@ -1,5 +1,6 @@
 $(document).ready(function() {
-
+    mm = $('#member-price').val();
+    nmm = $('#nonmember-price').val();
     //Spinners
     $("#nonmember-amount, #member-amount").spinner({ min: 0, max: 5 });
     $(".ui-spinner").live('click', function() {
@@ -30,9 +31,24 @@ $(document).ready(function() {
         checkout();
     });
     
+    //Charity
+    if($("#member-charity").length > 0) {
+        $("#member-price").spinner({ min: mm, numberFormat: "n", step: "0.50" });
+        $("#member-price").live('change', function() {
+            updatePaypalBox();
+        });
+    }
+    if($('#nonmember-charity').length > 0) {
+        $('#nonmember-price').spinner({ min: nmm, numberFormat: "n", step: "0.50" });
+        $("#nonmember-price").live('change', function() {
+            updatePaypalBox();
+        });
+    }
+    
 });
 
 function checkout() {
+    if(!updatePaypalBox()) return;
     Overlay.loadingOverlay();
     $.post(
         UrlBuilder.buildUrl(false, "tickets", "checkout"),
@@ -51,6 +67,17 @@ function checkout() {
 }
 
 function updatePaypalBox() {
+    
+    if(parseInt($("#member-price").attr('value')) < mm) {
+        Overlay.openOverlay(true, "Member price cannot be this low, min: £" + mm + '.00');
+        $("#member-price").val(mm);
+        return false;
+    }
+    if(parseInt($("#nonmember-price").attr('value')) < nmm) {
+        Overlay.openOverlay(true, "Non-Member price cannot be this low, min: £" + nmm + '.00');
+        $("#nonmember-price").val(nmm);
+        return false;
+    }
 
     $(".paypalitem").remove();
     var i = 1;
@@ -70,5 +97,5 @@ function updatePaypalBox() {
         $("#paypal-form").prepend(line);
         i++;
     }
-
+    return true;
 }
