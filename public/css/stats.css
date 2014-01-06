@@ -1,0 +1,10 @@
+#statsnav {
+    list-style: none;
+    margin: auto !important;
+    width: 320px;
+    display: block;
+}
+#statsnav li {
+    display: inline-block;
+    margin: 20px 10px;
+}

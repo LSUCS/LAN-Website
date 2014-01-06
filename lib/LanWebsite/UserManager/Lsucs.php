@@ -62,8 +62,8 @@
         
         public function getLsucsAuthResponse($method, $params) {
             //Check cache
-            //$cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
-            //if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
+            $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
+            if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
             
                 //Prepare fields
                 $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
@@ -81,8 +81,8 @@
                 $result = json_decode(curl_exec($ch), true);
 
                 if(isset($result['error'])) die('Fatal Auth Error: ' . $result['error']); 
-                //LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
-            //}
+                LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
+            }
             return $result;
         }
         
