@@ -34,11 +34,13 @@
             $data["paypal_return_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_return_url");
             $data["paypal_ipn_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_ipn_url");
             $data["paypal_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_url");
+            //Charity
+            $data["charity"] = LanWebsite_Main::getSettings()->getSetting("ticket_charity_donation");
         
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("Tickets");
             $tmpl->enablePlugin('spinner');
-            $tmpl->addTemplate('tickets', $data);
+            $tmpl->addTemplate('tickets2', $data);
 			$tmpl->output();
         }
         
@@ -104,10 +106,10 @@
             
             //Set up cURL and request                       
             $ch = curl_init();
-            curl_setopt($ch,CURLOPT_URL, LanWebsite_Main::getSettings()->getSetting("receipt_api_availability_url"));
-            curl_setopt($ch,CURLOPT_POST, count($fields));
-            curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-            curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_URL, LanWebsite_Main::getSettings()->getSetting("receipt_api_availability_url"));
+            curl_setopt($ch, CURLOPT_POST, count($fields));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $result = json_decode(curl_exec($ch), true);
             
             //If error

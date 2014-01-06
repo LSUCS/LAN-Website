@@ -19,6 +19,7 @@
             "nonmember_ticket_available_date" => array("date", "2012-10-17 00:00:00", SettingsGroup::Tickets),
             "nonmember_ticket_sold_out" => array("bool", false, SettingsGroup::Tickets),
             "nonmember_ticket_price" => array("int", 15, SettingsGroup::Tickets),
+            "ticket_charity_donation" => array("bool", false, SettingsGroup::Tickets),
             "xenforo_member_group_id" => array("int", 4, SettingsGroup::Auth),
             "api_key" => array("pass", '', SettingsGroup::General),
             "paypal_email" => array("email", "paypal@lsucs.org.uk", SettingsGroup::PayPal),
