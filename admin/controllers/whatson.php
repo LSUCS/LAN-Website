@@ -24,16 +24,10 @@
         }
         
         public function post_Addentry($inputs) {
-            
-            $times = array();
-            for ($i = 0; $i <= 2400; $i += 50) {
-                $times[] = str_replace('00000', '00:00', str_pad(preg_replace('/^(.*?)(\d\d)$/', '$1:$2', str_replace(5, 3, $i)), 5, '0', STR_PAD_LEFT));
-            }
-            
             //Validation
             if (!in_array($inputs["day"], array("friday", "saturday", "sunday"))) $this->errorJSON("Invalid day");
-            if (!in_array($inputs["start_time"], $times)) $this->errorJSON("Invalid start time");
-            if (!in_array($inputs["end_time"], $times)) $this->errorJSON("Invalid end time");
+            if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['start_time'])) $this->errorJSON("Invalid start time" . $inputs['start_time']);
+            if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
             if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
             if ($inputs["title"] == "") $this->errorJSON("Invalid title");
             if (!in_array($inputs["colour"], array("orange", "blue", "green", "purple"))) $this->errorJSON("Invalid colour");

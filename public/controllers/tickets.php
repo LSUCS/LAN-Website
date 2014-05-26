@@ -6,7 +6,7 @@
             switch ($action) {
                 case "complete": return array("custom" => "notnull"); break;
                 case "checkcomplete": return array("pending_id" => "notnull", "attempts" => "notnull"); break;
-                case "checkout": return array("member_amount" => array("notnull", "int"), "nonmember_amount" => array("notnull", "int")); break;
+                case "checkout": return array("member_amount" => array("notnull", "int"), "nonmember_amount" => array("notnull", "int"), "member_price" => "notnull", "nonmember_price" => "notnull"); break;
             }
         }
         
@@ -93,7 +93,8 @@
             if (($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || $inputs["member_amount"] + $inputs["nonmember_amount"] == 0) $this->errorJSON("You must select at least one product");
             if ($inputs["member_amount"] > 0 && !$user->isMember()) $this->errorJSON("Non-members cannot buy member tickets");
             if ($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
-            
+            if ($inputs["member_price"] < LanWebsite_Main::getSettings()->getSetting("member_ticket_price")) $this->errorJSON("Invalid Member Ticket Price");
+            if ($inputs["nonmember_price"] < LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price")) $this->errorJSON("Invalid Non-Member Ticket Price");
             
             /********************/
             // CHECK AVAILABILITY
@@ -126,13 +127,13 @@
                     LanWebsite_Main::getSettings()->changeSetting("nonmember_ticket_available", false);
                     $this->errorJSON("Tickets are now sold out for LAN" . LanWebsite_Main::getSettings()->getSetting("lan_number"));
                 } else {
-                    $this->errorJSON("Only " . $result["availability"] . " ticket(s) available for LAN35");
+                    $this->errorJSON("Only " . $result["availability"] . " ticket(s) available for LAN" .  LanWebsite_Main::getSettings()->getSetting("lan_number"));
                 }
             }
                 
                 
             //Calculate total
-            $total = (LanWebsite_Main::getSettings()->getSetting("member_ticket_price") * $inputs["member_amount"]) + (LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price") * $inputs["nonmember_amount"]);
+            $total = $inputs["member_amount"] * $inputs["member_price"] + $inputs["nonmember_amount"] * $inputs["nonmember_price"];
             
             //Insert and return purchase id
             LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s')", $inputs["member_amount"], $inputs["nonmember_amount"], $user->getUserId(), $total);
@@ -240,7 +241,7 @@
                         LanWebsite_Main::getSettings()->changeSetting("nonmember_ticket_available", false);
                         $errmsg = "Tickets sold out for LAN" . LanWebsite_Main::getSettings()->getSetting("lan_number");
                     } else {
-                        $errmsg = "Only " . $result["availability"] . " ticket(s) available for LAN35";
+                        $errmsg = "Only " . $result["availability"] . " ticket(s) available for LAN" . LanWebsite_Main::getSettings()->getSetting("lan_number");
                     }
                 }
                 
@@ -282,13 +283,13 @@
                 /********************/
                 // ERROR
                 /********************/
-                if (!empty($errmsg)) {
+                else {
                 
                     //Log error to file
                     $this->error_log("IPN FAILED FRAUD CHECKS: \n" . $errmsg . "\n\n" . $listener->getTextReport());
                     
                     //Send fraud email to committee
-                    $email = new EmailWrapper();
+                    $email = new LanWebsite_EmailWrapper();
                     $email->setTo("committee@lsucs.org.uk");
                     $email->setSubject("IPN Fraud Warning");
                     $email->setBody("IPN FAILED FRAUD CHECKS: \n" . $errmsg . "\n\n\n" . $listener->getTextReport());

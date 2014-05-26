@@ -1,8 +1,14 @@
 <?php
-    if ($DataBag["invalid"]) {
+    if ($DataBag["error"]) {
 ?>
     <div class="error-box">
-        Invalid username/password! Please visit <a href="http://lsucs.org.uk">http://lsucs.org.uk</a> if you need to reset your password
+<?php
+    if($DataBag["error"] === true) {
+        echo 'Invalid username/password! Please visit <a href="http://lsucs.org.uk">http://lsucs.org.uk</a> if you need to reset your password';
+    } else {
+        echo $DataBag["error"];
+    }
+?>
     </div>
 <?php
     }

@@ -10,8 +10,8 @@ body {
     display: block;
 }
 
-#blicko {
-    width: 667px;
+#radio {
+    width: 800px;
     height: 105px;
     overflow: hidden;
     position: relative;

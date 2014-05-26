@@ -7,7 +7,7 @@
 		public function getActiveUser() {
             $userid = LanWebsite_Main::getAuth()->getActiveUserId();
             if ($userid == null) return new LanWebsite_User();
-            return $this->getUserById($userid);        
+            return $this->getUserById($userid);
         }
 		
 		public function getUserById($userId) {
@@ -80,7 +80,7 @@
                 //Decode response and store
                 $result = json_decode(curl_exec($ch), true);
 
-                if(isset($result['error'])) die('Fatal Auth Error: ' . $result['error']); 
+                if(isset($result['error'])) throw new Exception('Fatal Auth Error: ' . $result['error'] . " ID: " . $params['userid']); 
                 LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
             }
             return $result;

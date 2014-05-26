@@ -32,6 +32,7 @@
 		
 		public function login($username, $password) {
 			//Validate
+            if(strpos($username, '@') !== false) return "Please use your Username to login, not your email.";
 			$valid = $this->validateCredentials($username, $password);
 			if (!$valid) return false;
 			

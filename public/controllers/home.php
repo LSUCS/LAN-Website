@@ -31,7 +31,7 @@
         public function get_Test() {
             $userManager = LanWebsite_Main::getUserManager();
             
-            $u = $userManager->getUserById(870);
+            $u = $userManager->getUserByName('kristian');
             
             var_dump($u);
             die;

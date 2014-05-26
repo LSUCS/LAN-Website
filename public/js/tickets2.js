@@ -52,7 +52,7 @@ function checkout() {
     Overlay.loadingOverlay();
     $.post(
         UrlBuilder.buildUrl(false, "tickets", "checkout"),
-        { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val() },
+        { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val(), member_price: $("#member-price").attr('value'), nonmember_price: $("#nonmember-price").attr('value') },
         function (data) {
             if (data != null && data.error) {
                 Overlay.openOverlay(true, data.error);
@@ -66,8 +66,7 @@ function checkout() {
         'json');
 }
 
-function updatePaypalBox() {
-    
+function checkPrices() {
     if(parseInt($("#member-price").attr('value')) < mm) {
         Overlay.openOverlay(true, "Member price cannot be this low, min: £" + mm + '.00');
         $("#member-price").val(mm);
@@ -78,6 +77,11 @@ function updatePaypalBox() {
         $("#nonmember-price").val(nmm);
         return false;
     }
+    return true;
+}
+
+function updatePaypalBox() {
+    if(!checkPrices()) return false;
 
     $(".paypalitem").remove();
     var i = 1;

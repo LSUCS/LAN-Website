@@ -87,7 +87,7 @@
 <div style="clear: both;"></div>
 <div id="checkout-container">
 <?php
-    if (($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"]))
+    if ($DataBag["is_signed_in"] && (($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"])))
         echo '<hr /><button class="checkout-button">Checkout</button>';
 ?>
 </div>

@@ -327,14 +327,14 @@ class Account_Controller extends LanWebsite_Controller {
         echo json_encode($return);
     }
     
-    public function get_Login($inputs, $failed = false) {
+    public function get_Login($inputs, $error = false) {
     
         LanWebsite_Main::getAuth()->requireNotLoggedIn();
         
         //Set up data and output template
         $DataBag = array();
         $DataBag["username"] = $inputs["username"];
-        $DataBag["invalid"] = $failed;
+        $DataBag["error"] = $error;
         
         $tmpl = LanWebsite_Main::getTemplateManager();
 		$tmpl->setSubTitle("Login");
@@ -354,10 +354,12 @@ class Account_Controller extends LanWebsite_Controller {
         if ($this->isInvalid("username")) $this->error("Please enter your Username");
         if ($this->isInvalid("password")) $this->error("Please enter your Password");
         
-        if (LanWebsite_Main::getAuth()->login($inputs["username"], $inputs["password"])) {
+        $error = LanWebsite_Main::getAuth()->login($inputs["username"], $inputs["password"]);
+        if ($error === true) {
             header("Location:" . LanWebsite_Main::buildUrl(false));
         } else {
-            $this->get_Login($inputs, true);
+            if($error === false) $error = true;
+            $this->get_Login($inputs, $error);
         }
     }
     
@@ -460,7 +462,7 @@ class Account_Controller extends LanWebsite_Controller {
         $db = LanWebsite_Main::getDb();
         
         //If the group has no members left, delete it
-        $oldGroupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE seatbooking_group = '%s'", $groupID);
+        $oldGroupMembers = $db->query("SELECT assigned_forum_id FROM tickets WHERE seatbooking_group = '%s' AND lan_number = '%s'", $groupID, LanWebsite_Main::getSettings()->getSetting("lan_number"));
         if($oldGroupMembers->num_rows < 1) {
             $db->query("DELETE FROM seatbooking_groups WHERE ID = '%s'", $groupID);
         }
