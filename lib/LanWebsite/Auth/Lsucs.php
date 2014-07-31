@@ -70,9 +70,13 @@
 		public function requireLogin() {
             if (!$this->isLoggedIn()) header('Location: ' . LanWebsite_Main::buildUrl(false, 'account', 'login'));
         }
+        
+        public function requireMember() {
+            if (!$this->isMember()) header('Location: ' . LanWebsite_Main::buildUrl(false, 'home'));
+        }
 		
 		public function requireAdmin() {
-            if (!LanWebsite_Main::getUserManager()->getActiveUser()->isAdmin()) header('Location: ' . LanWebsite_Main::buildUrl(false, 'home'));
+            if (!$this->isAdmin()) header('Location: ' . LanWebsite_Main::buildUrl(false, 'home'));
         }
 		
 		public function requireNotLoggedIn() {
@@ -86,6 +90,14 @@
 		
 		public function isLoggedIn() {
             return $this->activeId != null;
+        }
+        
+        public function isMember() {
+            return LanWebsite_Main::getUserManager()->getActiveUser()->isMember();
+        }
+        
+        public function isAdmin() {
+            return LanWebsite_Main::getUserManager()->getActiveUser()->isAdmin();
         }
 	
 	}

@@ -1,0 +1,83 @@
+<h1>Create Announcement</h1>
+<div class="create">
+    <form id="create">
+        <div class="info">
+            <label>Name (not seen)</label>
+            <input type="text" id="name" />
+        </div>
+        <div class="info">
+            <label>Message. Please keep short-ish </label>
+            <textarea id="message"></textarea>
+        </div>
+        <div class="info">
+            <label>Colour</label>
+            <?=$DataBag['ColourList']?>
+        </div>
+        <div class="info">
+            <label class="wide">Dynamic Message (Timers in minutes to be used in message)</label>
+            <div><label></label><input type="text" id="timer1" /> (Use %T1%)</div>
+            <div><label></label><input type="text" id="timer2" /> (Use %T2%)</div>
+            <div><label></label><input type="text" id="timer3" /> (Use %T3%)</div>
+        </div>
+        <div class="info">
+            <label>Display (initially)</label>
+            <div><label>Now</label><input type="checkbox" id="displayNow" />
+            <div><label></label><input type="text" class="datetime" id="date" /></div>
+        </div>
+        <div class="info">
+            <label>Display For<br/>(Minutes, 0 = permanently)</label>
+            <input type="number" id="displayTime" min="0" max="600" step="5" />
+        </div>
+        <div class="center"><input type="submit" value="Create" /></div>
+    </form>
+</div>
+
+<br/><br/><br/>
+<h1>Existing Announcements</h1>
+<table id="announcements">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Message</td>
+            <td>Colour</td>
+            <td>Display Time</td>
+            <td>Duration</td>
+            <td>Timer1</td>
+            <td>Timer2</td>
+            <td>Timer3</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+<?php   
+    if(count($DataBag['Announcements'])) {
+        foreach($DataBag['Announcements'] as $A) {
+?>
+        <tr class="announcement" id="announcement-<?=$A->id?>">
+            <td contenteditable><?=$A->name?></td>
+            <td contenteditable><?=$A->message?></td>
+            <td>
+                <?=LanWebsite_Announcement::getColourList($A->colour)?>
+            </td>
+            <td>
+                <input type="text" class="datetime" value="<?=$A->displayTime?>" />
+                <label>Now<input type="checkbox" /></label>
+            </td>
+            <td contenteditable><?=$A->duration?></td>
+            <td contenteditable><?=$A->timer1?></td>
+            <td contenteditable><?=$A->timer2?></td>
+            <td contenteditable><?=$A->timer3?></td>
+            <td class="controls"><button class="edit">Edit</button><button class="delete">Delete</button></td>
+        </tr>
+<?php
+        }
+    } else {
+?>    
+        <tr>
+            <td class="center" colspan="8"><strong>No Announcements Found</strong></td>
+        </tr>
+<?php  
+    }
+?>
+    </tbody>
+</table>

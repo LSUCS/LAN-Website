@@ -45,6 +45,25 @@ $(document).ready(function() {
         });
     }
     
+    //Free tickets
+    if($("#claim-member-free").length > 0) {
+        $('#claim-member-free').click(function() {
+            $.post(
+                UrlBuilder.buildUrl(false, "tickets", "free"),
+                function (data) {
+                    if (data != null && data.error) {
+                        Overlay.openOverlay(true, data.error);
+                        return;
+                    }
+                    if (data.successful) {
+                        Overlay.openOverlay(true, "Ticket Claimed Successfully");
+                        //window.setTimeout(function() { location.reload(); }, 1000);
+                    }
+                },
+            'json');
+        });
+    }
+    
 });
 
 function checkout() {

@@ -88,7 +88,7 @@ var ChatClient = {
                 ChatClient.connection = new WebSocket(data.url);
                 
                 ChatClient.connection.onclose = function() {
-                    console.log("Chat Connection Closed");
+                    //console.log("Chat Connection Closed");
                     ChatClient.connection = null;
                     this.conversations = {};
                     $("#contact-list").hide();
@@ -99,12 +99,12 @@ var ChatClient = {
                 };
                 
                 ChatClient.connection.onopen = function() {
-                    console.log("Chat Connection Opened");
+                    //console.log("Chat Connection Opened");
                     ChatClient.sendChatCommand("init", "");
                 }
                 
                 ChatClient.connection.onerror = function(error) {
-                    console.log("Chat Error: " + error);
+                    //console.log("Chat Error: " + error);
                 }
                 
                 ChatClient.connection.onmessage = function(e) {
@@ -122,8 +122,8 @@ var ChatClient = {
         var command = message.substr(0, message.indexOf(":")).toLowerCase();
         var payload = JSON.parse(message.substr(message.indexOf(":") + 1));
         
-        console.log("Received chat command: " + command);
-        console.log(payload);
+        //console.log("Received chat command: " + command);
+        //console.log(payload);
         
         switch (command) {
                 
@@ -180,7 +180,7 @@ var ChatClient = {
                 break;
                 
             case 'error':
-                console.log("Chat Error: " + payload.error);
+                //console.log("Chat Error: " + payload.error);
                 break;
                 
             case 'sendmessage':
@@ -321,7 +321,7 @@ var ChatClient = {
         if (typeof(message) === 'object') {
             message = JSON.stringify(message);
         }
-        console.log("Sending command: " + command + ":" + message);
+        //console.log("Sending command: " + command + ":" + message);
         this.connection.send(command + ":" + message);
     },
     

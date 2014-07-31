@@ -171,6 +171,18 @@
             
         }
         
+        public function get_Announcements() {
+            $db = LanWebsite_Main::getDb();
+            $announcements = $db->query("SELECT * FROM Announcements WHERE (DisplayTime < NOW() AND (UNIX_TIMESTAMP(NOW()) - UNIX_TIMESTAMP(DisplayTime)) < Duration*60) OR DisplayTime = '0000-00-00 00:00:00'");
+            $a = array();
+            while($ann = $announcements->fetch_assoc()) {
+                $announcement = new LanWebsite_Announcement($ann);
+                $announcement->message = $announcement->getMessage();
+                $a[] = $announcement;
+            }
+            echo json_encode($a);
+        }
+        
         private function authenticate() {
             LanWebsite_Main::getAuth()->requireNotLoggedIn();
             if (!isset($_POST["api_key"]) || sha1($_POST["api_key"]) != sha1(LanWebsite_Main::getSettings()->getSetting("api_key"))) {

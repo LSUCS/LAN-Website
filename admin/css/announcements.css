@@ -1,0 +1,33 @@
+#create .info {
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #DDD;
+}
+#create label{
+    font-weight: bold;
+    display: inline-block;
+    width: 30%;
+}
+#create label.wide{
+    width: 100%;
+}
+
+#announcements {
+    width: 100%;
+}
+#announcements thead {
+    font-weight: bold;
+}
+#announcements tbody td:not(:last-child) {
+    padding: 6px;
+border: 1px solid #f1642b;
+outline: 0;
+font: normal 13px/100% Verdana, Tahoma, sans-serif;
+background: #FFFFFF;
+border-radius: 5px 5px 5px 5px;
+-moz-border-radius: 5px;
+-webkit-border-radius: 5px;
+margin: 2px;
+background-image: url('../images/form_bg.jpg');
+background-repeat: repeat-x;
+}

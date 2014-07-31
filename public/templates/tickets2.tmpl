@@ -9,6 +9,8 @@
 <?php
     if($DataBag["charity"]) {
         echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help choose <em>which</em> charity, please vote <a href="//lsucs.org.uk/threads/charity-vote-for-lan-44.9126/">Here</a></p>';
+    } elseif($DataBag["member_free"]) {
+        echo '<p id="member_free">This LAN is completely <strong>Free</strong> for all Members of LSUCS. As there is no realistic limit on capacity, there is no need to place a deposit either! As a result of this however, free tickets are limited to one per account.</p>';
     }
 ?>
 <div class="outer-price-container">
@@ -17,14 +19,22 @@
     <?php
         if($DataBag["charity"]) {
             echo '<div id="member-charity">Price: £<input type="text" class="spinner-input" size="6" id="member-price" value="' . $DataBag["member_price"] . '" /> x&nbsp;</div>';
-        } else {
+        } elseif(!$DataBag["member_free"]) {
             echo '<div id="member-price" value="' . money_format('%i', $DataBag["member_price"]) . '">Price: <span>£' . money_format('%i', $DataBag["member_price"]) . '</span></div>';
         } 
         if ($DataBag["member_sold_out"]) echo '<div class="soldout">Sold out</div>';
         else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';
         else if (!$DataBag["member_available"]) echo '<div class="unavailable">Available From<br/>' . $DataBag["member_date"] . "</div>";
         else if ($DataBag["is_member"]) {
-            echo '<div><input type="text" class="spinner-input" id="member-amount" value="0" /></div>';
+            if($DataBag["member_free"]) {
+                if($DataBag["freeTickBought"]) {
+                    echo '<div class="unavailable">You have already claimed your ticket.</div>';
+                } else {
+                    echo '<button type="button" id="claim-member-free">Claim Free Ticket</button>';
+                }
+            } else {
+                echo '<div><input type="text" class="spinner-input" id="member-amount" value="0" /></div>';
+            }
         }
         else echo '<div class="unavailable">Only available to<br />LSUCS members</div>';
     ?>
@@ -51,9 +61,6 @@
 <p>
     If you purchase more than one ticket (or if you are a member and have purchased non-member ticket(s) for others) you can allocate spares to the accounts of other people. This can be done through your <a href="index.php?page=account">Account Details</a>.
     If this isn't done beforehand, it will need to be done on the door at the LAN.
-</p>
-<p>
-    <b>Please Note:</b> There is a £1 fee added onto the normal non-member ticket price to cover PayPal fees. If you don't wish to pay this, please buy your ticket in person from a committee member.
 </p>
 <?php
     if($DataBag["charity"]) {

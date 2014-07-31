@@ -13,6 +13,8 @@
 		
 		
 		public function requireLogin();
+        
+        public function requireMember();
 		
 		public function requireAdmin();
 		
@@ -22,6 +24,10 @@
 		public function getActiveUserId();
 		
 		public function isLoggedIn();
+        
+        public function isMember();
+        
+        public function isAdmin();
 	
 	}
 

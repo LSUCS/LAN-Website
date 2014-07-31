@@ -1,5 +1,4 @@
 <?php
-
     
 	class LanWebsite_Alert {
 	   
@@ -30,8 +29,6 @@
             if(!empty($this->link)) $string .= "</a>";
             return $string;
         }
-        
-	
-	}
-    
+
+	}    
 ?>
