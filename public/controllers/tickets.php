@@ -121,7 +121,11 @@
             if(($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || $inputs["member_amount"] + $inputs["nonmember_amount"] == 0) $this->errorJSON("You must select at least one product");
             if($inputs["member_amount"] > 0 && !$user->isMember()) $this->errorJSON("Non-members cannot buy member tickets");
             if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
-            if($inputs["member_price"] < LanWebsite_Main::getSettings()->getSetting("member_ticket_price")) $this->errorJSON("Invalid Member Ticket Price");
+            
+            //Check member tickets are asked for before checking price. Due to "free" tickets having no price.
+            if($inputs["member_amount"] != "" && is_numeric($inputs["member_amount"]) && $inputs["member_amount"] > 0) {
+                if($inputs["member_price"] < LanWebsite_Main::getSettings()->getSetting("member_ticket_price")) $this->errorJSON("Invalid Member Ticket Price");
+            }
             if($inputs["nonmember_price"] < LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price")) $this->errorJSON("Invalid Non-Member Ticket Price");
 
             $this->checkAvailability($inputs["member_amount"], $inputs["nonmember_amount"]);
@@ -193,8 +197,6 @@
             curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
             curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
             $result = json_decode(curl_exec($ch), true);
-            
-            var_dump($result);
             
             //Error
             if(isset($result["error"])) {
