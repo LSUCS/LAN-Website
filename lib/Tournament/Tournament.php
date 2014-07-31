@@ -172,7 +172,6 @@ class Tournament_Tournament {//implements jsonSerializable{
             die;
         }
     }
-    
 
     /**
      * Tournament_Tournament::getSignups()
