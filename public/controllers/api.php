@@ -15,6 +15,11 @@
             $this->authenticate();
             echo $this->errorJSON("Invalid API Method");
         }
+
+        public function get_Lannumber() {
+            $output = array("lan" => LanWebsite_Main::getSettings()->getSetting("lan_number"));
+            echo json_encode($output);
+        }
 		
 		public function get_Getgameservers() {
 			$this->authenticate();
