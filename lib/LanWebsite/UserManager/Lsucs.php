@@ -80,7 +80,7 @@
                 //Decode response and store
                 $result = json_decode(curl_exec($ch), true);
 
-                if(isset($result['error'])) throw new Exception('Fatal Auth Error: ' . $result['error'] . " ID: " . $params['userid']); 
+                if(isset($result['error'])) throw new Exception('Fatal Auth Error: ' . $result['error']); 
                 LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
             }
             return $result;

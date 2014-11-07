@@ -23,7 +23,8 @@
 			//Get unpaid data
 			$data["unpaid"] = 0;
 			$user = LanWebsite_Main::getUserManager()->getActiveUser();
-			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `food_orders` WHERE user_id = '%s' AND paid = 0", $user->getUserId());
+			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `food_orders` WHERE user_id = '%s' AND paid = 0 AND lan_number = '%s'",
+                $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"));
 			while ($row = $res->fetch_assoc()) {
 				$data["unpaid"] += $row["price"];
 			}

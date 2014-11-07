@@ -98,7 +98,7 @@ class Teams_Controller extends LanWebsite_Controller {
         $db = LanWebsite_Main::getDb();
         
         $r = $db->query("SELECT * FROM tournament_teams WHERE Name LIKE '%s'", $inputs["name"]);
-        if($r->num_rows) $this->errorJson("A team with this name already exists!" . $r->num_rows);
+        if($r->num_rows) $this->errorJson("A team with this name already exists!");
         
         $r = $db->query("INSERT INTO tournament_teams (Name, Icon, Description) VALUES ('%s', '%s', '%s')", $inputs["name"], $inputs["icon"], $inputs["description"]);
         $teamid = $db->getLink()->insert_id;

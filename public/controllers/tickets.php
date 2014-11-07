@@ -214,6 +214,7 @@
 
             //Tell the IPN listener to use the PayPal test sandbox
             $listener->use_sandbox = false;
+            $listener->force_ssl_v3 = false;
 
             //Try to process the IPN POST
             try {
