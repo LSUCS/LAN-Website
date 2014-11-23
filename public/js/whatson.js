@@ -8,9 +8,10 @@ function getTimetable() {
     $.get(
         UrlBuilder.buildUrl(false, "whatson", "gettimetable"),
         function (data) {
-            for (var i = 0; i < data.length; i++) {
+            //Timetable
+            for (var i = 0; i < data.timetable.length; i++) {
             
-                var row = data[i];
+                var row = data.timetable[i];
                 
                 //Form entry string
                 var string = '';
@@ -36,7 +37,27 @@ function getTimetable() {
                 entry.css('height', position2.top - position1.top -20);
                 
             }
-		
+            
+            //Committee
+            $("#committee-timetable-body").html("");
+            var day;
+            var string = "";
+            for (var i = 0; i < data.committee.length; i++) {            
+                var row = data.committee[i];
+                
+                //New day
+                if(row.day != day) {
+                    if(string != "") {
+                        $("#committee-timetable-body").append(string);
+                    }
+                    
+                    day = row.day;
+                    string = '<span class="committee-day">' + day + '</span>';
+                }
+                
+                string += '<span class="committee-username">' + data.users[row.user_id].username + '</span>';
+            }
+            $("#committee-timetable-body").append(string);
         },
         'json');
 }
