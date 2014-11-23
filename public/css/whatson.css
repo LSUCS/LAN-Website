@@ -108,3 +108,68 @@
 	top: 0;
 	display: none;
 }
+
+
+#committee-table {
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0px 0px 10px #999;
+    border-radius: 10px;
+}
+    #committee-table #committee-table-head {
+        height: 40px;
+        line-height: 40px;
+        border-radius: 10px 10px 0px 0px;
+        border-bottom: 1px solid #bbb;
+        background-image: url('../../images/table-head.png');
+        background-repeat: repeat-x;
+    }
+    #committee-table #committee-table-head span {
+        display: block;
+        float: left;
+        border-right: 1px solid #bbb;
+        text-align: center;
+    }
+    
+    #committee-table .committee-day {
+        width: 100px;
+        font-weight: bold;
+    }
+    #committee-table .committee-time {
+        width: 100px;
+    }
+    #committee-table .committee-username {
+        width: 200px;
+		overflow: hidden;
+		height: 30px;
+    }
+    
+    #committee-table .entry-row {
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+    }
+        #committee-table .entry-row span {
+            display: block;
+            float: left;
+            margin-right: 1px;
+        }
+        #committee-table .odd {
+            background-color: #FFF8F5;
+        }
+        #committee-table .entry-row:hover {
+            background-color: #FFF3ED;
+            cursor: pointer;
+        }
+        #committee-table .selected-row {
+            background-color: #FFE2D6;
+        }
+        #committee-table .end-entry {
+            border-radius: 0px 0px 10px 10px;
+        }
+    #committee-table .no-entries {
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+    }

@@ -71,7 +71,7 @@ $(document).ready(function() {
             UrlBuilder.buildUrl(true, "whatson", "addcommitteeentry"), {
                 day: $("#committee-entry-day option:selected").val(),
                 start_time: $("#committee-entry-start-time option:selected").val(),
-                end_time: $("#committee-entry-end-time option:selected").val(),
+                //end_time: $("#committee-entry-end-time option:selected").val(),
                 user_id: $("#committee-entry-username").val()
             },
             function (data) {
@@ -145,7 +145,7 @@ function loadEntries() {
                     string += '<input type="hidden" class="entry-id" value="' + row.timetable_id + '" />';
                     string += '<span class="day">' + row.day + '</span>';
                     string += '<span class="start-time">' + row.start_time + '</span>';
-                    string += '<span class="end-time">' + row.end_time + '</span>';
+                    //string += '<span class="end-time">' + row.end_time + '</span>';
                     string += '<span class="user-id">' + data.users[row.user_id].username + '</span></div>';
                     $("#committee-table-body").append(string);
                 }

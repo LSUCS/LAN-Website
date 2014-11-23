@@ -60,12 +60,12 @@
             //Validation
             if (!in_array($inputs["day"], array("friday", "saturday", "sunday"))) $this->errorJSON("Invalid day");
             if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['start_time'])) $this->errorJSON("Invalid start time" . $inputs['start_time']);
-            if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
-            if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
+            //if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
+            //if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
             if ($this->isInvalid("user_id")) $this->errorJSON("Invalid User");
             
             //Insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, end_time, user_id) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["end_time"], $inputs["user_id"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id) VALUES ('%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["user_id"]);
         }
         
         public function post_Deletecommitteeentry($inputs) {
