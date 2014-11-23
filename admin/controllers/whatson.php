@@ -6,7 +6,7 @@
             switch ($action) {
                 case "addentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "title" => "notnull", "url" => "url", "colour" => "notnull");
                 case "deleteentry": return array("entry_id" => array("notnull", "int"));
-                case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "user_id" => "int");
+                case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "user_id_1" => "int", "user_id_2" => "int");
                 case "deletecommmitteeentry": return array("entry_id" => array("notnull", "int"));
             }
         }
@@ -28,9 +28,13 @@
             while ($row = $res->fetch_assoc()) {
                 $arr["committee"][] = $row;
                 
-                if(!array_key_exists($row['user_id'], $arr["users"])) {
-                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id']);
-                    $arr["users"][$row['user_id']] = array("id" => $row['user_id'], "username" => $user->getUsername());
+                if(!array_key_exists($row['user_id_1'], $arr["users"])) {
+                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_1']);
+                    $arr["users"][$row['user_id_1']] = array("id" => $row['user_id_1'], "username" => $user->getUsername());
+                }
+                if(!array_key_exists($row['user_id_2'], $arr["users"])) {
+                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_2']);
+                    $arr["users"][$row['user_id_2']] = array("id" => $row['user_id_2'], "username" => $user->getUsername());
                 }
             }            
             echo json_encode($arr);
@@ -62,10 +66,11 @@
             if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['start_time'])) $this->errorJSON("Invalid start time" . $inputs['start_time']);
             //if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
             //if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
-            if ($this->isInvalid("user_id")) $this->errorJSON("Invalid User");
+            if ($this->isInvalid("user_id_1")) $this->errorJSON("Invalid User1");
+            if ($this->isInvalid("user_id_2")) $this->errorJSON("Invalid User2");
             
             //Insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id) VALUES ('%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["user_id"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id_1, user_id_2) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["user_id_1"], $inputs["user_id_2"]);
         }
         
         public function post_Deletecommitteeentry($inputs) {

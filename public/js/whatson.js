@@ -43,32 +43,23 @@ function getTimetable() {
             var day;
             var start_time;
             var string = "";
-            var row = 1;
+            var parity = 1;
             for (var i = 0; i < data.committee.length; i++) {            
                 var row = data.committee[i];
+                string = "";
                 
                 //New day
                 if(row.day != day) {
-                    if(string != "") {
-                        $("#committee-timetable-body").append(string +  "</div>");
-                    }
-                    
                     day = row.day;
-                    start_time = row.start_time;
-                    row++;
-                    string = '<div class="entry-row"><span class="committee-day">' + day + '</span><span class="committee-time">' + start_time + '</span>';
-                } else                 
-                //New time
-                if(row.start_time != start_time) {
-                    $("#committee-timetable-body").append(string +  "</div>");
-                    start_time = row.start_time;
-                    row++;
-                    string = '<div class="entry-row ' + ((row % 2 == 0) ? 'odd' : '') + '"><span class="committee-time">' + start_time + "</span>";
+                    parity++;
+                    string = '<div class="entry-row"><span class="committee-day">' + day + '</span>';
                 }
-                
-                string += '<span class="committee-username">' + data.users[row.user_id].username + '</span>';
+                string += '<div class="entry-row ' + ((parity % 2 == 0) ? 'odd' : '') + ' ' + (i == data.committee.length -1 ? 'end-entry':'') + '"><span class="committee-time">' + row.start_time + "</span>";
+                parity++;
+                string += '<span class="committee-username">' + data.users[row.user_id_1].username + '</span>';
+                string += '<span class="committee-username">' + data.users[row.user_id_2].username + '</span>';
+                $("#committee-timetable-body").append(string +  "</div>");
             }
-            $("#committee-timetable-body").append(string +  "</div>");
         },
         'json');
 }

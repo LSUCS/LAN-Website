@@ -48,9 +48,13 @@
             while ($row = $res->fetch_assoc()) {
                 $entries["committee"][] = $row;
                 
-                if(!array_key_exists($row['user_id'], $entries["users"])) {
-                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id']);
-                    $entries["users"][$row['user_id']] = array("id" => $row['user_id'], "username" => $user->getUsername());
+                if(!array_key_exists($row['user_id_1'], $entries["users"])) {
+                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_1']);
+                    $entries["users"][$row['user_id_1']] = array("id" => $row['user_id_1'], "username" => $user->getUsername());
+                }
+                if(!array_key_exists($row['user_id_2'], $entries["users"])) {
+                    $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_2']);
+                    $entries["users"][$row['user_id_2']] = array("id" => $row['user_id_2'], "username" => $user->getUsername());
                 }
             }            
             

@@ -29,6 +29,9 @@
     #entry-table .end-time {
         width: 100px;
     }
+    #committee-entry-table .username {
+        width: 200px;
+    }
     #entry-table .title {
         width: 200px;
 		overflow: hidden;

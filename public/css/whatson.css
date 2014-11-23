@@ -110,65 +110,70 @@
 }
 
 
-#committee-table {
-    width: 800px;
+#committee-timetable {
+    width: 605px;
     margin-left: auto;
     margin-right: auto;
     box-shadow: 0px 0px 10px #999;
     border-radius: 10px;
+    margin-top: 40px;
 }
-    #committee-table #committee-table-head {
+    #committee-timetable #committee-table-head {
         height: 40px;
         line-height: 40px;
         border-radius: 10px 10px 0px 0px;
         border-bottom: 1px solid #bbb;
         background-image: url('../../images/table-head.png');
         background-repeat: repeat-x;
+        font-weight: bold;
     }
-    #committee-table #committee-table-head span {
+    #committee-timetable #committee-table-head span {
         display: block;
         float: left;
         border-right: 1px solid #bbb;
         text-align: center;
     }
     
-    #committee-table .committee-day {
+    #committee-timetable #committee-table-head span:last-child {
+        border-right: 0;
+    }
+    
+    #committee-timetable .committee-day {
         width: 100px;
         font-weight: bold;
     }
-    #committee-table .committee-time {
+    #committee-timetable .committee-time {
         width: 100px;
     }
-    #committee-table .committee-username {
+    #committee-timetable .committee-username {
         width: 200px;
 		overflow: hidden;
 		height: 30px;
     }
     
-    #committee-table .entry-row {
+    #committee-timetable .entry-row {
         height: 30px;
         line-height: 30px;
         text-align: center;
     }
-        #committee-table .entry-row span {
+        #committee-timetable .entry-row span {
             display: block;
             float: left;
             margin-right: 1px;
         }
-        #committee-table .odd {
+        #committee-timetable .odd {
             background-color: #FFF8F5;
         }
-        #committee-table .entry-row:hover {
+        #committee-timetable .entry-row:hover {
             background-color: #FFF3ED;
-            cursor: pointer;
         }
-        #committee-table .selected-row {
+        #committee-timetable .selected-row {
             background-color: #FFE2D6;
         }
-        #committee-table .end-entry {
+        #committee-timetable .end-entry {
             border-radius: 0px 0px 10px 10px;
         }
-    #committee-table .no-entries {
+    #committee-timetable .no-entries {
         text-align: center;
         height: 30px;
         line-height: 30px;
