@@ -72,7 +72,7 @@ $(document).ready(function() {
                 day: $("#committee-entry-day option:selected").val(),
                 start_time: $("#committee-entry-start-time option:selected").val(),
                 end_time: $("#committee-entry-end-time option:selected").val(),
-                user_id: $("#committee-entry-username").val();
+                user_id: $("#committee-entry-username").val()
             },
             function (data) {
                 if (data != null && data.error) {

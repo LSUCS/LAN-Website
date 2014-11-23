@@ -19,7 +19,7 @@
             //Timetable
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `timetable` ORDER BY start_time ASC");
             
-            $entries = array("timetable", "committee", "users");
+            $entries = array("timetable" => array(), "committee" => array(), "users" => array());
             $days = array();
             while ($row = $res->fetch_assoc()) {
                 $entries["timetable"][] = $row;
@@ -46,11 +46,11 @@
             //Committee
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `committee_timetable` ORDER BY day, start_time ASC");
             while ($row = $res->fetch_assoc()) {
-                $arr["committee"][] = $row;
+                $entries["committee"][] = $row;
                 
-                if(!array_key_exists($row['user_id'], $arr["users"])) {
+                if(!array_key_exists($row['user_id'], $entries["users"])) {
                     $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id']);
-                    $arr["users"][$row['user_id']] = array("id" => $row['user_id'], "username" => $user->getUsername());
+                    $entries["users"][$row['user_id']] = array("id" => $row['user_id'], "username" => $user->getUsername());
                 }
             }            
             
