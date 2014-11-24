@@ -7,7 +7,7 @@
     error_reporting(E_ALL);
     
     echo "Checking client...\n";
-    if(!php_sapi_name() == 'cli' || !empty($_SERVER['remove_addr'])) die("Cannot execute daemon via browser");
+    if(!php_sapi_name() == 'cli' || !empty($_SERVER['remote_addr'])) die("Cannot execute daemon via browser");
     
     echo "Registering shutdown functions...\n";
     declare(ticks = 1);

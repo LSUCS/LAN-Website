@@ -9,7 +9,7 @@
     echo "Checking client...\n";
     
     //This can't run via the browser
-    if(!php_sapi_name() == 'cli' || !empty($_SERVER['remove_addr'])) die("Cannot execute daemon via browser");
+    if(!php_sapi_name() == 'cli' || !empty($_SERVER['remote_addr'])) die("Cannot execute daemon via browser");
     
     echo "Including required files...\n";
     
