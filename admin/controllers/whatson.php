@@ -69,11 +69,11 @@
             if ($this->isInvalid("username_1")) $this->errorJSON("Invalid User1");
             if ($this->isInvalid("username_2")) $this->errorJSON("Invalid User2");
             
-            $user1 = LanWebsite_Main::getUserManager()->getUserByUsername($inputs["username_1"]);
+            $user1 = LanWebsite_Main::getUserManager()->getUserByName($inputs["username_1"]);
             if(!$user1) $this->errorJSON("No user exists (1)");
             $user1ID = $user1->getUserId();
             
-            $user2 = LanWebsite_Main::getUserManager()->getUserByUsername($inputs["username_2"]);
+            $user2 = LanWebsite_Main::getUserManager()->getUserByName($inputs["username_2"]);
             if(!$user2) $this->errorJSON("No user exists (2)");
             $user2ID = $user2->getUserId();
             
