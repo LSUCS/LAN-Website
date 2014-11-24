@@ -72,8 +72,8 @@ $(document).ready(function() {
                 day: $("#committee-entry-day option:selected").val(),
                 start_time: $("#committee-entry-start-time option:selected").val(),
                 //end_time: $("#committee-entry-end-time option:selected").val(),
-                user_id_1: $("#committee-entry-username-1").val(),
-                user_id_2: $("#committee-entry-username-2").val()
+                username_1: $("#committee-entry-username-1").val(),
+                username_2: $("#committee-entry-username-2").val()
             },
             function (data) {
                 if (data != null && data.error) {
@@ -111,6 +111,15 @@ $(document).ready(function() {
         });
     });
     
+    $("#committee-entry-username-1").autocomplete({
+        source: UrlBuilder.buildUrl(false, "account", "autocomplete"),
+        minLength: 2
+    });
+    
+    $("#committee-entry-username-2").autocomplete({
+        source: UrlBuilder.buildUrl(false, "account", "autocomplete"),
+        minLength: 2
+    });
     
 });
 
