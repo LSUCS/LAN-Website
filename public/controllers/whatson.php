@@ -51,10 +51,10 @@
                 if(!array_key_exists($row['user_id_1'], $entries["users"])) {
                     $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_1']);
                     
-                    $res = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
+                    $res2 = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
                         LanWebsite_Main::getSettings()->getSetting('lan_number'), $user->getUserId());
-                    if($res->num_rows) {
-                        list($seat) = $res->fetch_row();
+                    if($res2->num_rows) {
+                        list($seat) = $res2->fetch_row();
                     } else {
                         $seat = "";
                     }
@@ -64,10 +64,10 @@
                 if(!array_key_exists($row['user_id_2'], $entries["users"])) {
                     $user = LanWebsite_Main::getUserManager()->getUserById($row['user_id_2']);
                     
-                    $res = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
+                    $res2 = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
                         LanWebsite_Main::getSettings()->getSetting('lan_number'), $user->getUserId());
-                    if($res->num_rows) {
-                        list($seat) = $res->fetch_row();
+                    if($res2->num_rows) {
+                        list($seat) = $res2->fetch_row();
                     } else {
                         $seat = "";
                     }
