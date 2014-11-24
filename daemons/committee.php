@@ -53,7 +53,7 @@
     
     function callApi($function, $params) {
         $apiURL = "192.168.0.30:8088/api?Function=".$function;
-        $apiURL .= implode("&", $parts);
+        $apiURL .= implode("&", $params);
         
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
