@@ -109,6 +109,9 @@
 	display: none;
 }
 
+#committee-timetable-title {
+    margin-top: 30px;
+}
 
 #committee-timetable {
     width: 605px;
@@ -116,7 +119,6 @@
     margin-right: auto;
     box-shadow: 0px 0px 10px #999;
     border-radius: 10px;
-    margin-top: 40px;
 }
     #committee-timetable #committee-table-head {
         height: 40px;
@@ -140,6 +142,7 @@
     
     #committee-timetable .committee-day {
         width: 100px;
+        height: inherit;
         font-weight: bold;
     }
     #committee-timetable .committee-time {
