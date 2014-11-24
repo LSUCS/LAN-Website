@@ -58,10 +58,10 @@ function getTimetable() {
                 }
                 string += '<span class="committee-time">' + row.start_time + "</span>";
                 string += '<span class="committee-username"><a href="/profile?member=' + data.users[row.user_id_1].username + '">' + data.users[row.user_id_1].username;
-                if(data.users[row.user_id_1].seat != "") string += "(" + data.users[row.user_id_1].seat + ")";
+                if(data.users[row.user_id_1].seat != "") string += " (" + data.users[row.user_id_1].seat + ")";
                 string += '</a></span>';
                 string += '<span class="committee-username"><a href="/profile?member=' + data.users[row.user_id_2].username + '">' + data.users[row.user_id_2].username;
-                if(data.users[row.user_id_2].seat != "") string += "(" + data.users[row.user_id_2].seat + ")";
+                if(data.users[row.user_id_2].seat != "") string += " (" + data.users[row.user_id_2].seat + ")";
                 string += '</a></span>';
                 $("#committee-timetable-body").append(string +  "</div>");
             }
