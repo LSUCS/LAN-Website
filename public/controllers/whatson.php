@@ -54,7 +54,7 @@
                     $res = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
                         LanWebsite_Main::getSettings()->getSetting('lan_number'), $user->getUserId());
                     if($res->num_rows) {
-                        list($seat) = $res->fetch_num();
+                        list($seat) = $res->fetch_row();
                     } else {
                         $seat = "";
                     }
@@ -67,7 +67,7 @@
                     $res = LanWebsite_Main::getDb()->query("SELECT seat FROM `tickets` WHERE lan_number = '%s' AND assigned_forum_id = '%s' AND seat != ''",
                         LanWebsite_Main::getSettings()->getSetting('lan_number'), $user->getUserId());
                     if($res->num_rows) {
-                        list($seat) = $res->fetch_num();
+                        list($seat) = $res->fetch_row();
                     } else {
                         $seat = "";
                     }
