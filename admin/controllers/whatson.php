@@ -6,8 +6,8 @@
             switch ($action) {
                 case "addentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "title" => "notnull", "url" => "url", "colour" => "notnull");
                 case "deleteentry": return array("entry_id" => array("notnull", "int"));
-                case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "user_id_1" => "int", "user_id_2" => "int");
-                case "deletecommitteeentry": return array("entry_id" => array("notnull", "int"));
+                case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "username_1" => "notnull", "username_2" => "notnull");
+                case "deletecommmitteeentry": return array("entry_id" => array("notnull", "int"));
             }
         }
         
@@ -66,11 +66,19 @@
             if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['start_time'])) $this->errorJSON("Invalid start time" . $inputs['start_time']);
             //if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
             //if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
-            if ($this->isInvalid("user_id_1")) $this->errorJSON("Invalid User1");
-            if ($this->isInvalid("user_id_2")) $this->errorJSON("Invalid User2");
+            if ($this->isInvalid("username_1")) $this->errorJSON("Invalid User1");
+            if ($this->isInvalid("username_2")) $this->errorJSON("Invalid User2");
+            
+            $user1 = LanWebsite_Main::getUserManager()->getUserByUsername($inputs["username_1"]);
+            if(!$user1) $this->errorJSON("No user exists (1)");
+            $user1ID = $user1->getUserId();
+            
+            $user2 = LanWebsite_Main::getUserManager()->getUserByUsername($inputs["username_2"]);
+            if(!$user2) $this->errorJSON("No user exists (2)");
+            $user2ID = $user2->getUserId();
             
             //Insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id_1, user_id_2) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["user_id_1"], $inputs["user_id_2"]);
+            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id_1, user_id_2) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $user1ID, $user2ID);
         }
         
         public function post_Deletecommitteeentry($inputs) {

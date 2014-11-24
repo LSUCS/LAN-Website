@@ -46,18 +46,19 @@ function getTimetable() {
             var parity = 1;
             for (var i = 0; i < data.committee.length; i++) {            
                 var row = data.committee[i];
-                string = "";
+                parity++;
+                string = '<div class="entry-row ' + ((parity % 2 == 0) ? 'odd' : '') + ' ' + (i == data.committee.length -1 ? 'end-entry':'') + '">';
                 
                 //New day
                 if(row.day != day) {
                     day = row.day;
-                    parity++;
-                    string = '<div class="entry-row"><span class="committee-day">' + day + '</span>';
+                    string += '<span class="committee-day">' + day + '</span>';
+                } else {
+                    string += '<span class="committee-day"></span>';
                 }
-                string += '<div class="entry-row ' + ((parity % 2 == 0) ? 'odd' : '') + ' ' + (i == data.committee.length -1 ? 'end-entry':'') + '"><span class="committee-time">' + row.start_time + "</span>";
-                parity++;
-                string += '<span class="committee-username">' + data.users[row.user_id_1].username + '</span>';
-                string += '<span class="committee-username">' + data.users[row.user_id_2].username + '</span>';
+                string += '<span class="committee-time">' + row.start_time + "</span>";
+                string += '<span class="committee-username"><a href="/profile?member=' + data.users[row.user_id_1].username + '">' + data.users[row.user_id_1].username + '</span>';
+                string += '<span class="committee-username"><a href="/profile?member=' + data.users[row.user_id_2].username + '">' + data.users[row.user_id_2].username + '</span>';
                 $("#committee-timetable-body").append(string +  "</div>");
             }
         },
