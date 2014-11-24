@@ -49,7 +49,7 @@
     
     $parts = array("Input=Duty+Committee", "SelectedIndex=0", "Value=".$committee);
         
-    self::callApi("SetText", $parts);
+    callApi("SetText", $parts);
     
     function callApi($function, $params) {
         $apiURL = "192.168.0.30:8088/api?Function=".$function;
