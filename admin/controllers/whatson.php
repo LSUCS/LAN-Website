@@ -7,7 +7,7 @@
                 case "addentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "title" => "notnull", "url" => "url", "colour" => "notnull");
                 case "deleteentry": return array("entry_id" => array("notnull", "int"));
                 case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "username_1" => "notnull", "username_2" => "notnull");
-                case "deletecommmitteeentry": return array("entry_id" => array("notnull", "int"));
+                case "deletecommitteeentry": return array("entry_id" => array("notnull", "int"));
             }
         }
         
