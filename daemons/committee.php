@@ -47,12 +47,12 @@
         $committee = "(Unknown)";
     }
     
-    $parts = array("Input=Duty+Committee", "SelectedIndex=0", "Value=".$committee);
+    $parts = array("Input=Duty+Committee", "SelectedIndex=0", "Value=".urlencode($committee));
         
     callApi("SetText", $parts);
     
     function callApi($function, $params) {
-        $apiURL = "192.168.0.30:8088/api?Function=".$function;
+        $apiURL = "192.168.0.30:8088/api?Function=".$function."&";
         $apiURL .= implode("&", $params);
         
         $ch = curl_init();
