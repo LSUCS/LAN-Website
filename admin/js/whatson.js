@@ -81,7 +81,7 @@ $(document).ready(function() {
                     return;
                 }
                 loadEntries();
-                entry_id = false;
+                committee_entry_id = false;
                 $(".committee-entry-row").removeClass("selected-row");
                 $("#committee-delete-entry").button('disable');
                 Overlay.openOverlay(false, "Entry added", 1000);
@@ -95,14 +95,14 @@ $(document).ready(function() {
         $("#committee-confirm-delete").click(function() {
             $.post(
                 UrlBuilder.buildUrl(true, "whatson", "deletecommitteeentry"),
-                { entry_id: entry_id },
+                { entry_id: committee_entry_id },
                 function (data) {
                     if (data != null && data.error) {
                         Overlay.openOverlay(true, data.error);
                         return;
                     }
                     loadEntries();
-                    entry_id = false;
+                    committee_entry_id = false;
                     $(".committee-entry-row").removeClass("selected-row");
                     $("#committee-delete-entry").button('disable');
                     Overlay.openOverlay(false, "Entry deleted", 1000);

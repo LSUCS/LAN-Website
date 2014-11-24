@@ -7,7 +7,7 @@
                 case "addentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "title" => "notnull", "url" => "url", "colour" => "notnull");
                 case "deleteentry": return array("entry_id" => array("notnull", "int"));
                 case "addcommitteeentry": return array("day" => "notnull", "start_time" => "notnull", "end_time" => "notnull", "user_id_1" => "int", "user_id_2" => "int");
-                case "deletecommmitteeentry": return array("entry_id" => array("notnull", "int"));
+                case "deletecommitteeentry": return array("entry_id" => array("notnull", "int"));
             }
         }
         
@@ -76,7 +76,7 @@
         public function post_Deletecommitteeentry($inputs) {
             
             if (!LanWebsite_Main::getDb()->query("SELECT * FROM `committee_timetable` WHERE timetable_id = '%s'", $inputs["entry_id"])->fetch_assoc()) $this->errorJSON("Invalid entry ID");
-            LanWebsite_Main::getDb()->query("DELETE FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
+            LanWebsite_Main::getDb()->query("DELETE FROM `committee_timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
                         
         }
     }

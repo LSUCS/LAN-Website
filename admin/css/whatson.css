@@ -60,7 +60,7 @@
         #entry-table .odd, #committee-entry-table .odd {
             background-color: #FFF8F5;
         }
-        #entry-table .entry-row:hover, #committee-entry-table .entry-row:hover {
+        #entry-table .entry-row:hover, #committee-entry-table .committee-entry-row:hover {
             background-color: #FFF3ED;
             cursor: pointer;
         }
@@ -99,4 +99,12 @@
     margin-left: auto;
     margin-right: auto;
     margin-top: 10px;
+}
+
+#committee-entry-table {
+    width: 605px;
+}
+
+#committee-entry-table #committee-table-head span:last-child {
+    border-right: 0;
 }
