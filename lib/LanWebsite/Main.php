@@ -1,12 +1,12 @@
 <?php
-	
-	class LanWebsite_Main {
-		
+    
+    class LanWebsite_Main {
+        
         private static $init = false;
         
         private static $controllerdir = '';
-		
-		private static $db;
+        
+        private static $db;
         private static $settings;
         private static $auth;
         private static $usermanager;
@@ -16,10 +16,10 @@
         /**
          * Loads base dependencies for LAN website core
          */
-		public static function initialize() {
+        public static function initialize() {
         
-            include '/home/soc_lsucs/lan.lsucs.org.uk/htdocs/logger.php';
-		
+            require $_SERVER['DOCUMENT_ROOT'] . '/logger.php';
+        
             //Initiation check
             if (self::$init == true) return false;
             self::$init = true;
@@ -29,9 +29,9 @@
             
             //Load controller location
             self::$controllerdir = $config['controllerdir'];            
-			
+            
             //Load base objects
-			self::$db       = new LanWebsite_Db();
+            self::$db       = new LanWebsite_Db();
             self::$settings = new LanWebsite_Settings();
             self::$auth     = new $config['auth'];
             self::$usermanager = new $config['usermanager'];
@@ -40,7 +40,7 @@
             //Init auth
             self::$auth->init();
             
-		}
+        }
         
         
         /**
@@ -90,9 +90,9 @@
          */
         public static function pageNotFound() {
             $tmpl = self::$templatemanager;
-			$tmpl->setSubTitle("page not found");
+            $tmpl->setSubTitle("page not found");
             $tmpl->addTemplate('notfound');
-			$tmpl->output();
+            $tmpl->output();
         }
         
         
@@ -188,7 +188,8 @@
             else $ip = $_SERVER['REMOTE_ADDR'];
             return $ip;
         }
-		
-	}
-	
+        
+    }
+    
 ?>
+

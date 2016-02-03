@@ -70,15 +70,18 @@
                 $fields = array_merge($fields, $params);
                 foreach($fields as $key=>$value) $fields[$key] = $key.'='.$value; 
                 
+                $url = rtrim(LanWebsite_Main::getSettings()->getSetting("lsucs_auth_url"), "/") . '/' . $method;
+
                 //Prepare cURL
                 $ch = curl_init();
-                curl_setopt($ch,CURLOPT_URL, rtrim(LanWebsite_Main::getSettings()->getSetting("lsucs_auth_url"), "/") . '/' . $method );
+                curl_setopt($ch,CURLOPT_URL, $url);
                 curl_setopt($ch,CURLOPT_POST, 2);
                 curl_setopt($ch,CURLOPT_POSTFIELDS, implode("&", $fields));
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
+                $response = curl_exec($ch);
                 
                 //Decode response and store
-                $result = json_decode(curl_exec($ch), true);
+                $result = json_decode($response, true);
 
                 if(isset($result['error'])) throw new Exception('Fatal Auth Error: ' . $result['error']); 
                 LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
