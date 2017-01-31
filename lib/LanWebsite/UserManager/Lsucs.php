@@ -80,6 +80,10 @@
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
                 $response = curl_exec($ch);
                 
+                if ($response === false) {
+                    throw new Exception('Fatal Auth Error. Request to Api Failed');
+                }
+                
                 //Decode response and store
                 $result = json_decode($response, true);
 
