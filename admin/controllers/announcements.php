@@ -12,7 +12,8 @@ class Announcements_Controller extends LanWebsite_Controller {
     }
     
     public function get_index() {
-        $this->loadAnnouncements();
+        //$this->loadAnnouncements();
+        $this->announcements = array();
         $colours = LanWebsite_Announcement::getColourList();        
         
         $tmpl = LanWebsite_Main::getTemplateManager();
@@ -77,7 +78,7 @@ class Announcements_Controller extends LanWebsite_Controller {
     
     private function loadAnnouncements() {
         $res = LanWebsite_Main::getDb()->query("SELECT * FROM Announcements");
-        
+
         $this->announcements = array();
         while($a = $res->fetch_assoc()) {
             $this->announcements[] = new LanWebsite_Announcement($a);

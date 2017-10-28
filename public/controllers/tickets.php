@@ -73,6 +73,8 @@
         
         public function post_Free($inputs) {
             if(!LanWebsite_Main::getAuth()->isMember()) $this->errorJSON("Non-Member cannot claim member ticket");
+            $user = LanWebsite_Main::getUserManager()->getActiveUser();
+           	if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
             
             list($boughtTicket) = LanWebsite_Main::getDb()->query(
                     "SELECT COUNT(*) FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'",

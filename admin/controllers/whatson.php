@@ -50,13 +50,13 @@
             if (!in_array($inputs["colour"], array("orange", "blue", "green", "purple"))) $this->errorJSON("Invalid colour");
             
             //Insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `timetable` (day, start_time, end_time, title, url, colour) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["end_time"], $inputs["title"], $inputs["url"], $inputs["colour"]);
+            echo LanWebsite_Main::getDb()->query("INSERT INTO `timetable` (day, start_time, end_time, title, url, colour) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["end_time"], $inputs["title"], $inputs["url"], $inputs["colour"]);
         }
         
         public function post_Deleteentry($inputs) {
         
             if (!LanWebsite_Main::getDb()->query("SELECT * FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"])->fetch_assoc()) $this->errorJSON("Invalid entry ID");
-            LanWebsite_Main::getDb()->query("DELETE FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
+            echo LanWebsite_Main::getDb()->query("DELETE FROM `timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
         
         }
         
@@ -67,7 +67,7 @@
             //if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
             //if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
             if ($this->isInvalid("username_1")) $this->errorJSON("Invalid User1");
-            if ($this->isInvalid("username_2")) $this->errorJSON("Invalid User2");
+            if($inputs["username_2"] != "") { if ($this->isInvalid("username_2")) $this->errorJSON("Invalid User2"); }
             
             $user1 = LanWebsite_Main::getUserManager()->getUserByName($inputs["username_1"]);
             if(!$user1) $this->errorJSON("No user exists (1)");
@@ -78,13 +78,13 @@
             $user2ID = $user2->getUserId();
             
             //Insert
-            LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id_1, user_id_2) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $user1ID, $user2ID);
+            echo LanWebsite_Main::getDb()->query("INSERT INTO `committee_timetable` (day, start_time, user_id_1, user_id_2) VALUES ('%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $user1ID, $user2ID);
         }
         
         public function post_Deletecommitteeentry($inputs) {
             
             if (!LanWebsite_Main::getDb()->query("SELECT * FROM `committee_timetable` WHERE timetable_id = '%s'", $inputs["entry_id"])->fetch_assoc()) $this->errorJSON("Invalid entry ID");
-            LanWebsite_Main::getDb()->query("DELETE FROM `committee_timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
+            echo LanWebsite_Main::getDb()->query("DELETE FROM `committee_timetable` WHERE timetable_id = '%s'", $inputs["entry_id"]);
                         
         }
     }

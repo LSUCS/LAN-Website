@@ -162,7 +162,8 @@
                 $data["scripts"] = array();
                 
                 //Alerts
-                $data["alerts"] = Tournament_Main::loadAlerts();
+                //$data["alerts"] = Tournament_Main::loadAlerts();
+                $data["alerts"] = array();
                 
                 $templates[] = array("template" => 'templates/body.tmpl', "data" => $data);
             }

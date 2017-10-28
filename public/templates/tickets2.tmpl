@@ -1,6 +1,6 @@
 <h1>member tickets</h1>
 <p>
-    Member prices are available to all student and associate members of LSUCS. If you are a member and you are unable to purchase this option then you need to make sure you are in the 'LSUCS Members' group on the forums <a href="http://lsucs.org.uk/threads/what-do-you-post-here.5278/">here</a>.
+    Member prices are available to all student and associate members of LSUCS. If you are a member and you are unable to purchase this option then you need to make sure you are in the 'LSUCS Members' group on the forums <a href="https://lsucs.org.uk/threads/how-to-register-on-the-forums.11860/">here</a>.
 </p>
 <p>
     If you purchase more than one ticket (or if you are a member and have purchased non-member ticket(s) for others) you can allocate spares to the accounts of other people. This can be done through your <a href="index.php?page=account">Account Details</a>.
@@ -8,7 +8,7 @@
 </p>
 <?php
     if($DataBag["charity"]) {
-        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help choose <em>which</em> charity, please vote <a href="//lsucs.org.uk/threads/charity-vote-for-lan-44.9126/">Here</a></p>';
+        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help us choose <em>which</em> charity, please post in the forums <a href="//lsucs.org.uk/forums/charity-lan-62.230/">Here</a></p>';
     } elseif($DataBag["member_free"]) {
         echo '<p id="member_free">This LAN is completely <strong>Free</strong> for all Members of LSUCS. As there is no realistic limit on capacity, there is no need to place a deposit either! As a result of this however, free tickets are limited to one per account.</p>';
     }
@@ -18,9 +18,9 @@
         <div class="price">
     <?php
         if($DataBag["charity"]) {
-            echo '<div id="member-charity">Price: £<input type="text" class="spinner-input" size="6" id="member-price" value="' . $DataBag["member_price"] . '" /> x&nbsp;</div>';
+            echo '<div id="member-charity">Price: &pound;<input type="text" class="spinner-input" size="6" id="member-price" value="' . $DataBag["member_price"] . '" /> x&nbsp;</div>';
         } elseif(!$DataBag["member_free"]) {
-            echo '<div id="member-price" value="' . money_format('%i', $DataBag["member_price"]) . '">Price: <span>£' . money_format('%i', $DataBag["member_price"]) . '</span></div>';
+            echo '<div id="member-price" value="' . money_format('%i', $DataBag["member_price"]) . '">Price: <span>&pound;' . money_format('%i', $DataBag["member_price"]) . '</span></div>';
         } 
         if ($DataBag["member_sold_out"]) echo '<div class="soldout">Sold out</div>';
         else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';
@@ -72,9 +72,9 @@
         <div class="price">
     <?php
         if($DataBag["charity"]) {
-            echo '<div id="nonmember-charity">Price: £<input type="text" class="spinner-input" size="6" id="nonmember-price" value="' . $DataBag["nonmember_price"] . '" /> x&nbsp;</div>';
+            echo '<div id="nonmember-charity">Price: &pound;<input type="text" class="spinner-input" size="6" id="nonmember-price" value="' . $DataBag["nonmember_price"] . '" /> x&nbsp;</div>';
         } else {
-            echo '<div id="nonmember-price" value="' . money_format('%i', $DataBag["nonmember_price"]) . '">Price: <span>£' . money_format('%i', $DataBag["nonmember_price"]) . '</span></div>';
+            echo '<div id="nonmember-price" value="' . money_format('%i', $DataBag["nonmember_price"]) . '">Price: <span>&pound;' . money_format('%i', $DataBag["nonmember_price"]) . '</span></div>';
         }
         if ($DataBag["nonmember_sold_out"]) echo '<div class="soldout">Sold out</div>';
         else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';

@@ -27,11 +27,11 @@ $(document).ready(function() {
                     Overlay.openOverlay(true, data.error);
                     return;
                 }
-                loadEntries();
                 entry_id = false;
                 $(".entry-row").removeClass("selected-row");
                 $("#delete-entry").button('disable');
                 Overlay.openOverlay(false, "Entry added", 1000);
+                loadEntries();
             },
             'json');
     });
@@ -48,11 +48,11 @@ $(document).ready(function() {
                         Overlay.openOverlay(true, data.error);
                         return;
                     }
-                    loadEntries();
                     entry_id = false;
                     $(".entry-row").removeClass("selected-row");
                     $("#delete-entry").button('disable');
                     Overlay.openOverlay(false, "Entry deleted", 1000);
+                    loadEntries();
                 },
                 'json');
         });
@@ -80,11 +80,11 @@ $(document).ready(function() {
                     Overlay.openOverlay(true, data.error);
                     return;
                 }
-                loadEntries();
                 committee_entry_id = false;
                 $(".committee-entry-row").removeClass("selected-row");
                 $("#committee-delete-entry").button('disable');
                 Overlay.openOverlay(false, "Entry added", 1000);
+                loadEntries();
             },
             'json');
     });
@@ -101,11 +101,11 @@ $(document).ready(function() {
                         Overlay.openOverlay(true, data.error);
                         return;
                     }
-                    loadEntries();
                     committee_entry_id = false;
                     $(".committee-entry-row").removeClass("selected-row");
                     $("#committee-delete-entry").button('disable');
                     Overlay.openOverlay(false, "Entry deleted", 1000);
+                    loadEntries();
                 },
                 'json');
         });

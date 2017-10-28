@@ -20,7 +20,7 @@
         
     }
             
-    LanWebsite_Main::route(array("api", "home", "tickets", "whatson", "tournaments", "teams", "info", "account", "profile", "gallery", "map", "contact", "servers", "orderfood", "presentation", "chat", "gamehub", "stats"), "home");
+    LanWebsite_Main::route(array("api", "home", "tickets", "whatson", "info", "account", "profile", "gallery", "map", "contact", "orderfood"), "home");
 
 	
 ?>

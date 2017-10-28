@@ -227,6 +227,7 @@ function activate() {
         UrlBuilder.buildUrl(true, "tickets", "activate"),
         { id: $("#claimed-tickets .row-selected").first().parent().find('.idcell').html() },
         function (data) {
+            console.log(data);
             if (data != null && data.error) {
                 Overlay.openOverlay(true, data.error);
                 return;
@@ -234,7 +235,16 @@ function activate() {
             Overlay.openOverlay(false, "Ticket Activated", 1500);
             loadTables();
         },
-        'json');
+        'json')
+    .fail(function(e) {
+        console.log(e);
+
+        //Why is this coming through here?
+        if(e.status == 200) {
+            Overlay.openOverlay(false, "Ticket Activated", 1500);
+            loadTables();           
+        }
+    });
     $("#claimed-buttons button").hide();
 }
 

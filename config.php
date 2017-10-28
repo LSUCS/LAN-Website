@@ -1,6 +1,7 @@
 <?php
-        
-    include "../password.php";
+
+    //include $_SERVER['DOCUMENT_ROOT'] . "/../password.php";
+    include "/srv/http/soc_lsucs/lan.lsucs.org.uk/password.php";
     
     /**
      * Base LanWebsite Library Directory
@@ -11,14 +12,14 @@
      * Database Settings
      */
 
-    /* Development */
+    /* Development
     $config['database']['host'] = 'localhost';
     $config['database']['user'] = 'dev_lanwebsite';
     $config['database']['pass'] = $password;
     $config['database']['db']   = 'dev_lanwebsite';
     /**/
 
-    /* Production 
+    /* Production */
     $config['database']['host'] = 'localhost';
     $config['database']['user'] = 'lanwebsite';
     $config['database']['pass'] = $password;

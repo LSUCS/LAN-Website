@@ -37,8 +37,8 @@
                     $this->connect();
                     $res = $this->db->query($query);
                 } else {
-                    //print_r(debug_backtrace());
-                    //echo $query;
+                    print_r(debug_backtrace());
+                    echo $query;
                     die("MySQLi Error: " . $this->db->error);
                 }
             }

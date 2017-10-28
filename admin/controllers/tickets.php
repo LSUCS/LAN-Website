@@ -82,7 +82,7 @@
             $raffle = array();
             while ($row = $res->fetch_assoc()) {
                 $user = LanWebsite_Main::getUserManager()->getUserById($row["user_id"]);
-                $raffle[] = array($row["raffle_ticket_number"], $user->getFullName(), $user->getUsername(), $row["reason"]);
+                //$raffle[] = array($row["raffle_ticket_number"], $user->getFullName(), $user->getUsername(), $row["reason"]);
             }
             
             //Output

@@ -4,10 +4,10 @@ var PageVars = {};
 
 $(document).ready(function() {
 
-	//User dropdown
-	$("#userbox").mouseenter(function() {
-		$("#userdropdown").stop().slideDown(200);
-	});
+    //User dropdown
+    $("#userbox").mouseenter(function() {
+        $("#userdropdown").stop().slideDown(200);
+    });
     $("#userbox").mouseleave(function(e) {
         setTimeout(function() { if (!dropdown_entered) {
             $("#userdropdown").stop().slideUp(200);
@@ -52,14 +52,14 @@ $(document).ready(function() {
         PageVars[element[0].toLowerCase()] = element[1];
     }
     
-	//Info dropdown
-	$("#navbar .info").mouseenter(function() {
+    //Info dropdown
+    $("#navbar .info").mouseenter(function() {
         $("#info-bar").slideDown(200);
-	});
+    });
     $("#navbar .info").mouseleave(function(e) {
-		setTimeout(function() { if (!infobar_entered) {
-			$("#info-bar").slideUp(200);
-		}}, 200);
+        setTimeout(function() { if (!infobar_entered) {
+            $("#info-bar").slideUp(200);
+        }}, 200);
     });
     $("#info-bar").mouseenter(function() {
         infobar_entered = true;
@@ -184,7 +184,7 @@ var Countdown = {
 
     countBack: function(secs) {
         if (secs < 0) return;
-        
+
         $("#countdown-days").html(this.calcAge(secs,86400,100000));
         $("#countdown-hours").html(this.calcAge(secs,3600,24));
         $("#countdown-minutes").html(this.calcAge(secs,60,60));
@@ -196,7 +196,7 @@ var Countdown = {
     start: function(dstring) {
         var dthen = Date.parseExact(dstring, "yyyy-MM-dd HH:mm:ss");
         var dnow = new Date();
-        ddiff = new Date(dnow-dthen);
+        dnow < dthen ? ddiff = new Date(dnow-dthen) : ddiff = new Date(dthen-dthen);
         gsecs = Math.abs(Math.floor(ddiff.valueOf()/1000));
         this.countBack(gsecs);
     }

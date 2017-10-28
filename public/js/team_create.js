@@ -11,6 +11,7 @@ function createTeam() {
         UrlBuilder.buildUrl(false, "teams", "createteam"),
         { name: $("#team-name").val(), icon: $("#team-icon").val(), description: $("#team-description").val() },
         function (data) {
+            alert(JSON.stringify(data));
             if (data != null) {
                 if(data.error) {
                     Overlay.openOverlay(true, data.error);

@@ -21,8 +21,8 @@
         <link rel="shortcut icon" href="images/favicon.ico" />
         
         <?php
-            foreach ($DataBag["styles"] as $style) echo '<link rel="stylesheet" type="text/css" href="' . $style . self::getFileTime($style) . '">' . "\n\t\t";
+            foreach ($DataBag["styles"] as $style) echo '<link rel="stylesheet" type="text/css" href="' . $style . '">' . "\n\t\t";
             echo "\n\t\t";
-            foreach ($DataBag["scripts"] as $script) echo '<script type="text/javascript" src="' . $script . self::getFileTime($script) . '"></script>' . "\n\t\t";
+            foreach ($DataBag["scripts"] as $script) echo '<script type="text/javascript" src="' . $script . '"></script>' . "\n\t\t";
             echo "\n";
         ?>

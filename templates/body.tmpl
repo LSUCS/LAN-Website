@@ -23,9 +23,9 @@
                     <li class="nav-left"><a href="<?=LanWebsite_Main::buildUrl(false)?>">Home</a></li>
                     <li class="nav-left info"><a href="<?=LanWebsite_Main::buildUrl(false, "info")?>">Essential Info</a></li>
                     <li class="nav-left"><a href="<?=LanWebsite_Main::buildUrl(false, "tickets")?>">Tickets</a></li>
-                    <li class="nav-left"><a href="<?=LanWebsite_Main::buildUrl(false, "whatson")?>">What's On</a></li>
+                    <!--<li class="nav-left"><a href="<?=LanWebsite_Main::buildUrl(false, "whatson")?>">What's On</a></li>-->
                     <li class="nav-left"><a href="<?=LanWebsite_Main::buildUrl(false, "contact")?>">Contact</a></li>
-                    <li class="nav-left"><a href="http://lsucs.org.uk">Forums</a></li>
+                    <li class="nav-left"><a href="http://lsucs.org.uk/forums/">Forums</a></li>
                     
                     <?php if ($DataBag["loggedin"]) { ?>
                         <a href="<?=LanWebsite_Main::buildUrl(false, "account", "logout")?>" title="Logout"><li class="nav-right logout"></li></a>
@@ -42,16 +42,6 @@
         
         <div id="info-bar-container">
             <div id="info-bar">
-                <div class="info-group">
-                    <h3>About</h3>
-                    
-                    <a href="<?=LanWebsite_Main::buildUrl(false, "gallery")?>">
-                        <div class="info-element">
-                            <img class="info-image" src="/images/info/gallery.png" />
-                            Gallery
-                        </div>
-                    </a>
-                </div>
                 <div class="info-group">
                     <h3>Before the LAN</h3>
                     
@@ -122,7 +112,7 @@
                         </div>
                     </a>
                     
-                    <a href="<?=LanWebsite_Main::buildUrl(false, "info", "raffle")?>">
+                    <!--<a href="<?=LanWebsite_Main::buildUrl(false, "info", "raffle")?>">
                         <div class="info-element">
                             <img class="info-image" src="/images/info/raffle.png" />
                             Raffle
@@ -134,7 +124,7 @@
                             <img class="info-image" src="/images/info/dc.png" />
                             DC++
                         </div>
-                    </a>
+                    </a>-->
                 </div>
             </div>
         </div>
@@ -179,12 +169,14 @@
         <div style="clear: both;"></div>
         
         <ul class="subtabs lantabs">
-            <li><a href="<?=LanWebsite_Main::buildUrl(false, "gamehub")?>"><img src="/images/accessbar/servers.png" />Game Hub</a></li>
+            <!--<li><a href="<?=LanWebsite_Main::buildUrl(false, "gamehub")?>"><img src="/images/accessbar/servers.png" />Game Hub</a></li>-->
+            <li><a href="<?=LanWebsite_Main::buildUrl(false, "info", "rules")?>"><img class="info-image" src="/images/info/rules.png" />LAN Rules</a></li>
             <li><a href="<?=LanWebsite_Main::buildUrl(false, "map")?>"><img src="/images/accessbar/map.png" />Live Map</a></li>
-            <li><a href="<?=LanWebsite_Main::buildUrl(false, "tournaments")?>"><img src="/images/accessbar/game.png" />Tournaments</a></li>
+            <!--<li><a href="<?=LanWebsite_Main::buildUrl(false, "tournaments")?>"><img src="/images/accessbar/game.png" />Tournaments</a></li>-->
             <li><a href="<?=LanWebsite_Main::buildUrl(false, "whatson")?>"><img src="/images/accessbar/timetable.png" />Timetable</a></li>
             <li><a href="<?=LanWebsite_Main::buildUrl(false, "orderfood")?>"><img src="/images/accessbar/pizza.png" />Food</a></li>
-            <li><a href="<?=LanWebsite_Main::buildUrl(false, "stats")?>"><img src="/images/accessbar/stats.png" />Stats</a></li>
+            <li><a href="<?=LanWebsite_Main::buildUrl(false, "gallery")?>"><img class="info-image" src="/images/info/gallery.png" />Gallery</a></li>
+            <!--<li><a href="<?=LanWebsite_Main::buildUrl(false, "stats")?>"><img src="/images/accessbar/stats.png" />Stats</a></li>-->
         </ul>
         
         <?php if (defined("LANWEBSITE_ADMIN") && LANWEBSITE_ADMIN == true) { ?>
@@ -197,7 +189,7 @@
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "tickets")?>">Tickets</a></li>
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "lanvan")?>">LAN Van</a></li>
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "food")?>">Food</a></li>
-                <li><a href="<?=LanWebsite_Main::buildUrl(true, "tournaments")?>">Tournaments</a></li>
+                <!--<li><a href="<?=LanWebsite_Main::buildUrl(true, "tournaments")?>">Tournaments</a></li>-->
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "announcements")?>">Announcements</a></li>
                 <li><a href="<?=LanWebsite_Main::buildUrl(true, "groupseats")?>">Seat Booking</a></li>
             </ul>

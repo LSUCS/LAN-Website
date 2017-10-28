@@ -61,9 +61,15 @@
         }
         
         public function getLsucsAuthResponse($method, $params) {
+            
             //Check cache
             $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
-            if (!LanWebsite_Cache::get("authapi", $cachekey, $result)) {
+            $cache_result = LanWebsite_Cache::get("authapi", $cachekey, $result);
+            
+            // Disable cache
+            //if (!$cache_result) {
+
+            if (true) {
             
                 //Prepare fields
                 $fields = array("key" => LanWebsite_Main::getSettings()->getSetting("api_key"));
@@ -80,6 +86,10 @@
                 curl_setopt($ch,CURLOPT_RETURNTRANSFER, 1);
                 $response = curl_exec($ch);
                 
+                if ($response === false) {
+                    throw new Exception('Fatal Auth Error. Request to Api Failed');
+                }
+
                 //Decode response and store
                 $result = json_decode($response, true);
 

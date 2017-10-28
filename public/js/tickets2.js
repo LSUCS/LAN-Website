@@ -15,7 +15,7 @@ $(document).ready(function() {
     $(".checkout-button").click(function() {
         
         //Agree to terms and conditions
-        var string = '<p>By purchasing this ticket you are agreeing to abide by our LAN rules found <a href="http://lans.lsucs.org.uk/index.php?page=info&action=rules">here</a>. ';
+        var string = '<p>By purchasing this ticket you are agreeing to abide by our LAN rules found <a href="https://lan.lsucs.org.uk/info/rules/">here</a>. ';
         string += 'If you do not agree to follow these rules then do not purchase this ticket. Breaking these rules gives us the right to remove you from the event.<p><br />';
         string += '<p>If you are under 18 and attending a LAN you are required by Union policy to have <b>written consent from a parent or guardian</b>. If you do not have this you will not be allowed entry to the LAN and will not be offered a refund.</p>';
         string += '<p><button id="continue-checkout">Continue</button><button id="cancel-checkout">Cancel</button></p>';

@@ -326,6 +326,7 @@ function loadDetails() {
                     $('#update-info').show();
                 } else {
                     $('#update-info').hide();
+                    $('#seating-info').attr("readonly", "readonly");
                 }
             } else {
                 $('#group-info').hide();

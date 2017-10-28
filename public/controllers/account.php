@@ -70,7 +70,7 @@ class Account_Controller extends LanWebsite_Controller {
         if ($this->isInvalid('phone')) $this->errorJSON("Please supply a phone number");
         if ($this->isInvalid('address')) $this->errorJSON("Please supply an address");
         if ($this->isInvalid('postcode')) $this->errorJSON("Invalid postcode");
-        if ($this->isInvalid('availability')) $this->errorJSON("Please specify a time you are available");
+        if ($this->isInvalid('availability') && $inputs["collection"] == 1) $this->errorJSON("Please specify a time you are available");
         if ($inputs["collection"] == 0 && $inputs["dropoff"] == 0) $this->errorJSON("You must select at least dropoff or collection, if not both");
         
         //Check for ticket

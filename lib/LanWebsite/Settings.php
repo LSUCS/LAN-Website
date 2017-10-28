@@ -68,6 +68,11 @@
         );
         
         public function getSetting($setting) {
+            /*$log_file_path = "/home/soc_lsucs/websites/lan.lsucs.org.uk/htdocs/lib/LanWebsite/log.txt";
+            if(file_exists($log_file_path))
+            {
+                file_put_contents($log_file_path, json_encode($this->cache));
+            }*/
             
             //If invalid, return false and delete
             if (!$this->settingIsReal($setting)) {
@@ -76,7 +81,7 @@
             }
             
             //If not cached, load from db
-            if (!isset($this->cache[$setting])) {
+            //if (!isset($this->cache[$setting])) {
                 $res = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", $setting);
                 
                 //If no result, load default
@@ -89,7 +94,7 @@
                     $arr = $res->fetch_array();
                     $this->cache[$setting] = $arr[1];
                 }
-            }
+            //}
             
             return $this->cache[$setting];
         }

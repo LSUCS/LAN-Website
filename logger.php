@@ -31,7 +31,7 @@
                     self::$db = null;
                     self::connect();
                     $res = self::$db->query(vsprintf($sql, $args));
-                } else die("MySQLi Error: " . self::$db->error);
+                } else die("Logger: MySQLi Error: " . self::$db->error);
             }
             return $res;
 		}

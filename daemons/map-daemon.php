@@ -1,5 +1,4 @@
 <?php
-    
     echo "### LSUCS LAN Map Daemon ###\n";
     echo "Initiating...\n";
 
@@ -26,7 +25,7 @@
     echo "Starting loop...\n";
     
     //Start daemon
-    while (1) {
+    //while (1) {
     
         $sleep = LanWebsite_Main::getSettings()->getSetting("map_daemon_sleep_period");
     
@@ -101,12 +100,19 @@
         
         //Change browser update period
         LanWebsite_Main::getSettings()->changeSetting("map_browser_update_interval", ceil($exectime + $sleep));
+
+        $log_file_path = "/home/soc_lsucs/websites/lan.lsucs.org.uk/htdocs/daemons/map-log.txt";
+        if(file_exists($log_file_path))
+        {
+            echo "Saved log.\n";
+            file_put_contents($log_file_path, date("d/m/Y, H:i:s"));
+        }
         
-        echo "Sleeping for " . $sleep . " seconds...\n";
+        //echo "Sleeping for " . $sleep . " seconds...\n";
         
-        sleep($sleep);
+        //sleep($sleep);
         
-    }
+    //}
     
     
     function sigShutdown() {

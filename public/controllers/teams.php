@@ -59,7 +59,7 @@ class Teams_Controller extends LanWebsite_Controller {
     }
     
     public function get_View($inputs) {
-        if($this->isInvalid('teamid')) $this->error("Invalid Team ID");
+        //if($this->isInvalid('teamid')) $this->error("Invalid Team ID");
         
         //Get the team
         $team = Tournament_Main::team($inputs['teamid']);

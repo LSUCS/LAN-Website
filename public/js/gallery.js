@@ -7,6 +7,7 @@ $(document).ready(function() {
         loadGallery($(this).find('.folder-label').html());
     });
     Galleria.loadTheme('/js/galleria/themes/classic/galleria.classic.min.js');
+    //Galleria._createThumbnails();
     Galleria.run("#galleria", { autoplay: 5000, lightbox: true });
     
     //Load hash

@@ -11,7 +11,12 @@
         public function get_Index() {
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("Lan Map");
+
+            // James france map
             $tmpl->addTemplate('map');
+
+            // Clyde Williams map
+            //$tmpl->addTemplate('map2');
 			$tmpl->output();
         }
         

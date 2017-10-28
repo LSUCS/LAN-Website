@@ -1,7 +1,6 @@
 <div id="order-image">
 </div>
-<p style="text-align: center; color: red; font-weight: bold;">On-duty committee rota can be found on the <a href="index.php?page=whatson#rota">Timetable</a>
-<!--</br>FOOD orders are broken. Please order food from an onduty committee member instead.--></p>
+<p style="text-align: center; color: red; font-weight: bold;">On-duty committee rota can be found on the <a href="index.php?page=whatson#rota">Timetable</a></p>
 
 <?
 	if ($DataBag["unpaid"] > 0) {
@@ -48,7 +47,4 @@
 	?>
 </div>
 
-<p style="text-align: center; color: red; font-weight: bold;">On-duty committee rota can be found on the <a href="index.php?page=whatson#rota">Timetable</a>
-<!--</br>FOOD orders are BROKEN. Please order food from an onduty committee member instead.-->
-</p>
 <button id="place-order">Place Order</button>

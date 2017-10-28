@@ -1,0 +1,661 @@
+#map {
+    height: 860px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+	position: relative;
+}
+    #map .door-bottom {
+        background-image: url('../../images/map/door-bottom.png');
+        height: 26px;
+        width: 50px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-left {
+        background-image: url('../../images/map/door-left.png');
+        height: 50px;
+        width: 26px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-top {
+        background-image: url('../../images/map/door-top.png');
+        height: 26px;
+        width: 50px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .door-right {
+        background-image: url('../../images/map/door-right.png');
+        height: 50px;
+        width: 26px;
+        margin: 2px;
+        position: absolute;
+    }
+    #map .label {
+        font-size: 12px;
+        position: absolute;
+    }
+    #map .food {
+        background-image: url('../../images/map/food.png');
+        height: 70px;
+        width: 24px;
+        position: absolute;
+    }
+	#map .lecturn {
+		position: absolute;
+		height: 18px;
+		width: 50px;
+		background-color: #A54200;
+		border: 2px solid #632700;
+		border-radius: 3px;
+	}
+    #map .seat {
+      position: relative;
+      height: 18px;
+      width: 18px;
+      background-color: #ccc;
+      border: 2px solid #333;
+      border-radius: 3px;
+      float: left;
+    }
+      #map .seat.large {
+        width: 25px;
+        height: 12px;
+      }
+      #map .seat.large.adjust {
+        position: relative;
+        top: 6px;
+      }
+        #map .seat:hover {
+          cursor: pointer;
+          box-shadow: 0px 0px 5px #555;
+        }
+        #map .seat.welcome-seat {
+          background-color: #b976fe;
+          border: 2px solid #8231d4;
+        }
+          #map .seat.welcome-seat:hover {
+            cursor: default;
+            box-shadow: none;
+          }
+        #map .seat.occupied-seat {
+          background-color: #97eaff;
+          border: 2px solid #00ccff;
+        }
+        #map .seat.ingame-seat {
+          background-color: #c8ff93;
+          border: 2px solid #6acc0a;
+        }
+        #map .seat.veteran-seat {
+          background-color: #ffb5d6;
+          border: 2px solid #eb0069;
+        }
+        #map .seat.committee-seat {
+          background-color: #ffca92;
+          border: 2px solid #ff8400;
+        }
+    #map .column {
+      height: 25px;
+      width: 26px;
+      border-radius: 2px;
+      background-color: #666;
+      position: absolute;
+      bottom: -25px;
+      left: 11px;
+    }
+    #map .seat-block {
+      position: absolute;
+      width: 100px;
+    }
+	#map .seat-semicircle {
+		height: 28px;
+		width: 50px;
+		clear: both;		
+	}
+	#map .seat-circle {
+		width: 50px;
+		clear: both;
+		height: 50px;
+	}
+  #map .seat-six {
+    width: 50px;
+    clear: both;
+    height: 72px;
+  }
+    #map .seat-row {
+        float: left;
+    }
+        #map .seat-row .seat {
+            margin: 1px;
+        }
+    #map .projector-vertical {
+        position: absolute;
+        background-image: url('../../images/map/projector-vertical.png');
+        width: 7px;
+        height: 54px;
+    }
+    #map .projector-horizontal {
+        position: absolute;
+        background-image: url('../../images/map/projector-horizontal.png');
+        width: 54px;
+        height: 7px;
+    }
+    #map .ladies {
+        background-image: url('../../images/map/ladies.png');
+        position: absolute;
+        height: 40px;
+        width: 20px;
+    }
+    #map .gents {
+        background-image: url('../../images/map/gents.png');
+        position: absolute;
+        height: 40px;
+        width: 17px;
+    }
+
+#key {
+	position: absolute;
+	height: 150px;
+	width: 600px;
+	left: 80px;
+	top: 0px;
+}
+	#key .label {
+		width: 150px;
+		font-weight: bold;
+	}
+	#key .ladies {
+		top: 25px;
+	}
+	#key .gents {
+		top: 25px;
+		left: 23px;
+	}
+		#key .gents .label {
+			top: 10px;
+			left: 30px;
+		}
+	#key .projector-vertical {
+		top: 75px;
+		left: 6px;
+	}
+		#key .projector-vertical .label {
+			top: 18px;
+			left: 47px;
+		}
+	#key .food {
+		top: 8px;
+		left: 150px;
+	}
+		#key .food .label {
+			top: 25px;
+			left: 48px;
+		}
+	#key .door-right {
+		top: 80px;
+		left: 150px;
+	}
+		#key .door-right .label {
+			top: 17px;
+			left: 48px;
+		}
+	#key .seat {
+		position: absolute;
+		top: 70px;
+		left: 510px;
+	}
+		#key .seat:hover {
+			box-shadow: none;
+			cursor: default;
+		}
+		#key .seat .label {
+			left: 40px;
+			top: 2px;
+		}
+	#key .occupied-seat {
+		left: 320px;
+		top: 105px;
+	}
+	#key .ingame-seat {
+		left: 510px;
+		top: 30px;
+	}
+	#key .committee-seat {
+		top: 30px;
+		left: 320px;
+	}
+		#key .committee-seat .label {
+			top: 4px;
+		}
+	#key .welcome-seat {
+		top: 70px;
+		left: 320px;
+	}
+		#key .welcome-seat .label {
+			top: 2px;
+		}
+	#key .lecturn {
+		top: 105px;
+		left: 510px;
+	}
+		#key .lecturn .label {
+			left: 60px;
+			top: 4px;
+		}
+
+#stairs {
+	height: 100px;
+	width: 400px;
+	left: 200px;
+	top: 150px;
+	position: absolute;
+	border: 5px solid #666;
+	border-bottom: 0;
+}
+	#stairs-label {
+		top: 40px;
+		left: 40px;
+	}
+	#fire-exit-door {
+		top: 0px;
+		right: 50px;
+	}
+	#fire-exit-label {
+		top: 40px;
+		right: 55px;
+	}
+
+#lobby {
+  position: absolute;
+	height: 525px;
+	width: 400px;
+	top: 250px;
+	left: 200px;
+	border: 5px solid #666;
+	border-bottom: 0;
+}
+  #lobby #food {
+    left: 10px;
+    top: 215px;
+  }
+	#lobby #lab-door {
+		top: 15px;
+		left: 0px;
+	}
+	#lobby #lecture-door-top {
+		top: 110px;
+		left: 0px;
+	}
+	#lobby #lecture-door-bottom {
+		top: 340px;
+		left: 0px;
+	}
+	#lobby #room-1-door {
+		top: 20px;
+		right: 0px;
+	}
+	#lobby #room-2-door {
+		top: 180px;
+		right: 0px;
+	}
+	#lobby #room-3-door {
+		top: 380px;
+		right: 0px;
+	}
+	#lobby #door-stairs {
+		top: 0px;
+		right: 50px;
+	}
+
+	#welcome-desk {
+		position: absolute;
+		bottom: 30px;
+		height: 30px;
+		width: 400px;
+	}
+		#welcome-label {
+			left: 80px;
+		}
+		#welcome-desk .door-bottom {
+			bottom: 0px;
+			left: 5px;
+		}
+		#welcome-desk #entrance-label {
+			bottom: 10px;
+			left: 70px;
+		}
+		#barrier-left, #barrier-right {
+			height: 22px;
+			background-color: #666;
+			position: absolute;
+			top: 20px;
+			width: 150px;
+			border-radius: 0 3px 3px 0;
+		}
+			#barrier-right {
+				right: 0px;
+				border-radius: 3px 0 0 3px;
+			}
+			#barrier-right .seat {
+				position: absolute;
+				left: -24px;
+			}
+			#barrier-left .seat {
+				position: absolute;
+				right: -24px;
+			}
+
+#entrance-area {
+	position: absolute;
+	top: 780px;
+	height: 75px;
+	width: 400px;
+	left: 205px;
+	border: 5px solid #666;
+	border-top: 0;
+	border-left: 0;
+}
+	#entrance-area #main-door-right {
+		bottom: 0px;
+		right: 120px;
+	}
+	#entrance-area #main-door-left {
+		bottom: 0px;
+		right: 240px;
+	}
+	#entrance-area #door-lift {
+		bottom: 0px;
+		right: 0px;
+	}
+
+#venders{
+  position: absolute;
+	bottom: 0px;
+	left: 0px;
+  height: 75px;
+	width: 200px;
+	
+	border: 5px solid #666;
+	border-right: 0;
+	border-top: 0;
+}
+  #toilets {
+    width: 200px;
+    height: 32px;
+    top: -36px;
+    left: -5px;
+    border: 5px solid #666;
+    border-bottom: 0;
+    border-right: 0;
+    position: relative;
+  }
+  #toilets-left {
+    position: absolute;
+    left: 0px;
+    top: 30px;
+    width: 75px;
+    border-bottom: 5px solid #666;
+  }
+  #toilets-right {
+    position: absolute;
+    left: 125px;
+    top: 30px;
+    width: 75px;
+    border-bottom: 5px solid #666;
+  }
+    #gents-toilet {
+      top: -50px;
+      left: 40px;
+    }
+    #ladies-toilet {
+      top: -50px;
+      left: 80px;
+    }
+#room-1 {
+	width: 220px;
+	border: 5px solid #666;
+	border-left: 0;
+	border-bottom: 0;
+	position: absolute;
+	right: -35px;
+	top: 250px;
+	height: 180px;
+}
+  #room-1 .seat-block .label {
+    bottom: -10px;
+  }
+	#room-1-label {
+		top: 10px;
+		left: 81px;
+	}
+	#room-1-projector {
+		top: 2px;
+		left: 72px;
+	}
+	#room-1-lecturn {
+		top: 5px;
+		right: 20px;
+	}
+	#room-1-block1 {
+		width: 50px !important;
+		left: 10px;
+		top: 10px;
+	}
+    #room-1-block1 .label {
+      left: 10px;
+    }
+	#room-1-block2 {
+		width: 50px !important;
+		right: 90px;
+		top: 32px;
+	}
+    #room-1-block2 .label {
+      left: 7px;
+    }
+	#room-1-block3 {
+		width: 50px !important;
+		right: 20px;
+		top: 30px;
+	}
+    #room-1-block3 .label {
+      left: 6px;
+    }
+   
+#room-2 {
+	width: 220px;
+	border: 5px solid #666;
+	border-left: 0;
+	border-bottom: 0;
+	position: absolute;
+	right: -35px;
+	top: 430px;
+	height: 200px;
+}
+  #room-2 .seat-block .label {
+    left: 22px;
+    top: -13px;
+  }
+	#room-2-label {
+		top: 10px;
+		left: 70px;
+	}
+	#room-2-projector {
+		top: 2px;
+		left: 62px;
+	}
+	#room-2-lecturn {
+		top: 30px;
+    width: 36px !important;
+		right: 10px;
+	}
+	#room-2-block1 {
+		left: 0px;
+		top: 40px;
+	}
+	#room-2-block2 {
+		left: 0px;
+		top: 98px;
+	}
+	#room-2-block3 {
+		left: 0px;
+		top: 150px;
+	}
+	#room-2-block4 {
+		left: 98px;
+		top: 29px;
+	}
+  #room-2-block5 {
+		left: 127px;
+		top: 90px;
+	}
+	#room-2-block6 {
+		left: 127px;
+		top: 140px;
+	}
+
+#room-3 {
+	width: 220px;
+	border: 5px solid #666;
+	border-left: 0;
+	position: absolute;
+	right: -35px;
+	top: 630px;
+	height: 180px;
+}
+  #room-3 .seat-block .label {
+    left: 32px;
+    top: -15px;
+  }
+	#room-3-label {
+		top: 10px;
+		left: 90px;
+	}
+	#room-3-projector {
+		top: 2px;
+		left: 85px;
+	}
+	#room-3-lecturn {
+		top: 30px;
+		right: 20px;
+	}
+  #room-3-block1 {
+		left: 0px;
+		top: 70px;
+	}
+	#room-3-block2 {
+		left: 0px;
+		top: 130px;
+	}
+
+	
+#lecture-room {
+	position: absolute;
+	left: 0px;
+	top: 350px;
+	border: 5px solid #666;
+	border-right: 0;
+	height: 300px;
+	width: 200px;
+}
+	#lecture-room-label {
+		top: 140px;
+		left: 50px;
+	}
+
+.hover-container {
+    position: absolute;
+    z-index: 4000;
+    left: 25px;
+    top: -20px;
+}
+.seat .preview-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+}
+.seat-hover {
+    background-color: rgba(50, 50, 50, 0.9);
+    border-radius: 10px;
+    padding: 15px;
+    position: relative;
+    display: none;
+}
+    .seat-hover .head-box {
+        width: 100%;
+        height: 52px;
+    }
+        .seat-hover .avatar {
+            position: absolute;
+            border-radius: 5px;
+        }
+            .seat-hover  .avatar img {
+                width: 50px;
+                height: 50px;
+                position: relative;
+                border-radius: 2px;
+            }
+                .occupied-seat .seat-hover .avatar {
+                    border: 2px solid #8ae5ff;
+                }
+                .ingame-seat .seat-hover .avatar {
+                    border: 2px solid #c0ff47;
+                }
+        .seat-hover .main-info {
+            font-size: 13px;
+            margin-left: 70px;
+            white-space: nowrap;
+            padding-top: 2px;
+        }
+            .occupied-seat .seat-hover .main-info {
+                color: #8ae5ff;
+            }
+            .ingame-seat .seat-hover .main-info {
+                color: #c0ff47;
+            }
+    .seat-hover .seat-number, .seat-hover .steam-name {
+        color: white;
+        font-weight: bold;
+        font-size: 13px;
+        margin-top: 10px;
+        white-space: nowrap;
+    }
+    .seat-hover .favourite {
+        color: white;
+        font-size: 12px;
+        margin-top: 10px;
+        white-space: nowrap;
+    }
+        #content .seat-hover .favourite ul {
+            margin-left: 20px;
+        }
+        .seat-hover .favourite li {
+            margin-top: 5px;
+        }
+    .seat-hover .mostplayed {
+        margin-top: 10px;
+        color: white;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+        #content .seat-hover .mostplayed ul {
+            list-style-type: none;
+            margin-left: 5px;
+            margin-top: 5px;
+        }
+            .seat-hover .mostplayed li {
+                line-height: 20px;
+                height: 20px;
+                margin-bottom: 5px;
+            }
+                .seat-hover .mostplayed li img {
+                    height: 20px;
+                    width: 20px;
+                    display: block;
+                    float: left;
+                    margin-right: 5px;
+                }
+    .seat-hover h3 {
+        font-size: 13px;
+    }

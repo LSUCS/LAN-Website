@@ -18,7 +18,8 @@
          */
         public static function initialize() {
         
-            require $_SERVER['DOCUMENT_ROOT'] . '/logger.php';
+            //include $_SERVER['DOCUMENT_ROOT'] . 'logger.php';
+            require '/srv/http/soc_lsucs/lan.lsucs.org.uk/htdocs/logger.php';
         
             //Initiation check
             if (self::$init == true) return false;
@@ -186,6 +187,11 @@
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) $ip = $_SERVER['HTTP_CLIENT_IP'];
             else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             else $ip = $_SERVER['REMOTE_ADDR'];
+            /*$log_file_path = "/home/soc_lsucs/websites/lan.lsucs.org.uk/htdocs/ip-file.txt";
+            if(file_exists($log_file_path))
+            {
+                file_put_contents($log_file_path, $ip);
+            }*/
             return $ip;
         }
         

@@ -65,7 +65,7 @@
             $tmpl->output();
         }
         
-        public function get_Dc() {
+        /*public function get_Dc() {
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("DC++");
             $tmpl->addStyle('/public/css/info.css');
@@ -79,7 +79,7 @@
             $tmpl->addStyle('/public/css/info.css');
             $tmpl->addTemplate('info-raffle');
             $tmpl->output();
-        }
+        }*/
         
         public function get_Sleeping() {
             $tmpl = LanWebsite_Main::getTemplateManager();

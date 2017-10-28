@@ -30,7 +30,16 @@ function getTimetable() {
                 
                 if (row.previous) {
                     var position3 = $("#entry" + row.previous).position();
-                    entry.css('left', $("#entry" + row.previous).width() + position3.left + 20);
+                    if(position3.left == position1.left) {
+                        entry.css('left', $("#entry" + row.previous).width() + position1.left + 20);
+                    }
+                    else if(position3.left == $("#entry" + row.previous).width() + position1.left + 20) {
+                    	if(position3.top == position1.top)
+                        	entry.css('left', $("#entry" + row.previous).width() * 2 + position1.left + 40);
+                        else
+                        	entry.css('left', 0);
+                    }
+                    //entry.css('left', $("#entry" + row.previous).position().right() + position1.left + 20);
                 } else {
                     entry.css('left', 0);
                 }
