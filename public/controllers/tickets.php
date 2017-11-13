@@ -53,14 +53,14 @@
 			$tmpl->output();
         }
         
-        public function get_Howmanylanticketshavesoldsofar() {
+        /*public function get_Howmanylanticketshavesoldsofar() {
             list($total) = LanWebsite_Main::getDb()->query("SELECT COUNT(*) FROM tickets WHERE lan_number = '%s'", LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_row();
             
             $tmpl = LanWebsite_Main::getTemplateManager();
 			$tmpl->setSubTitle("Total Tickets");
             $tmpl->addTemplate('tickets-total', $total);
 			$tmpl->output();
-        }
+        }*/
         
         public function post_Complete($inputs) {
             LanWebsite_Main::getAuth()->requireLogin();
@@ -72,24 +72,26 @@
         }
         
         public function post_Free($inputs) {
-            if(!LanWebsite_Main::getAuth()->isMember()) $this->errorJSON("Non-Member cannot claim member ticket");
-            $user = LanWebsite_Main::getUserManager()->getActiveUser();
-           	if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
-            
-            list($boughtTicket) = LanWebsite_Main::getDb()->query(
-                    "SELECT COUNT(*) FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'",
-                    LanWebsite_Main::getSettings()->getSetting("lan_number"),
-                    LanWebsite_Main::getAuth()->getActiveUserId())->fetch_row();
-                    
-            if($boughtTicket) {
-                $this->errorJSON("You have already claimed your free ticket");
-            }
-            
-            $this->checkAvailability();
-            
-            $this->issueReceipt(LanWebsite_Main::getAuth()->getActiveUserId(), 1, 0);
-            
-            echo json_encode(array("successful" => true));
+        	if(LanWebsite_Main::getSettings()->getSetting("member_ticket_free")) {
+	            if(!LanWebsite_Main::getAuth()->isMember()) $this->errorJSON("Non-Member cannot claim member ticket");
+	            $user = LanWebsite_Main::getUserManager()->getActiveUser();
+	           	if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
+	            
+	            list($boughtTicket) = LanWebsite_Main::getDb()->query(
+	                    "SELECT COUNT(*) FROM tickets WHERE lan_number = '%s' AND assigned_forum_id = '%s'",
+	                    LanWebsite_Main::getSettings()->getSetting("lan_number"),
+	                    LanWebsite_Main::getAuth()->getActiveUserId())->fetch_row();
+	                    
+	            if($boughtTicket) {
+	                $this->errorJSON("You have already claimed your free ticket");
+	            }
+	            
+	            $this->checkAvailability();
+	            
+	            $this->issueReceipt(LanWebsite_Main::getAuth()->getActiveUserId(), 1, 0);
+	            
+	            echo json_encode(array("successful" => true));
+        	}
         }
         
         public function post_Checkcomplete($inputs) {
