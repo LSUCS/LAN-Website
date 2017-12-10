@@ -91,10 +91,51 @@
     	echo '<div class="price" style="width: 100%; text-align: center;">Sorry, Non-Member tickets are not available for this event.</div>';
     }
 ?>
+
 <div style="clear: both;"></div>
+
+<h1>visitor tickets</h1>
+<p>
+    Visitor tickets are open to anyone - both members and non-members. A visitor ticket allows you entrance to LAN, but you don't get a seat, sockets, internet and a raffle ticket, and you may only take part in tournaments that don't require a PC.
+</p>
+<?php
+    if ($DataBag["visitor_exists"]) {
+?>
+<?php
+    if($DataBag["charity"]) {
+        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help choose <em>which</em> charity, please vote <a href="//lsucs.org.uk/threads/charity-vote-for-lan-44.9126/">Here</a></p>';
+    }
+?>
+<div class="outer-price-container">
+    <div class="price-container">
+        <div class="price">
+    <?php
+        if($DataBag["charity"]) {
+            echo '<div id="visitor-charity">Price: &pound;<input type="text" class="spinner-input" size="6" id="visitor-price" value="' . $DataBag["visitor_price"] . '" /> x&nbsp;</div>';
+        } else {
+            echo '<div id="visitor-price" value="' . money_format('%i', $DataBag["visitor_price"]) . '">Price: <span>&pound;' . money_format('%i', $DataBag["visitor_price"]) . '</span></div>';
+        }
+        if ($DataBag["visitor_sold_out"]) echo '<div class="soldout">Sold out</div>';
+        else if (!$DataBag["is_signed_in"]) echo '<div class="unavailable">You must be signed<br/> in to purchase a ticket</div>';
+        else if (!$DataBag["visitor_available"]) echo '<div class="unavailable">Available From<br/>' . $DataBag["visitor_date"] . "</div>";
+        else {
+            echo '<input type="text" class="spinner-input" id="visitor-amount" value="0" />';
+        }
+    ?>
+        </div>
+    </div>
+</div>
+<?php
+    } else {
+        echo '<div class="price" style="width: 100%; text-align: center;">Sorry, Visitor tickets are not available for this event.</div>';
+    }
+?>
+
+<div style="clear: both;"></div>
+
 <div id="checkout-container">
 <?php
-    if ($DataBag["is_signed_in"] && (($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"])))
+    if ($DataBag["is_signed_in"] && (($DataBag["visitor_exists"] && $DataBag["visitor_available"]) || ($DataBag["nonmember_exists"] && $DataBag["nonmember_available"]) || ($DataBag["member_available"] && $DataBag["is_member"])))
         echo '<hr /><button class="checkout-button">Checkout</button>';
 ?>
 </div>

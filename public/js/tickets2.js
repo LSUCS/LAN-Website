@@ -1,12 +1,13 @@
 $(document).ready(function() {
     mm = $('#member-price').val();
     nmm = $('#nonmember-price').val();
+    vis = $('#visitor-price').val();
     //Spinners
-    $("#nonmember-amount, #member-amount").spinner({ min: 0, max: 5 });
+    $("#visitor-amount, #nonmember-amount, #member-amount").spinner({ min: 0, max: 5 });
     $(".ui-spinner").live('click', function() {
         updatePaypalBox();
     });
-    $("#nonmember-amount, #member-amount").live('change', function() {
+    $("#visitor-amount, #nonmember-amount, #member-amount").live('change', function() {
         updatePaypalBox();
     });
     updatePaypalBox();
@@ -44,6 +45,12 @@ $(document).ready(function() {
             updatePaypalBox();
         });
     }
+    if($('#visitor-charity').length > 0) {
+        $('#visitor-price').spinner({ min: vis, numberFormat: "n", step: "0.50" });
+        $("#visitor-price").live('change', function() {
+            updatePaypalBox();
+        });
+    }
     
     //Free tickets
     if($("#claim-member-free").length > 0) {
@@ -71,7 +78,7 @@ function checkout() {
     Overlay.loadingOverlay();
     $.post(
         UrlBuilder.buildUrl(false, "tickets", "checkout"),
-        { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val(), member_price: $("#member-price").attr('value'), nonmember_price: $("#nonmember-price").attr('value') },
+        { member_amount: $("#member-amount").val(), nonmember_amount: $("#nonmember-amount").val(), visitor_amount: $("#visitor-amount").val(), member_price: $("#member-price").attr('value'), nonmember_price: $("#nonmember-price").attr('value'), visitor_price: $("#visitor-price").attr('value') },
         function (data) {
             if (data != null && data.error) {
                 Overlay.openOverlay(true, data.error);
@@ -96,6 +103,12 @@ function checkPrices() {
         $("#nonmember-price").val(nmm);
         return false;
     }
+
+    if(parseInt($("#visitor-price").attr('value')) < vis) {
+        Overlay.openOverlay(true, "Visitor price cannot be this low, min: £" + vis + '.00');
+        $("#visitor-price").val(vis);
+        return false;
+    }
     return true;
 }
 
@@ -117,6 +130,14 @@ function updatePaypalBox() {
         line += '<input class="paypalitem" type="hidden" name="amount_' + i + '" value="' + $("#nonmember-price").attr('value') + '">';
         line += '<input class="paypalitem" type="hidden" name="quantity_' + i + '" value="' + $("#nonmember-amount").val() + '">';
         line += '<input class="paypalitem" type="hidden" name="item_number_' + i + '" value="nonmember">';
+        $("#paypal-form").prepend(line);
+        i++;
+    }
+    if ($("#visitor-amount").val() > 0) {
+        var line = '<input class="paypalitem" type="hidden" name="item_name_' + i + '" value="LAN' + $("#lan span").html() + ' Visitor Ticket">';
+        line += '<input class="paypalitem" type="hidden" name="amount_' + i + '" value="' + $("#visitor-price").attr('value') + '">';
+        line += '<input class="paypalitem" type="hidden" name="quantity_' + i + '" value="' + $("#visitor-amount").val() + '">';
+        line += '<input class="paypalitem" type="hidden" name="item_number_' + i + '" value="visitor">';
         $("#paypal-form").prepend(line);
         i++;
     }

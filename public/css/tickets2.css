@@ -18,7 +18,7 @@
         display: inline-block;
     }
     .price-container .price, .price-container .unavailable, .price-container .soldout {
-        float: left;
+        margin-left: 3px;
     }
     .price {
         height: 38px;
@@ -26,7 +26,7 @@
         font-weight: bold;
         margin-right: 20px;
     }
-    .price-container #member-price, .price-container #nonmember-price {
+    .price-container #member-price, .price-container #nonmember-price, .price-container #visitor-price {
         
     }
         .price span {
@@ -50,7 +50,7 @@
         color: red;
         text-align: center;
     }
-    #nonmember-amount, #member-amount {
+    #visitor-amount, #nonmember-amount, #member-amount {
         width: 45px;
         margin-right: 20px;
     }

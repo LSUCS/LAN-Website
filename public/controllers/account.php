@@ -73,9 +73,10 @@ class Account_Controller extends LanWebsite_Controller {
         if ($this->isInvalid('availability') && $inputs["collection"] == 1) $this->errorJSON("Please specify a time you are available");
         if ($inputs["collection"] == 0 && $inputs["dropoff"] == 0) $this->errorJSON("You must select at least dropoff or collection, if not both");
         
+        //TODO: Visitor Check
         //Check for ticket
-        $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), $lan)->fetch_assoc();
-        if (!$ticket) $this->errorJSON("You may only request the LAN Van if you have a ticket assigned to your account");
+        $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s' AND member_ticket <> 2", $user->getUserId(), $lan)->fetch_assoc();
+        if (!$ticket) $this->errorJSON("You may only request the LAN Van if you have a non-Visitor ticket assigned to your account");
         
         //Check if already exists
         $van = LanWebsite_Main::getDb()->query("SELECT * FROM `lan_van` WHERE user_id = '%s' AND lan = '%s'", $user->getUserId(), $lan)->fetch_assoc();
@@ -231,7 +232,7 @@ class Account_Controller extends LanWebsite_Controller {
         $assignID = "";
         $prevTicket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), $unclaimed_ticket["lan_number"])->fetch_assoc();
         //If purchasing member ticket and user has non-member assigned, unassign that one and assign the new one
-        if ($prevTicket && $user->isMember() && $prevTicket["member_ticket"] == 0 && $unclaimed_ticket["member_ticket"] == 1) {
+        if ($prevTicket && $user->isMember() && $prevTicket["member_ticket"] != 1 && $unclaimed_ticket["member_ticket"] == 1) {
             LanWebsite_Main::getDb()->query("UPDATE `tickets` SET assigned_forum_id = '' WHERE ticket_id = '%s'", $prevTicket["ticket_id"]);
             $assignID = $user->getUserId();
         }
@@ -283,13 +284,18 @@ class Account_Controller extends LanWebsite_Controller {
         $res = $db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND (purchased_forum_id = '%s' OR assigned_forum_id = '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $user->getUserId(), $user->getUserId());
         $tickets = array();
         $userTicket = false;
+        $visitor = false;
         while ($ticket = $res->fetch_assoc()) {
             $purchaser = LanWebsite_Main::getUserManager()->getUserById($ticket["purchased_forum_id"]);
             $ticket["purchased_forum_name"] = $purchaser->getUsername();
             if ($ticket["assigned_forum_id"] != null && $ticket["assigned_forum_id"] != 0) {
                 $assigned  = LanWebsite_Main::getUserManager()->getUserById($ticket["assigned_forum_id"]);
                 $ticket["assigned_forum_name"] = $assigned->getUsername();
-                if($ticket["assigned_forum_id"] == $user->getUserId()) $userTicket = $ticket;
+                if($ticket["assigned_forum_id"] == $user->getUserId()) {
+                    $userTicket = $ticket;
+                    if($ticket["member_ticket"] == 2)
+                        $visitor = true;
+                }
             } else $ticket["assigned_forum_name"] = "";
             $tickets[] = $ticket;
         }
@@ -300,8 +306,8 @@ class Account_Controller extends LanWebsite_Controller {
         if(!LanWebsite_Main::getSettings()->getSetting("enable_seat_bookings")) {
             $groupBookings["error"] = "Group seat booking disabled";
         } else {
-            if($userTicket === false) {
-                $groupBookings["error"] = "You must have purchased a LAN ticket to be able to arrange group seating";
+            if($userTicket === false || $visitor == true) {
+                $groupBookings["error"] = "You must have purchased a non-Visitor LAN ticket to be able to arrange group seating";
             } else {
                 if(!empty($userTicket["seatbooking_group"])) {
                     $group = $db->query("SELECT ID, seatPreference, groupOwner FROM seatbooking_groups WHERE ID = '%s'", $userTicket["seatbooking_group"]);
@@ -389,7 +395,7 @@ class Account_Controller extends LanWebsite_Controller {
         
         echo true;
     }
-    
+
     public function post_Joingroup($inputs) {
         LanWebsite_Main::getAuth()->requireLogin();
         

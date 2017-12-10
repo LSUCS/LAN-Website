@@ -28,6 +28,7 @@
 			while ($row = $res->fetch_assoc()) {
 				$data["unpaid"] += $row["price"];
 			}
+			$data["unpaid"] = number_format($data["unpaid"], 2);
 		
 			//Output
             $tmpl = LanWebsite_Main::getTemplateManager();
@@ -89,7 +90,7 @@
 			}
 
 			//Return
-			echo json_encode(array("cost" => $totalCost, "order_by" => date("l gA", $time)));
+			echo json_encode(array("cost" => number_format($totalCost, 2), "order_by" => date("l gA", $time)));
 		
 		}
 	

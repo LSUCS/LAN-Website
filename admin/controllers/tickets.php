@@ -67,14 +67,14 @@
             while ($row = $res->fetch_assoc()) {
                 $purchased = LanWebsite_Main::getUserManager()->getUserById($row["purchased_forum_id"]);
                 $assigned = LanWebsite_Main::getUserManager()->getUserById($row["assigned_forum_id"]);
-                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":"Non-Member", '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], (!$assigned?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
+                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":($row["member_ticket"] == 0?"Non-Member":"Visitor"), '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], (!$assigned?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
             }
             
             //Get unclaimed
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `unclaimed_tickets` WHERE lan_number = '%s'", $lan);
             $unclaimed = array();
             while ($row = $res->fetch_assoc()) {
-                $unclaimed[] = array($row["unclaimed_id"], $row["member_ticket"] == 1?"Member":"Non-Member", $row["name"], $row["email"]);
+                $unclaimed[] = array($row["unclaimed_id"], $row["member_ticket"] == 1?"Member":($row["member_ticket"] == 0?"Non-Member":"Visitor"), $row["name"], $row["email"]);
             }
             
             //Get raffle
@@ -157,7 +157,7 @@
             $assignID = "";
             $prevTicket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), $lan)->fetch_assoc();
             //If purchasing member ticket and user has non-member assigned, unassign that one and assign the new one
-            if ($prevTicket && $member && $prevTicket["member_ticket"] == 0 && $unclaimed_ticket["member_ticket"] == 1) {
+            if ($prevTicket && $member && $prevTicket["member_ticket"] != 1 && $unclaimed_ticket["member_ticket"] == 1) {
                 LanWebsite_Main::getDb()->query("UPDATE `tickets` SET assigned_forum_id = '' WHERE ticket_id = '%s'", $prevTicket["ticket_id"]);
                 $assignID = $user->getUserId();
             }

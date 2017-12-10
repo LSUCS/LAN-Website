@@ -6,7 +6,7 @@
             switch ($action) {
                 case "complete": return array("custom" => "notnull"); break;
                 case "checkcomplete": return array("pending_id" => "notnull", "attempts" => "notnull"); break;
-                case "checkout": return array("member_amount" => array("notnull", "int"), "nonmember_amount" => array("notnull", "int"), "member_price" => "notnull", "nonmember_price" => "notnull"); break;
+                case "checkout": return array("member_amount" => array("notnull", "int"), "nonmember_amount" => array("notnull", "int"), "visitor_amount" => array("notnull", "int"), "member_price" => "notnull", "nonmember_price" => "notnull", "visitor_price" => "notnull"); break;
             }
         }
         
@@ -30,6 +30,12 @@
             $data["nonmember_available"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_available");
             $data["nonmember_price"] = LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price");
             $data["nonmember_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_available_date")));
+            //Visitor Tickets
+            $data["visitor_exists"] = LanWebsite_Main::getSettings()->getSetting("visitor_ticket_exists");
+            $data["visitor_sold_out"] = LanWebsite_Main::getSettings()->getSetting("visitor_ticket_sold_out");
+            $data["visitor_available"] = LanWebsite_Main::getSettings()->getSetting("visitor_ticket_available");
+            $data["visitor_price"] = LanWebsite_Main::getSettings()->getSetting("visitor_ticket_price");
+            $data["visitor_date"] = date("D jS F", strtotime(LanWebsite_Main::getSettings()->getSetting("visitor_ticket_available_date")));
             //Monies
             $data["paypal_email"] = LanWebsite_Main::getSettings()->getSetting("paypal_email");
             $data["paypal_return_url"] = LanWebsite_Main::getSettings()->getSetting("paypal_return_url");
@@ -88,7 +94,7 @@
 	            
 	            $this->checkAvailability();
 	            
-	            $this->issueReceipt(LanWebsite_Main::getAuth()->getActiveUserId(), 1, 0);
+	            $this->issueReceipt(LanWebsite_Main::getAuth()->getActiveUserId(), 1, 0, 0);
 	            
 	            echo json_encode(array("successful" => true));
         	}
@@ -122,7 +128,7 @@
             $user = LanWebsite_Main::getUserManager()->getActiveUser();
             
             //Validate
-            if(($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || $inputs["member_amount"] + $inputs["nonmember_amount"] == 0) $this->errorJSON("You must select at least one product");
+            if(($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || ($inputs["visitor_amount"] != "" && !is_numeric($inputs["visitor_amount"])) || $inputs["member_amount"] + $inputs["nonmember_amount"] + $inputs["visitor_amount"] == 0) $this->errorJSON("You must select at least one product");
             if($inputs["member_amount"] > 0 && !$user->isMember()) $this->errorJSON("Non-members cannot buy member tickets");
             if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
             
@@ -131,19 +137,20 @@
                 if($inputs["member_price"] < LanWebsite_Main::getSettings()->getSetting("member_ticket_price")) $this->errorJSON("Invalid Member Ticket Price");
             }
             if($inputs["nonmember_price"] < LanWebsite_Main::getSettings()->getSetting("nonmember_ticket_price")) $this->errorJSON("Invalid Non-Member Ticket Price");
+            if($inputs["visitor_price"] < LanWebsite_Main::getSettings()->getSetting("visitor_ticket_price")) $this->errorJSON("Invalid Visitor Ticket Price");
 
-            $this->checkAvailability($inputs["member_amount"], $inputs["nonmember_amount"]);
+            $this->checkAvailability($inputs["member_amount"], $inputs["nonmember_amount"], $inputs["visitor_amount"]);
                 
             //Calculate total
-            $total = $inputs["member_amount"] * $inputs["member_price"] + $inputs["nonmember_amount"] * $inputs["nonmember_price"];
+            $total = $inputs["member_amount"] * $inputs["member_price"] + $inputs["nonmember_amount"] * $inputs["nonmember_price"] + $inputs["visitor_amount"] * $inputs["visitor_price"];
             
             //Insert and return purchase id
-            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s')", $inputs["member_amount"], $inputs["nonmember_amount"], $user->getUserId(), $total);
+            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, num_visitor_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["member_amount"], $inputs["nonmember_amount"], $inputs["visitor_amount"], $user->getUserId(), $total);
             echo json_encode(array("pending_id" => LanWebsite_Main::getDb()->getLink()->insert_id));
             
         }
         
-        private function checkAvailability($memberTickets = 1, $nonMemberTickets = 0) {
+        private function checkAvailability($memberTickets = 1, $nonMemberTickets = 0, $visitorTickets = 0) {
             /********************/
             // CHECK AVAILABILITY
             /********************/
@@ -180,12 +187,13 @@
             }
         }
         
-        private function issueReceipt($userID, $memberAmount, $nonmemberAmount) {
+        private function issueReceipt($userID, $memberAmount, $nonmemberAmount, $visitorAmount = 0) {
             $lanuser = lanWebsite_Main::getUserManager()->getUserById($userID);
             $fields = array("api_key" => LanWebsite_Main::getSettings()->getSetting("api_key"),
                             "lan" => LanWebsite_Main::getSettings()->getSetting("lan_number"),
                             "member_amount" => $memberAmount,
                             "nonmember_amount" => $nonmemberAmount,
+                            "visitor_amount" => $visitorAmount,
                             "name" => $lanuser->getFullName(),
                             "email" => $lanuser->getEmail(),
                             "customer_forum_name" => $lanuser->getUsername(),
@@ -263,13 +271,26 @@
                 //Calculate member amounts
                 $memberAmount = 0;
                 $nonmemberAmount = 0;
-                if($_POST["num_cart_items"] == 2) {
+                $visitorAmount = 0;
+                if($_POST["num_cart_items"] == 3) {
                     $memberAmount = $_POST["quantity1"];
                     $nonmemberAmount = $_POST["quantity2"];
+                    $visitorAmount = $_POST["quantity3"];
+                } else if($_POST["num_cart_items"] == 2) {
+                    if($_POST["item_number1"] == "member")
+                        $memberAmount = $_POST["quantity1"];
+                    else if($_POST["item_number1"] == "nonmember")
+                        $nonmemberAmount = $_POST["quantity1"];
+                    if($_POST["item_number2"] == "nonmember")
+                        $nonmemberAmount = $_POST["quantity2"];
+                    else
+                        $visitorAmount = $_POST["quantity2"];
                 } else if($_POST["item_number1"] == "member") {
                     $memberAmount = $_POST["quantity1"];
-                } else {
+                } else if($_POST["item_number1"] == "nonmember") {
                     $nonmemberAmount = $_POST["quantity1"];
+                } else {
+                    $visitorAmount = $_POST["quantity1"];
                 }
                 
                 //Check products match
@@ -279,8 +300,11 @@
                 if($pending_purchase && $pending_purchase["num_nonmember_tickets"] != $nonmemberAmount) {
                     $errmsg .= "Number of non-member tickets does not match\n";
                 }
+                if($pending_purchase && $pending_purchase["num_visitor_tickets"] != $visitorAmount) {
+                    $errmsg .= "Number of visitor tickets does not match\n";
+                }
                 
-                //Check ifnon-member buying member tickets
+                //Check if non-member buying member tickets
                 $user = LanWebsite_Main::getUserManager()->getUserById($pending_purchase["user_id"]);
                 $group = LanWebsite_Main::getSettings()->getSetting("xenforo_member_group_id");
                 if(!$user->isMember() && $memberAmount > 0) {
@@ -316,7 +340,7 @@
                 }
                 
                 if(empty($errmsg)) {
-                    $this->issueReceipt($pending_purchase["user_id"], $memberAmount, $nonmemberAmount);
+                    $this->issueReceipt($pending_purchase["user_id"], $memberAmount, $nonmemberAmount, $visitorAmount);
                 }
                 
                 

@@ -7,7 +7,7 @@
                 case "updategameservers": return array("data" => "notnull"); break;
                 case "lanauth": return array("username" => "notnull", "password" => "notnull", "seat" => "notnull"); break;
                 case "deletetickets": return array("purchases" => "notnull"); break;
-                case "issuetickets": return array("purchases" => "notnull", "lan" => array("notnull", "int"), "member_tickets" => "notnull", "non_member_tickets" => "notnull", "forum_name" => "notnull", "email" => array("email", "notnull"), "name" => "notnull"); break;
+                case "issuetickets": return array("purchases" => "notnull", "lan" => array("notnull", "int"), "member_tickets" => "notnull", "non_member_tickets" => "notnull", "visitor_tickets" => "notnull", "forum_name" => "notnull", "email" => array("email", "notnull"), "name" => "notnull"); break;
             }
         }
     
@@ -64,10 +64,10 @@
             
 
             //Check seat
-            $seats = explode("\n", file_get_contents("data/seats.txt"));
-            if ($inputs["seat"] == "" || !in_array($inputs["seat"], $seats)) $this->errorJSON("Invalid seat");
+            /*$seats = explode("\n", file_get_contents("data/seats.txt"));
+            if ($inputs["seat"] == "" || !in_array($inputs["seat"], $seats) || $inputs["seat"] != "hearthstone") $this->errorJSON("Invalid seat");
             $occupied = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE seat = '%s' AND lan_number = '%s'", $inputs["seat"], $lan)->fetch_assoc();
-            if ($occupied && $occupied["assigned_forum_id"] != $user->getUserId()) $this->errorJSON("That seat is already occupied");
+            if ($occupied && $occupied["assigned_forum_id"] != $user->getUserId()) $this->errorJSON("That seat is already occupied");*/
 
             
             //Update ticket with seat
@@ -116,12 +116,13 @@
                 $keys = array();
                 foreach ($purchases as $purchase) {
                 
-                    $memberTicket = true;
-                    if ($purchase["type"] == "non_member") $memberTicket = false;
+                    $memberTicket = 1;
+                    if ($purchase["type"] == "non_member") $memberTicket = 0;
+                    else if ($purchase["type"] == "visitor") $memberTicket = 2;
                 
                     //Generate unique claim key
                     $key = substr(strtolower(md5(uniqid(rand(), true))), 0, 12);
-                    $keys[] = array("type" => ($memberTicket?"member":"non_member"), "key" => $key);
+                    $keys[] = array("type" => ($memberTicket == 1?"member":($memberTicket == 0?"non_member":"visitor")), "key" => $key);
                     
                     //Insert
                     LanWebsite_Main::getDb()->query("INSERT INTO `unclaimed_tickets` (`purchase_id`, `lan_number`, `name`, `email`, `key`, `member_ticket`) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $purchase["purchase_id"], $inputs["lan"], $inputs["name"], $inputs["email"], $key, $memberTicket);
@@ -140,14 +141,15 @@
                 
                 foreach ($purchases as $purchase) {
                 
-                    $memberTicket = true;
-                    if ($purchase["type"] == "non_member") $memberTicket = false;
+                    $memberTicket = 1;
+                    if ($purchase["type"] == "non_member") $memberTicket = 0;
+                    else if ($purchase["type"] == "visitor") $memberTicket = 2;
             
                     //Check if user is member
                     $member = $customer->isMember();
 
                     //If user is not a member and they have bought a member ticket and supplied a forum name, error
-                    if ($memberTicket && !$member) {
+                    if ($memberTicket == 1 && !$member) {
                         $this->errorJSON("Member tickets cannot be issued to non-member forum accounts");
                     }
                     
@@ -155,7 +157,7 @@
                     $assignID = "";
                     $prevTicket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $customer->getUserId(), $inputs["lan"])->fetch_assoc();
                     //If purchasing member ticket and user has non-member assigned, unassign that one and assign the new one
-                    if ($prevTicket && $member && $prevTicket["member_ticket"] == 0 && $memberTicket) {
+                    if ($prevTicket && $member && $prevTicket["member_ticket"] != 1 && $memberTicket == 1) {
                         LanWebsite_Main::getDb()->query("UPDATE `tickets` SET assigned_forum_id = '' WHERE ticket_id = '%s'", $prevTicket["ticket_id"]);
                         $assignID = $customer->getUserId();
                     }

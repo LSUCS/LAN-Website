@@ -141,8 +141,7 @@ $(document).ready(function() {
 
 function saveVanDetails() {
     var string = "By clicking continue you are accepting that LSU Computer Society is not responsible for the welfare of any equipment collected in the LAN Van and whilst the utmost care will be taken we can offer no gaurantee that " +
-                "that items will not get damaged and are not liable to cover any costs if damage were to occur. You are also accepting that if you are a non-member you will be charged the sum of £2.50 for each collection and drop-off " +
-                "(total of £5 per LAN) to be paid to us when we collect your equipment. We reserve the right to reject any equipment that we feel is unfit for travel (including incomplete/missing computer cases and unprotected fragile equipment). " +
+                "that items will not get damaged and are not liable to cover any costs if damage were to occur. We reserve the right to reject any equipment that we feel is unfit for travel (including incomplete/missing computer cases and unprotected fragile equipment). " +
                 "Only two pieces of equipment may be transported per person in the LAN Van.<br /><button id='accept-van'>Continue</button>";
     Overlay.openOverlay(true, string);
     $("#accept-van").button();
