@@ -22,7 +22,28 @@ function getTimetable() {
                 
                 //Set entry properties
                 var entry = $("#entry" + row.timetable_id);
-                entry.addClass(row.colour);
+				switch(row.colour) {
+					case "organisational":
+						entry.addClass("orange");
+						break;
+						
+					case "food":
+						entry.addClass("green");
+						break;
+						
+					case "other":
+						entry.addClass("blue");
+						break;
+						
+					case "tournament":
+						entry.addClass("purple");
+						break;
+						
+					case "langames":
+						entry.addClass("mustard");
+						break;
+				}
+                //entry.addClass(row.colour);
                 var position1 = $("#" + row.day + ' .time-row[value="' + row.start_time + '"]').position();
                 var position2 = $("#" + row.day + ' .time-row[value="' + row.end_time + '"]').position();
                 entry.css('top', position1.top);

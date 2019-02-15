@@ -59,7 +59,7 @@
         do {
             $status_cme = curl_multi_exec($mh, $running_handles);
         } while ($running_handles > 0);
-        
+
         echo "Retrieving data...\n";
         
         //Retrieve data
@@ -68,6 +68,7 @@
             $error = curl_error($handle);
             if (empty($error)) {
                 $data = curl_multi_getcontent($handle);
+                //print_r($data);
                 if (strpos($data, '{"seat"') !== FALSE) {
                     $cache[] = json_decode(substr($data, strpos($data, '{"seat"')), true);
                 }

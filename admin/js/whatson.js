@@ -15,7 +15,7 @@ $(document).ready(function() {
     
     $("#add-button").click(function() {
         $.post(
-            UrlBuilder.buildUrl(true, "whatson", "addentry"),
+            UrlBuilder.buildUrl(true, "whatson", "Addentry"),
             { day: $("#entry-day option:selected").val(),
               start_time: $("#entry-start-time option:selected").val(),
               end_time: $("#entry-end-time option:selected").val(),
@@ -34,6 +34,7 @@ $(document).ready(function() {
                 loadEntries();
             },
             'json');
+			
     });
     
     $("#delete-entry").click(function() {

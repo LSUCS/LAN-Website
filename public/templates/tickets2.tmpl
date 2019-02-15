@@ -1,6 +1,6 @@
 <h1>member tickets</h1>
 <p>
-    Member prices are available to all student and associate members of LSUCS. If you are a member and you are unable to purchase this option then you need to make sure you are in the 'LSUCS Members' group on the forums <a href="https://lsucs.org.uk/threads/how-to-register-on-the-forums.11860/">here</a>.
+    Member prices are available to all student and associate members of LSUVGS. If you are a member and you are unable to purchase this option then you need to make sure you are in the 'LSUVGS Members' group on the forums <a href="https://lsuvgs.org.uk/threads/how-to-register-a-full-member-can-claim-a-free-freshers-lan-ticket.12307/">here</a>.
 </p>
 <p>
     If you purchase more than one ticket (or if you are a member and have purchased non-member ticket(s) for others) you can allocate spares to the accounts of other people. This can be done through your <a href="index.php?page=account">Account Details</a>.
@@ -8,9 +8,9 @@
 </p>
 <?php
     if($DataBag["charity"]) {
-        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help us choose <em>which</em> charity, please post in the forums <a href="//lsucs.org.uk/forums/charity-lan-62.230/">Here</a></p>';
+        echo '<p id="charity">This LAN is Charity LAN! You can choose to pay more for your ticket if you wish - everything extra you pay goes straight to charity.</p>';
     } elseif($DataBag["member_free"]) {
-        echo '<p id="member_free">This LAN is completely <strong>Free</strong> for all Members of LSUCS. As there is no realistic limit on capacity, there is no need to place a deposit either! As a result of this however, free tickets are limited to one per account.</p>';
+        echo '<p id="member_free">This LAN is completely <strong>Free</strong> for all Members of LSUVGS. As there is no realistic limit on capacity, there is no need to place a deposit either! As a result of this however, free tickets are limited to one per account.</p>';
     }
 ?>
 <div class="outer-price-container">
@@ -53,7 +53,7 @@
 
 <h1>non-member tickets</h1>
 <p>
-    Non-Member tickets are open to anyone - you do not need to have any affiliation to LSUCS to attend our LAN parties. Members may still purchase non-member tickets for other people.
+    Non-Member tickets are open to anyone - you do not need to have any affiliation to LSUVGS to attend our LAN parties. Members may still purchase non-member tickets for other people.
 </p>
 <?php
     if ($DataBag["nonmember_exists"]) {
@@ -64,7 +64,7 @@
 </p>
 <?php
     if($DataBag["charity"]) {
-        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help choose <em>which</em> charity, please vote <a href="//lsucs.org.uk/threads/charity-vote-for-lan-44.9126/">Here</a></p>';
+        echo '<p id="charity">This LAN is Charity LAN! You can choose to pay more for your ticket if you wish - everything extra you pay goes straight to charity.</p>';
     }
 ?>
 <div class="outer-price-container">
@@ -103,7 +103,7 @@
 ?>
 <?php
     if($DataBag["charity"]) {
-        echo '<p id="charity">This LAN is Charity LAN! - The price of your ticket will be donated to charity. You can choose to pay more for your ticket if you wish. To help choose <em>which</em> charity, please vote <a href="//lsucs.org.uk/threads/charity-vote-for-lan-44.9126/">Here</a></p>';
+        echo '<p id="charity">This LAN is Charity LAN! You can choose to pay more for your ticket if you wish - everything extra you pay goes straight to charity.</p>';
     }
 ?>
 <div class="outer-price-container">
