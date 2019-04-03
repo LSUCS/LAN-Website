@@ -96,6 +96,11 @@
         background: rgb(138, 90, 214);
         background: rgba(138, 90, 214, 0.8);
     }
+	.mustard {
+        border: 1px solid #dbb80d;
+        background: rgb(219, 184, 13);
+        background: rgba(219, 184, 13, 0.8);
+    }
 
 #time {
 	height: 40px;

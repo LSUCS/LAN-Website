@@ -64,7 +64,7 @@
             
             //Check cache
             $cachekey = md5(LanWebsite_Main::getSettings()->getSetting("api_key") . $method . serialize($params));
-            $cache_result = LanWebsite_Cache::get("authapi", $cachekey, $result);
+            //$cache_result = LanWebsite_Cache::get("authapi", $cachekey, $result);
             
             // Disable cache
             //if (!$cache_result) {
@@ -94,7 +94,7 @@
                 $result = json_decode($response, true);
 
                 if(isset($result['error'])) throw new Exception('Fatal Auth Error: ' . $result['error']); 
-                LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
+                //LanWebsite_Cache::set("authapi", $cachekey, $result, 30000);
             }
             return $result;
         }

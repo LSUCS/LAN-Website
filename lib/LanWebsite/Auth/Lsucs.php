@@ -18,6 +18,10 @@
 				//If invalid session or session has expired, clear cookie and set active user to null
 				if (!$session || $session["expires"] < time()) {
 					setcookie('lan_session', '', time() - 3600, '/', '.lsucs.org.uk');
+
+					//Create a copy of the cookie for the new LSUVGS url
+					setcookie('lan_session', '', time() - 3600, '/', '.lsuvgs.org.uk');
+
 					$this->activeId = null;
 				}
 				//Else load user object for session
@@ -45,6 +49,10 @@
             $expires = time()+60*60*24*30;
 			LanWebsite_Main::getDb()->query("INSERT INTO `sessions` (session_id, user_id, expires) VALUES ('%s', '%s', '%s')", $this->sessionId, $user->getUserId(), $expires);
             setcookie('lan_session', $this->sessionId, $expires, '/', ".lsucs.org.uk");
+
+			//Creates a second cookie for lsuvgs urls
+			setcookie('lan_session', $this->sessionId, $expires, '/', ".lsuvgs.org.uk");
+
 			
 			return true;
 		}

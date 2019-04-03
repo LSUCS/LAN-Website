@@ -1,0 +1,94 @@
+#map3 {
+    height: 1200px;
+    width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+#key {
+		position: relative;
+        height: 250px;
+        width: 200px;
+        right: 150px;
+        top: -10px;
+    }
+    #key .label {
+        width: 150px;
+        font-weight: bold;
+    }
+    #key .ladies {
+        top: 25px;
+    }
+    #key .gents {
+        top: 25px;
+        left: 23px;
+    }
+        #key .gents .label {
+            top: 10px;
+            left: 30px;
+        }
+    #key .projector-vertical {
+        top: 75px;
+        left: 6px;
+    }
+        #key .projector-vertical .label {
+            top: 18px;
+            left: 47px;
+        }
+    #key .food {
+        top: 140px;
+        left: 5px;
+    }
+    #key .food .label {
+        top: 25px;
+        left: 48px;
+    }
+    #key .door-right {
+        top: 220px;
+        left: 3px;
+    }
+    #key .door-right .label {
+        top: 17px;
+        left: 48px;
+    }
+    #key .seat {
+        top: 175px;
+        left: 180px;
+    }
+    #key .seat:hover {
+        box-shadow: none;
+        cursor: default;
+    }
+    #key .seat .label {
+        left: 40px;
+        top: 2px;
+    }
+    #key .occupied-seat {
+        top: 105px;
+    }
+    #key .ingame-seat {
+        top: 140px;
+    }
+    #key .committee-seat {
+        top: 30px;
+    }
+    #key .committee-seat .label {
+        top: 4px;
+    }
+    #key .welcome-seat {
+        top: 70px;
+    }
+    #key .welcome-seat .label {
+        top: 2px;
+    }
+    #key .veteran-seat {
+        top: 210px;
+        display: none;
+    }
+    #key .column {
+        top: 210px;
+        left: 180px;
+    }
+    #key .column .label {
+        left: 42px;
+        top: 4px;
+    }

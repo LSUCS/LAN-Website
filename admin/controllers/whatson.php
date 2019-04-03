@@ -1,5 +1,5 @@
 <?php
-
+	//ini_set('display_errors', 'On');
     class Whatson_Controller extends LanWebsite_Controller {
         
         public function getInputFilters($action) {
@@ -42,13 +42,16 @@
         
         public function post_Addentry($inputs) {
             //Validation
+				
             if (!in_array($inputs["day"], array("friday", "saturday", "sunday"))) $this->errorJSON("Invalid day");
             if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['start_time'])) $this->errorJSON("Invalid start time" . $inputs['start_time']);
             if (!preg_match('/^[0-2][0-9]:[0-5][0-9]$/', $inputs['end_time'])) $this->errorJSON("Invalid end time");
             if (str_replace(":", "", $inputs["start_time"]) >= str_replace(":", "", $inputs["end_time"])) $this->errorJSON("Start time cannot be greater than or the same as end time");
             if ($inputs["title"] == "") $this->errorJSON("Invalid title");
-            if (!in_array($inputs["colour"], array("orange", "blue", "green", "purple"))) $this->errorJSON("Invalid colour");
+			if (!in_array($inputs["colour"], array("organisational", "food", "other", "tournament", "langames"))) $this->errorJSON("Invalid event type");
             
+			
+			
             //Insert
             echo LanWebsite_Main::getDb()->query("INSERT INTO `timetable` (day, start_time, end_time, title, url, colour) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')", $inputs["day"], $inputs["start_time"], $inputs["end_time"], $inputs["title"], $inputs["url"], $inputs["colour"]);
         }
