@@ -128,7 +128,7 @@
             $user = LanWebsite_Main::getUserManager()->getActiveUser();
             
             //Validate
-            if(($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || ($inputs["visitor_amount"] != "" && !is_numeric($inputs["visitor_amount"])) || $inputs["member_amount"] + $inputs["nonmember_amount"] + $inputs["visitor_amount"] == 0) $this->errorJSON("You must select at least one product");
+            if(($inputs["member_amount"] != "" && !is_numeric($inputs["member_amount"])) || ($inputs["nonmember_amount"] != "" && !is_numeric($inputs["nonmember_amount"])) || ($inputs["visitor_amount"] != "" && !is_numeric($inputs["visitor_amount"])) || (int) $inputs["member_amount"] + (int) $inputs["nonmember_amount"] + (int) $inputs["visitor_amount"] == 0) $this->errorJSON("You must select at least one product");
             if($inputs["member_amount"] > 0 && !$user->isMember()) $this->errorJSON("Non-members cannot buy member tickets");
             if($user->getFullName() == "") $this->errorJSON('You need to fill in your real name in your <a href="index.php?page=account">Account Details</a> before you can buy a ticket');
             
@@ -142,10 +142,10 @@
             $this->checkAvailability($inputs["member_amount"], $inputs["nonmember_amount"], $inputs["visitor_amount"]);
                 
             //Calculate total
-            $total = $inputs["member_amount"] * $inputs["member_price"] + $inputs["nonmember_amount"] * $inputs["nonmember_price"] + $inputs["visitor_amount"] * $inputs["visitor_price"];
+            $total = (int) $inputs["member_amount"] * $inputs["member_price"] + (int) $inputs["nonmember_amount"] * $inputs["nonmember_price"] + (int) $inputs["visitor_amount"] * $inputs["visitor_price"];
             
             //Insert and return purchase id
-            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, num_visitor_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s', '%s')", $inputs["member_amount"], $inputs["nonmember_amount"], $inputs["visitor_amount"], $user->getUserId(), $total);
+            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, num_visitor_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s', '%s')", (empty($inputs["member_amount"]) ? 0 : $inputs["member_amount"]) , $inputs["nonmember_amount"], $inputs["visitor_amount"], $user->getUserId(), $total);
             echo json_encode(array("pending_id" => LanWebsite_Main::getDb()->getLink()->insert_id));
             
         }
@@ -176,7 +176,7 @@
             }
             
             //If no tickets available, set tickets available to false and abort
-            if($result["availability"] < $memberTickets + $nonMemberTickets) {
+            if((int) $result["availability"] < (int) $memberTickets + (int) $nonMemberTickets) {
                 if($result["availability"] == 0) {
                     LanWebsite_Main::getSettings()->changeSetting("member_ticket_available", false);
                     LanWebsite_Main::getSettings()->changeSetting("nonmember_ticket_available", false);
