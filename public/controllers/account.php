@@ -7,7 +7,7 @@ class Account_Controller extends LanWebsite_Controller {
             case "login": return array("username" => ""); break;
             case "authlogin": return array("username" => "notnull", "password" => "notnull"); break;
             case "editvandetails": return array("phone" => array("notnull", "phone"), "address" => "notnull", "postcode" => "notnull", "collection" => "", "dropoff" => "", "availability" => "notnull"); break;
-            case "editgamedetails": return array("steam" => "", "currently_playing" => "", "favourite_games" => "post"); break;
+            case "editgamedetails": return array("steam" => "", "currently_playing" => ""); break;
             case "suggestgame": return array("term" => "notnull"); break;
             case "assignticket": return array("name" => "notnull", "ticket_id" => "notnull"); break;
             case "autocomplete": return array("term" => "notnull"); break;
@@ -111,7 +111,6 @@ class Account_Controller extends LanWebsite_Controller {
         $user = LanWebsite_Main::getUserManager()->getActiveUser();
         $user->setSteam($inputs["steam"]);
         $user->setCurrentlyPlaying($inputs["currently_playing"]);
-        $user->setFavouriteGames($inputs["favourite_games"]);
         LanWebsite_Main::getUserManager()->saveUser($user);
         
         echo true;
@@ -268,17 +267,14 @@ class Account_Controller extends LanWebsite_Controller {
     }
     
     public function get_Getdetails() {
-    
         LanWebsite_Main::getAuth()->requireLogin();
         $user = LanWebsite_Main::getUserManager()->getActiveUser();
         $db = LanWebsite_Main::getDb();
-        
-        $return = array("user_id" => $user->getUserId(), "real_name" => $user->getFullName(), "emergency_contact_name" => $user->getEmergencyContact(), "emergency_contact_number" => $user->getEmergencyNumber(), "steam_name" => $user->getSteam(), "currently_playing" => $user->getCurrentlyPlaying(), "games" => $user->getFavouriteGames());
-
+        $response = array("user_id" => $user->getUserId(), "real_name" => $user->getFullName(), "emergency_contact_name" => $user->getEmergencyContact(), "emergency_contact_number" => $user->getEmergencyNumber(), "steam_name" => $user->getSteam(), "currently_playing" => $user->getCurrentlyPlaying());
         //Get van
         $van = LanWebsite_Main::getDb()->query("SELECT * FROM `lan_van` WHERE user_id = '%s' AND lan = '%s'", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
-        if ($van) $return["van"] = $van;
-        $return["van_enabled"] = !LanWebsite_Main::getSettings()->getSetting("disable_lan_van");
+        if ($van) $response["van"] = $van;
+        $response["van_enabled"] = !LanWebsite_Main::getSettings()->getSetting("disable_lan_van");
         
         //Tickets (and some group booking lookahead code)
         $res = $db->query("SELECT * FROM `tickets` WHERE lan_number = '%s' AND (purchased_forum_id = '%s' OR assigned_forum_id = '%s')", LanWebsite_Main::getSettings()->getSetting("lan_number"), $user->getUserId(), $user->getUserId());
@@ -299,8 +295,7 @@ class Account_Controller extends LanWebsite_Controller {
             } else $ticket["assigned_forum_name"] = "";
             $tickets[] = $ticket;
         }
-        $return["tickets"] = $tickets;
-        
+        $response["tickets"] = $tickets;
         //Seat/Group bookings
         $groupBookings = array('groupMembers'=>array());
         if(!LanWebsite_Main::getSettings()->getSetting("enable_seat_bookings")) {
@@ -328,9 +323,8 @@ class Account_Controller extends LanWebsite_Controller {
                 $groupBookings['group'] = $group;
             }
         }
-        $return["groupBooking"] = $groupBookings;
-       
-        echo json_encode($return);
+        $response["groupBooking"] = $groupBookings;
+        echo json_encode($response);
     }
     
     public function get_Login($inputs, $error = false) {
