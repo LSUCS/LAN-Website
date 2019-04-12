@@ -65,9 +65,15 @@
             $res = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE lan_number = '%s'", $lan);
             $claimed = array();
             while ($row = $res->fetch_assoc()) {
-                $purchased = LanWebsite_Main::getUserManager()->getUserById($row["purchased_forum_id"]);
-                $assigned = LanWebsite_Main::getUserManager()->getUserById($row["assigned_forum_id"]);
-                $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":($row["member_ticket"] == 0?"Non-Member":"Visitor"), '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], (!$assigned?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
+                // Add additional checks to stop table from breaking when a user doesn't exist
+                try {
+                    $purchased = LanWebsite_Main::getUserManager()->getUserById($row["purchased_forum_id"]);
+                    $assigned = LanWebsite_Main::getUserManager()->getUserById($row["assigned_forum_id"]);
+                    $claimed[] = array($row["ticket_id"], $row["member_ticket"] == 1?"Member":($row["member_ticket"] == 0?"Non-Member":"Visitor"), '<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $purchased->getUsername())) . '">' . $purchased->getUsername() . '</a>', $row["purchased_name"], (!$assigned?"":'<a href="' . LanWebsite_Main::buildUrl(false, 'profile', null, array("member" => $assigned->getUsername())) .'">' . $assigned->getUsername() . '</a>'), $row["activated"] == 1?"Yes":"No", $row["seat"]);
+                } catch (Exception $e) {
+                    error_log(sprintf('This user (%d) probably doesn\'t exist, rejecting.', $row["assigned_forum_id"]), 0);
+                }
+                
             }
             
             //Get unclaimed
