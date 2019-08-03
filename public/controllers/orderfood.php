@@ -43,12 +43,18 @@
 			$user = LanWebsite_Main::getUserManager()->getActiveUser();
 		
 			//Validate few things
+			error_log("Validating placement at LAN...");
 			if (!LanWebsite_Main::isAtLan()) $this->errorJSON("You need to be at the LAN to order food");
+			error_log("Validating account details...");
 			if ($user->getFullName() == "") $this->errorJSON("You must fill in your real name in your account details before ordering food");
+			error_log("Validating if a ticket has been bought...");
 			$ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
 			if (!$ticket) $this->errorJSON("You do not have a ticket");
-			if ($ticket["seat"] == "") $this->errorJSON("Your seat is not set");
+			error_log("Checking if a seat has been set...");
+			// Don't check if a seat is set if the person is a visitor.
+			if ($ticket["seat"] == "" && $ticket["member_ticket"] != 2) $this->errorJSON("Your seat is not set");
 		
+			error_log("Attempting to decode options...");
 			$opts = json_decode($inputs["options"], true);
 			$totalOptions = 0;
 			$totalCost = 0;
@@ -59,6 +65,7 @@
 			if (!is_array($opts) || count($opts) == 0) $this->errorJSON("Invalid options");
 			
 			//Get shops
+			error_log("Obtaining shops...");
 			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `food_shops`");
 			$shops = array();
 			while ($row = $res->fetch_assoc()) $shops[$row["shop_id"]] = $row;
@@ -67,8 +74,10 @@
 			foreach ($opts as $opt) {
 			
 				//Validate
+				error_log("Validating options...");
 				$option = LanWebsite_Main::getDb()->query("SELECT * FROM `food_options` WHERE option_id = '%s'", $opt["option_id"])->fetch_assoc();
 				if (!$option) $this->errorJSON("Invalid option ID");
+				error_log("Validating option amounts...");
 				if ((!is_numeric($opt["amount"]) && strlen($opt["amount"]) > 0) || $opt["amount"] < 0 || $opt["amount"] > 9) $this->errorJSON("Invalid option amount");
 				if ($shops[$option["shop_id"]]["enabled"] == 0) $this->errorJSON("Shop is closed");
 				
@@ -90,6 +99,7 @@
 			}
 
 			//Return
+			error_log("Done");
 			echo json_encode(array("cost" => number_format($totalCost, 2), "order_by" => date("l gA", $time)));
 		
 		}
