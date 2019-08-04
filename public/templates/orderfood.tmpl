@@ -1,7 +1,9 @@
 <div id="order-image">
 </div>
 <p style="text-align: center; color: red; font-weight: bold;">On-duty committee rota can be found on the <a href="index.php?page=whatson#rota">Timetable</a>
-<!--</br>FOOD orders are broken. Please order food from an onduty committee member instead.--></p>
+<!-- lol -->
+<!-- </br>FOOD orders are broken. Please order food from an onduty committee member instead.</p> -->
+<!-- lol -->
 
 <?
 	if ($DataBag["unpaid"] > 0) {
@@ -11,13 +13,25 @@
 
 <div id="shops">
 	<?
-		//Loop shops
-		foreach ($DataBag["shops"] as $shop) {
-			
+		// Loop shops to add their tab
+		echo '
+            <ul>
+		';
+		foreach ($DataBag["shops"] as $index=>$shop) {
+            $shop_id = "shop" . $index;
+            echo '
+                    <li><a href="#' . $shop_id . '">' . $shop["shop_name"] . '</a></li>
+            ';
+		}
+		echo '
+            </ul>
+		';
+		// Add the actual shop data
+		foreach ($DataBag["shops"] as $index=>$shop) {
+			$shop_id = "shop" . $index;
 			echo 
-				'<div class="shop">
+				'<div id="' . $shop_id . '" class="shop">
 					<div class="shop-details">
-						<div class="shop-title">' . $shop["shop_name"] . '</div>
 						<div class="shop-times">
 							<b>Order by: </b>' . date("l gA", strtotime($shop["order_by"])) . '&emsp;<b>Arrives: </b>' . date("l gA", strtotime($shop["arrival_time"])) . '
 						</div>

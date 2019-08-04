@@ -22,6 +22,11 @@ $(document).ready(function() {
     }
 });
 
+// Function to tabularise food shops
+$(function() {
+    $( "#shops" ).tabs();
+});
+
 function order() {
 
 	//Get options
