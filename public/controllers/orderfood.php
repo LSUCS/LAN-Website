@@ -43,12 +43,22 @@
 			$user = LanWebsite_Main::getUserManager()->getActiveUser();
 		
 			//Validate few things
-			error_log("Validating placement at LAN...");
-			if (!LanWebsite_Main::isAtLan()) $this->errorJSON("You need to be at the LAN to order food");
-			error_log("Validating account details...");
-			if ($user->getFullName() == "") $this->errorJSON("You must fill in your real name in your account details before ordering food");
-			error_log("Validating if a ticket has been bought...");
+			// Allow ordering food outside LAN if it is going on (some spam prevention is done below)
+			//error_log("Validating placement at LAN...");
+			//if (!LanWebsite_Main::isAtLan()) $this->errorJSON("You need to be at the LAN to order food");
+			
+			// Check if lan is going on and ticket has been activated (lanauth + api will reject any visitors trying to auth, don't worry)
+			error_log("Validating if LAN is going on and for activated ticket...");
 			$ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), LanWebsite_Main::getSettings()->getSetting("lan_number"))->fetch_assoc();
+            $lan_start = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", "lan_start_date")->fetch_array()[1];
+            $lan_end = LanWebsite_Main::getDb()->query("SELECT * FROM `settings` WHERE setting_name = '%s'", "lan_end_date")->fetch_array()[1];
+            $cur_time = time();
+            if ($cur_time < strtotime($lan_start) || $cur_time > strtotime($lan_end)) $this->errorJSON("LAN is not happening right now, please contain your excitement.");
+			if ($ticket["activated"] == 0) $this->errorJSON("Your ticket has not been activated\nPlease see the front desk or a member of on-duty committee.");
+			error_log("Validating account details...");
+			if ($user->getFullName() == "") $this->errorJSON("You must fill in your real name in your account details before ordering food.\nThis can be done in the user settings (spanner icon in bar)");
+			error_log("Validating if a ticket has been bought...");
+			
 			if (!$ticket) $this->errorJSON("You do not have a ticket");
 			error_log("Checking if a seat has been set...");
 			// Don't check if a seat is set if the person is a visitor.
@@ -89,7 +99,9 @@
 				}
 			}
 			
-			if ($totalOptions < 1) $this->errorJSON("You must select at least one option to order");
+ 			if ($totalOptions < 1) $this->errorJSON("You must select at least one option to order");
+			// Allow a maximum of 5 items to be ordered (prevents spamming by one person)
+			if ($totalOptions > 5) $this->errorJSON("You can only order a maximum of 5 items per LAN with this form.\nTo order more, please contact a member of on-duty committee.");
 			
 			//Add to database
 			foreach ($options as $option) {

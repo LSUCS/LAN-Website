@@ -60,8 +60,9 @@
             //Check activated ticket
             $ticket = LanWebsite_Main::getDb()->query("SELECT * FROM `tickets` WHERE assigned_forum_id = '%s' AND lan_number = '%s'", $user->getUserId(), $lan)->fetch_assoc();
             if (!$ticket) $this->errorJSON("You do not have a ticket for the LAN, please visit the front desk");
+            // Don't allow activated visitors to auth
+            if ($ticket["member_ticket"] == 2) $this->errorJSON("Visitors are not permitted to sign on to the LAN network.");
             if ($ticket["activated"] == 0) $this->errorJSON("Your ticket has not been activated. Go to the front desk");
-            
 
             //Check seat
             /*$seats = explode("\n", file_get_contents("data/seats.txt"));
