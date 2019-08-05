@@ -31,6 +31,19 @@
 			echo json_encode($output);
 		}
 		
+		public function get_Presentationdata() {
+            // Return what the ini did.
+            $this->authenticate();
+            $settings = LanWebsite_Main::getSettings();
+            $output = array("main_pres_url" => $settings->getSetting("main_presentation_url"),
+                            "tourn_pres_url" => $settings->getSetting("tournament_presentation_url"),
+                            "twitch_user" => $settings->getSetting("twitch_user"),
+                            "twitch_client_id" => $settings->getSetting("twitch_client_id"),
+                            "pres_refresh" => $settings->getSetting("presentation_refresh_interval"),
+                            "twitch_check" => $settings->getSetting("twitch_check_interval"));
+            echo json_encode($output);
+        }
+		
 		public function post_Updategameservers($inputs) {
 			$this->authenticate();
 			$servers = json_decode($inputs["data"], true);
