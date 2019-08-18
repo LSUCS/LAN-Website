@@ -12,7 +12,7 @@
         }
     
         public function get_Index() {
-            $this->authenticate();
+            $this->authenticateGet();
             echo $this->errorJSON("Invalid API Method");
         }
 
@@ -22,7 +22,7 @@
         }
 		
 		public function get_Getgameservers() {
-			$this->authenticate();
+			$this->authenticateGet();
 			$res = LanWebsite_Main::getDb()->query("SELECT * FROM `game_servers` WHERE local = 1 AND source = 1");
 			$output = array();
 			while ($row = $res->fetch_assoc()) {
@@ -33,7 +33,7 @@
 		
 		public function get_Presentationdata() {
             // Return what the ini did.
-            $this->authenticate();
+            $this->authenticateGet();
             $settings = LanWebsite_Main::getSettings();
             $output = array("main_pres_url" => $settings->getSetting("main_presentation_url"),
                             "tourn_pres_url" => $settings->getSetting("tournament_presentation_url"),
@@ -207,6 +207,13 @@
         private function authenticate() {
             LanWebsite_Main::getAuth()->requireNotLoggedIn();
             if (!isset($_POST["api_key"]) || sha1($_POST["api_key"]) != sha1(LanWebsite_Main::getSettings()->getSetting("api_key"))) {
+                $this->errorJSON("Invalid API Key");
+            }
+        }
+        
+        private function authenticateGet() {
+            LanWebsite_Main::getAuth()->requireNotLoggedIn();
+            if (!isset($_GET["api_key"]) || sha1($_GET["api_key"]) != sha1(LanWebsite_Main::getSettings()->getSetting("api_key"))) {
                 $this->errorJSON("Invalid API Key");
             }
         }
