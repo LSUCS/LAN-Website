@@ -141,11 +141,16 @@
 
             $this->checkAvailability($inputs["member_amount"], $inputs["nonmember_amount"], $inputs["visitor_amount"]);
                 
+            // Since PHP has broken the previous behaviour recently, we need to make these definitions explicit
+            // so that the system doesn't complain about non-numerical values
+            $memberAmount = (empty($inputs["member_amount"]) || $inputs["member_amount"] == "") ? 0 : $inputs["member_amount"];
+            $memberPrice = (empty($inputs["member_price"]) || $inputs["member_price"] == "") ? 0 : $inputs["member_price"];
+
             //Calculate total
-            $total = (int) $inputs["member_amount"] * $inputs["member_price"] + (int) $inputs["nonmember_amount"] * $inputs["nonmember_price"] + (int) $inputs["visitor_amount"] * $inputs["visitor_price"];
-            
-            //Insert and return purchase id
-            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, num_visitor_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s', '%s')", (empty($inputs["member_amount"]) ? 0 : $inputs["member_amount"]) , $inputs["nonmember_amount"], $inputs["visitor_amount"], $user->getUserId(), $total);
+            $total = (int) $memberAmount * $memberPrice + (int) $inputs["nonmember_amount"] * $inputs["nonmember_price"] + (int) $inputs["visitor_amount"] * $inputs["visitor_price"];
+
+            // Add explicit member ticket numerical check to force to zero
+            LanWebsite_Main::getDb()->query("INSERT INTO `pending_purchases` (num_member_tickets, num_nonmember_tickets, num_visitor_tickets, user_id, total) VALUES ('%s', '%s', '%s', '%s', '%s')", $memberAmount, $inputs["nonmember_amount"], $inputs["visitor_amount"], $user->getUserId(), $total);
             echo json_encode(array("pending_id" => LanWebsite_Main::getDb()->getLink()->insert_id));
             
         }
@@ -262,7 +267,7 @@
                     $errmsg .= "Received total does not match stored total\n";
                 }
                 if($_POST["mc_currency"] != "GBP") {
-                    $errmsg .= "Invalid current code\n";
+                    $errmsg .= "Invalid currency code\n";
                 }
                 if(LanWebsite_Main::getDb()->query("SELECT * FROM `paypal_purchases` WHERE txn_id = '%s'", $_POST["txn_id"])->fetch_assoc()) {
                     $errmsg .= "Transaction ID has already been processed and used\n";
